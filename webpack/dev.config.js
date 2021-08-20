@@ -1,6 +1,6 @@
 const path = require('path');
 const webpack = require('webpack');
-const GitRevisionPlugin = require('git-revision-webpack-plugin');
+const { GitRevisionPlugin } = require('git-revision-webpack-plugin');
 const gitRevisionPlugin = new GitRevisionPlugin();
 const autoprefixer = require('autoprefixer');
 const cssnano = require('cssnano');
@@ -27,6 +27,7 @@ module.exports = {
     resolve: {
         modules: ['node_modules'],
         extensions: ['.js', '.scss'],
+        preferRelative: true,
     },
 
     module: {
@@ -57,7 +58,9 @@ module.exports = {
                     {
                         loader: 'postcss-loader',
                         options: {
-                            plugins: [autoprefixer, cssnano],
+                            postcssOptions: {
+                                plugins: [autoprefixer, cssnano],
+                            },
                         },
                     },
                     'sass-loader',
@@ -81,18 +84,23 @@ module.exports = {
         ],
     },
 
+    watchOptions: {
+        ignored: /node_modules/,
+    },
+
     devServer: {
         compress: true,
-        contentBase: path.resolve(__dirname, '..', 'demo'),
-        clientLogLevel: 'none',
-        quiet: false,
+        static: {
+            directory: path.resolve(__dirname, '..', 'demo'),
+        },
         open: true,
         historyApiFallback: {
             disableDotRule: true,
         },
-        watchOptions: {
-            ignored: /node_modules/,
+        client: {
+            logging: 'none',
         },
+        // quiet: false,
     },
 
     plugins: [
@@ -103,10 +111,9 @@ module.exports = {
     ],
 
     node: {
-        dgram: 'empty',
-        fs: 'empty',
-        net: 'empty',
-        tls: 'empty',
+        global: false,
+        __filename: false,
+        __dirname: false,
     },
 
     performance: {

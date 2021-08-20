@@ -29,7 +29,7 @@ module.exports = {
             title: 'DPlayer',
             description: '🍭 Wow, such a lovely HTML5 danmaku video player',
         },
-        '/': {
+        '/de/': {
             lang: 'de-DE',
             title: 'DPlayer',
             description: '🍭 Wow, such a lovely HTML5 danmaku video player',
