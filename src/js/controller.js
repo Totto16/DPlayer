@@ -13,18 +13,11 @@ class Controller {
 
         this.autoHideTimer = 0;
         if (!utils.isMobile) {
-            this.player.container.addEventListener('mousemove', () => {
-                this.setAutoHide();
-            });
-            this.player.container.addEventListener('click', () => {
-                this.setAutoHide();
-            });
-            this.player.on('play', () => {
-                this.setAutoHide();
-            });
-            this.player.on('pause', () => {
-                this.setAutoHide();
-            });
+            this.setAutoHideHandler = this.setAutoHide.bind(this);
+            this.player.container.addEventListener('mousemove', this.setAutoHideHandler);
+            this.player.container.addEventListener('click', this.setAutoHideHandler);
+            this.player.on('play', this.setAutoHideHandler);
+            this.player.on('pause', this.setAutoHideHandler);
         }
 
         this.initPlayButton();
@@ -208,15 +201,7 @@ class Controller {
             this.player.template.volumeButton.classList.add('dplayer-volume-active');
         });
         this.player.template.volumeButtonIcon.addEventListener('click', () => {
-            if (this.player.video.muted) {
-                this.player.video.muted = false;
-                this.player.switchVolumeIcon();
-                this.player.bar.set('volume', this.player.volume(), 'width');
-            } else {
-                this.player.video.muted = true;
-                this.player.template.volumeIcon.innerHTML = Icons.volumeOff;
-                this.player.bar.set('volume', 0, 'width');
-            }
+            this.muteChanger.call(this);
         });
     }
 
@@ -233,32 +218,7 @@ class Controller {
     initScreenshotButton() {
         if (this.player.options.screenshot) {
             this.player.template.camareButton.addEventListener('click', () => {
-                const canvas = document.createElement('canvas');
-                canvas.width = this.player.video.videoWidth;
-                canvas.height = this.player.video.videoHeight;
-                canvas.getContext('2d').drawImage(this.player.video, 0, 0, canvas.width, canvas.height);
-
-                let dataURL;
-                canvas.toBlob((blob) => {
-                    // if video hasn't loaded yet, we get an error
-                    if (blob) {
-                        dataURL = URL.createObjectURL(blob);
-                        const link = document.createElement('a');
-                        link.href = dataURL;
-                        const temp = new URL(this.player.video.currentSrc).pathname;
-                        const name = decodeURI(temp.substring(temp.lastIndexOf('/') + 1));
-                        const time = utils.secondToTime(this.player.video.currentTime, '_');
-                        link.download = `${name}_Screenshot_${time}.png`;
-                        link.style.display = 'none';
-                        document.body.appendChild(link);
-                        link.click();
-                        this.player.events.trigger('screenshot', dataURL);
-                        document.body.removeChild(link);
-                        URL.revokeObjectURL(dataURL);
-                    } else {
-                        console.debug('Screenshot Error, video not loaded yet!');
-                    }
-                });
+                this.SaveScreenshot.call(this);
             });
         }
     }
@@ -427,7 +387,55 @@ class Controller {
         }
     }
 
+    muteChanger() {
+        console.log(this);
+        if (this.player.video.muted) {
+            this.player.video.muted = false;
+            this.player.switchVolumeIcon();
+            this.player.bar.set('volume', this.player.volume(), 'width');
+        } else {
+            this.player.video.muted = true;
+            this.player.template.volumeIcon.innerHTML = Icons.volumeOff;
+            this.player.bar.set('volume', 0, 'width');
+        }
+    }
+
+    SaveScreenshot() {
+        const canvas = document.createElement('canvas');
+        canvas.width = this.player.video.videoWidth;
+        canvas.height = this.player.video.videoHeight;
+        canvas.getContext('2d').drawImage(this.player.video, 0, 0, canvas.width, canvas.height);
+
+        let dataURL;
+        canvas.toBlob((blob) => {
+            // if video hasn't loaded yet, we get an error
+            if (blob) {
+                dataURL = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = dataURL;
+                const temp = new URL(this.player.video.currentSrc).pathname;
+                const name = decodeURI(temp.substring(temp.lastIndexOf('/') + 1));
+                const time = utils.secondToTime(this.player.video.currentTime, '_');
+                const downloadName = `${name}_Screenshot_${time}.png`;
+                link.download = downloadName;
+                link.style.display = 'none';
+                document.body.appendChild(link);
+                link.click();
+                this.player.events.trigger('screenshot', dataURL);
+                this.player.notice(this.player.tran('saved-screenshot').replace('%n', downloadName));
+                document.body.removeChild(link);
+                URL.revokeObjectURL(dataURL);
+            } else {
+                console.debug('Screenshot Error, video not loaded yet!');
+            }
+        });
+    }
+
     destroy() {
+        if (!utils.isMobile) {
+            this.player.container.removeEventListener('mousemove', this.setAutoHideHandler);
+            this.player.container.removeEventListener('click', this.setAutoHideHandler);
+        }
         clearTimeout(this.autoHideTimer);
     }
 }
