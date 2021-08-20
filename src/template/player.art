@@ -249,6 +249,20 @@
     </div>
     {{ /if }}
 </div>
+
+
+
+
+
+<div class="dplayer-hotkey-panel dplayer-hotkey-panel-hide">
+    <div class="dplayer-hotkey-panel-close">[x]</div>
+    <div class="dplayer-hotkey-panel-item dplayer-hotkey-panel-item-keyboard simple-keyboard">
+    </div>
+</div>
+
+
+
+
 <div class="dplayer-menu">
     {{ each options.contextmenu }}
         <div class="dplayer-menu-item">
@@ -256,7 +270,7 @@
         </div>
     {{ /each }}
 </div>
-<div class="dplayer-notice"></div>
+<div class="dplayer-notice-list"></div>
 <button class="dplayer-mobile-play">
     {{@ icons.play }}
 </button>

@@ -21,6 +21,8 @@ function i18n(lang) {
             return standard[key];
         }
     };
+    this.checkPresentTranslations = checkPresentTranslations;
+    this.longCode = getLongCode(this.fallbackLang);
 }
 
 // abstract model for recognizing if valid translations are present
@@ -33,6 +35,7 @@ const model = {
     'about-author': [],
     'dplayer-feedback': [],
     'about-dplayer': [],
+    'hotkey-info': [],
     loop: [],
     speed: [],
     'opacity-danmaku': [],
@@ -75,6 +78,7 @@ const standard = {
     'about-author': 'About author',
     'dplayer-feedback': 'DPlayer feedback',
     'about-dplayer': 'About DPlayer',
+    'hotkey-info': 'Hotkey Info',
     loop: 'Loop',
     speed: 'Speed',
     'opacity-danmaku': 'Opacity for danmaku',
@@ -119,6 +123,7 @@ const tranTxt = {
         'about-author': '关于作者',
         'dplayer-feedback': '播放器意见反馈',
         'about-dplayer': '关于 DPlayer 播放器',
+        'hotkey-info': 'Hotkey Info',
         loop: '洗脑循环',
         speed: '速度',
         'opacity-danmaku': '弹幕透明度',
@@ -159,6 +164,7 @@ const tranTxt = {
         'about-author': '關於作者',
         'dplayer-feedback': '播放器意見回饋',
         'about-dplayer': '關於 DPlayer 播放器',
+        'hotkey-info': 'Hotkey Info',
         loop: '循環播放',
         speed: '速度',
         'opacity-danmaku': '彈幕透明度',
@@ -199,6 +205,7 @@ const tranTxt = {
         'about-author': '만든이',
         'dplayer-feedback': '피드백 보내기',
         'about-dplayer': 'DPlayer 정보',
+        'hotkey-info': 'Hotkey Info',
         loop: '반복',
         speed: '배속',
         'opacity-danmaku': 'Danmaku 불투명도',
@@ -241,6 +248,7 @@ const tranTxt = {
         'about-author': 'Über den Autor',
         'dplayer-feedback': 'DPlayer Feedback',
         'about-dplayer': 'Über DPlayer',
+        'hotkey-info': 'Tastenbelegung Info',
         loop: 'Wiederholen',
         speed: 'Geschwindigkeit',
         'opacity-danmaku': 'Transparenz für Danmaku',
@@ -299,4 +307,9 @@ function checkSingleLanguage(language) {
     });
 }
 
-export { i18n, checkPresentTranslations };
+function getLongCode(langCode) {
+    console.log(langCode);
+    return 'not';
+}
+
+export default i18n;

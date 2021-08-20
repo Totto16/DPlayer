@@ -80,6 +80,26 @@ class HotKey {
                             this.player.controller.SaveScreenshot();
                         }
                         break;
+                    case 'changeLoop':
+                        // change the loop status
+                        event.preventDefault();
+                        this.player.setting.toggleLoop();
+                        break;
+                    case 'speedUp':
+                        // player speed increase
+                        event.preventDefault();
+                        this.player.setting.EditSpeed(1);
+                        break;
+                    case 'speedDown':
+                        // make player speed slower
+                        event.preventDefault();
+                        this.player.setting.EditSpeed(-1);
+                        break;
+                    case 'speedNormal':
+                        // sets player speed to normal, 1
+                        event.preventDefault();
+                        this.player.speed(1);
+                        break;
                 }
             }
         }
@@ -109,41 +129,59 @@ class HotKey {
                 return 'nextChapter';
             case 65:
                 return 'previousChapter';
+            case 76:
+                return 'changeLoop';
+            case 86:
+                return 'speedUp';
+            case 67:
+                return 'speedDown';
+            case 78:
+                return 'speedNormal';
         }
         // String Names to be extra sure! (Useful for mediaPlay Buttons on PC!)
-        switch (event.key) {
-            case ' ':
-                return 'togglePlayer';
-            case 'ArrowLeft':
-                return 'left';
-            case 'ArrowRight':
-                return 'right';
-            case 'ArrowUp':
-                return 'up';
-            case 'ArrowDown':
-                return 'down';
-            case 'Escape':
-                return 'cancelFullscreen';
-            case 'f':
-                return 'toggleFullscreen';
-            case 'MediaPlayPause':
-                return 'togglePlayer';
-            case 'MediaStop':
-                return 'stopPlayer';
-            case 'AudioVolumeMute':
-                return 'mute';
-            case 'm':
-                return 'mute';
-            case 's':
-                return 'screenshot';
-            case 'MediaTrackPrevious':
-                return 'nextChapter';
-            case 'MediaTrackNext':
-                return 'previousChapter';
-            case 'd':
-                return 'nextChapter';
-            case 'a':
-                return 'previousChapter';
+        if (this.player.options.advancedHotkeys) {
+            switch (event.key) {
+                case ' ':
+                    return 'togglePlayer';
+                case 'ArrowLeft':
+                    return 'left';
+                case 'ArrowRight':
+                    return 'right';
+                case 'ArrowUp':
+                    return 'up';
+                case 'ArrowDown':
+                    return 'down';
+                case 'Escape':
+                    return 'cancelFullscreen';
+                case 'f':
+                    return 'toggleFullscreen';
+                case 'MediaPlayPause':
+                    return 'togglePlayer';
+                case 'MediaStop':
+                    return 'stopPlayer';
+                case 'AudioVolumeMute':
+                    return 'mute';
+                case 'm':
+                    return 'mute';
+                case 's':
+                    return 'screenshot';
+                case 'MediaTrackPrevious':
+                    return 'nextChapter';
+                case 'MediaTrackNext':
+                    return 'previousChapter';
+                case 'd':
+                    return 'nextChapter';
+                case 'a':
+                    return 'previousChapter';
+                case 'l':
+                    return 'changeLoop';
+                case 'v':
+                    return 'speedUp';
+                case 'c':
+                    return 'speedDown';
+                case 'n':
+                    return 'speedNormal';
+            }
         }
     }
 

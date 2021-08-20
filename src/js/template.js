@@ -88,9 +88,11 @@ class Template {
         this.qualityButton = this.container.querySelector('.dplayer-quality-icon');
         this.barPreview = this.container.querySelector('.dplayer-bar-preview');
         this.barWrap = this.container.querySelector('.dplayer-bar-wrap');
-        this.notice = this.container.querySelector('.dplayer-notice');
+        this.noticeList = this.container.querySelector('.dplayer-notice-list');
         this.infoPanel = this.container.querySelector('.dplayer-info-panel');
         this.infoPanelClose = this.container.querySelector('.dplayer-info-panel-close');
+        this.hotkeyPanel = this.container.querySelector('.dplayer-hotkey-panel');
+        this.hotkeyPanelClose = this.container.querySelector('.dplayer-hotkey-panel-close');
         this.infoVersion = this.container.querySelector('.dplayer-info-panel-item-version .dplayer-info-panel-item-data');
         this.infoFPS = this.container.querySelector('.dplayer-info-panel-item-fps .dplayer-info-panel-item-data');
         this.infoType = this.container.querySelector('.dplayer-info-panel-item-type .dplayer-info-panel-item-data');
@@ -100,6 +102,13 @@ class Template {
         this.infoDanmakuId = this.container.querySelector('.dplayer-info-panel-item-danmaku-id .dplayer-info-panel-item-data');
         this.infoDanmakuApi = this.container.querySelector('.dplayer-info-panel-item-danmaku-api .dplayer-info-panel-item-data');
         this.infoDanmakuAmount = this.container.querySelector('.dplayer-info-panel-item-danmaku-amount .dplayer-info-panel-item-data');
+    }
+    static NewNotice(text, opacity) {
+        const notice = document.createElement('div');
+        notice.classList.add('dplayer-notice');
+        notice.style.opacity = opacity;
+        notice.innerText = text;
+        return notice;
     }
 }
 

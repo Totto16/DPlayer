@@ -15,6 +15,7 @@ export default (options) => {
         airplay: 'vendor',
         chromecast: 'vendor',
         hotkey: true,
+        advancedHotkeys: false,
         preload: 'metadata',
         volume: 0.7,
         playbackSpeed: [0.5, 0.75, 1, 1.25, 1.5, 2],
@@ -63,6 +64,12 @@ export default (options) => {
             key: 'video-info',
             click: (player) => {
                 player.infoPanel.triggle();
+            },
+        },
+        {
+            key: 'hotkey-info',
+            click: (player) => {
+                player.hotkeyPanel.triggle();
             },
         },
         {

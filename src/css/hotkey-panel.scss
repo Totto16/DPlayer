@@ -1,4 +1,4 @@
-.dplayer-info-panel {
+.dplayer-hotkey-panel {
     position: absolute;
     top: 10px;
     left: 10px;
@@ -14,35 +14,28 @@
         display: none;
     }
 
-    .dplayer-info-panel-close {
+    .dplayer-hotkey-panel-close {
         cursor: pointer;
         position: absolute;
         right: 10px;
         top: 10px;
     }
 
-    .dplayer-info-panel-item {
-        & > span {
+    .dplayer-hotkey-panel-item {
             display: inline-block;
             vertical-align: middle;
             line-height: 15px;
             white-space: nowrap;
             text-overflow: ellipsis;
             overflow: hidden;
-        }
-    }
 
-    .dplayer-info-panel-item-title {
-        width: 100px;
-        text-align: right;
-        margin-right: 10px;
     }
-    
-    .dplayer-info-panel-item-data {
-        width: #{"clamp(10px, calc(80% - 50px), 800px)"};
-    }
-
-    .dplayer-info-panel-item{
-        white-space: nowrap;
+    .simple-keyboard {
+        color:black;
+        width: unset;
+        margin: 20px;
     }
 }
+
+
+@import 'simple-keyboard/build/css/index.css';

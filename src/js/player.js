@@ -2,7 +2,7 @@ import Promise from 'promise-polyfill';
 
 import utils from './utils';
 import handleOption from './options';
-import { i18n, checkPresentTranslations } from './i18n';
+import i18n from './i18n';
 import Template from './template';
 import Icons from './icons';
 import Danmaku from './danmaku';
@@ -19,6 +19,7 @@ import Comment from './comment';
 import HotKey from './hotkey';
 import ContextMenu from './contextmenu';
 import InfoPanel from './info-panel';
+import HotkeyPanel from './hotkey-panel';
 import tplVideo from '../template/video.art';
 
 let index = 0;
@@ -38,8 +39,9 @@ class DPlayer {
             this.qualityIndex = this.options.video.defaultQuality;
             this.quality = this.options.video.quality[this.options.video.defaultQuality];
         }
-        this.tran = new i18n(this.options.lang).tran;
-        checkPresentTranslations(this.options.lang);
+        this.languageFeatures = new i18n(this.options.lang);
+        this.tran = this.languageFeatures.tran;
+        this.languageFeatures.checkPresentTranslations(this.options.lang);
         this.events = new Events();
         this.user = new User(this);
         this.container = this.options.container;
@@ -139,6 +141,8 @@ class DPlayer {
         this.initVideo(this.video, (this.quality && this.quality.type) || this.options.video.type);
 
         this.infoPanel = new InfoPanel(this);
+
+        this.hotkeyPanel = new HotkeyPanel(this);
 
         if (!this.danmaku && this.options.autoplay) {
             this.play();
@@ -595,17 +599,22 @@ class DPlayer {
     }
 
     notice(text, time = 2000, opacity = 0.8) {
-        this.template.notice.innerHTML = text;
-        this.template.notice.style.opacity = opacity;
-        if (this.noticeTime) {
-            clearTimeout(this.noticeTime);
-        }
-        this.events.trigger('notice_show', text);
+        const notice = Template.NewNotice(text, opacity);
+        this.template.noticeList.appendChild(notice);
+        this.events.trigger('notice_show', notice);
         if (time > 0) {
-            this.noticeTime = setTimeout(() => {
-                this.template.notice.style.opacity = 0;
-                this.events.trigger('notice_hide');
-            }, time);
+            setTimeout(
+                (function (e, dp) {
+                    return () => {
+                        e.addEventListener('animationend', () => {
+                            dp.template.noticeList.removeChild(e);
+                        });
+                        e.classList.add('remove-notice');
+                        dp.events.trigger('notice_hide');
+                    };
+                })(notice, this),
+                time
+            );
         }
     }
 

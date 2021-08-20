@@ -15,13 +15,7 @@ class Setting {
         this.loop = this.player.options.loop;
         this.player.template.loopToggle.checked = this.loop;
         this.player.template.loop.addEventListener('click', () => {
-            this.player.template.loopToggle.checked = !this.player.template.loopToggle.checked;
-            if (this.player.template.loopToggle.checked) {
-                this.loop = true;
-            } else {
-                this.loop = false;
-            }
-            this.hide();
+            this.toggleLoop.classList(this);
         });
 
         // show danmaku
@@ -105,6 +99,32 @@ class Setting {
                 document.addEventListener(utils.nameMap.dragEnd, danmakuUp);
                 this.player.template.danmakuOpacityBox.classList.add('dplayer-setting-danmaku-active');
             });
+        }
+    }
+
+    toggleLoop() {
+        this.player.template.loopToggle.checked = !this.player.template.loopToggle.checked;
+        if (this.player.template.loopToggle.checked) {
+            this.loop = true;
+        } else {
+            this.loop = false;
+        }
+        this.hide();
+    }
+
+    EditSpeed(direction) {
+        const actualSpeed = this.player.video.playbackRate;
+        const ArrayOfSpeeds = Array.from(this.player.template.speedItem)
+            .map((item) => item.attributes['data-speed'].nodeValue)
+            .map((string) => parseFloat(string));
+        let index = ArrayOfSpeeds.indexOf(actualSpeed);
+        if (index >= 0) {
+            index += direction;
+            if (index >= 0 && index < ArrayOfSpeeds.length) {
+                this.player.speed(ArrayOfSpeeds[index]);
+            }
+        } else {
+            console.warn('Speed Editing error');
         }
     }
 
