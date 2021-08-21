@@ -39,6 +39,8 @@ class Template {
         this.playedBar = this.container.querySelector('.dplayer-played');
         this.loadedBar = this.container.querySelector('.dplayer-loaded');
         this.playedBarWrap = this.container.querySelector('.dplayer-bar-wrap');
+        this.barHighlight = this.playedBarWrap.querySelectorAll('.dplayer-highlight');
+        this.barHighlightTop = this.playedBarWrap.querySelectorAll('.dplayer-highlight-top');
         this.playedBarTime = this.container.querySelector('.dplayer-bar-time');
         this.danmaku = this.container.querySelector('.dplayer-danmaku');
         this.danmakuLoading = this.container.querySelector('.dplayer-danloading');

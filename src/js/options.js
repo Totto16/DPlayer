@@ -42,7 +42,9 @@ export default (options) => {
         !options.subtitle.bottom && (options.subtitle.bottom = '40px');
         !options.subtitle.color && (options.subtitle.color = '#fff');
     }
-
+    if (!options.video.defaultQuality) {
+        options.video.defaultQuality = 0;
+    }
     if (options.video.quality) {
         options.video.url = options.video.quality[options.video.defaultQuality].url;
     }
@@ -57,6 +59,18 @@ export default (options) => {
 
     if (options.chromecast) {
         options.chromecast = typeof options.chromecast === 'string' && options.chromecast === 'vendor' ? utils.supportsChromeCast() : options.chromecast;
+    }
+
+    if (options.highlight) {
+        options.highlights = {
+            marker: options.highlight,
+            mode: 'normal',
+        };
+        options.highlight = null;
+    }
+
+    if (options.highlights && !options.highlights.mode) {
+        options.highlights.mode = 'normal';
     }
 
     options.contextmenu = options.contextmenu.concat([

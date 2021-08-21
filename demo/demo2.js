@@ -30,7 +30,14 @@ function initPlayers() {
     ];
 
 
-    const vtt_stamps = [{
+    const vtt_stamps = [
+        {time:0,text:"init 0s"},
+        {time:20,text:"start 20s"},
+        {time:120,text:"2 minuntes"}
+    ]
+    
+    //only suitable for normal mode
+    /* [{time:20,text:"start 20s"},{time:120,text:"2 minuntes"}]; *//*[{
             "text": "Einführung",
             "time": 0
         },
@@ -54,7 +61,7 @@ function initPlayers() {
             "text": "Episoden Vorschau",
             "time": 1424.967
         }
-    ];
+    ];*/
 
 
     const dp = new DPlayer({
@@ -71,7 +78,7 @@ function initPlayers() {
             { text: "custom1", link: "https://github.com/DIYgod/DPlayer" },
             { text: "custom2", click: function(t) { console.log(t) } }
         ], */
-        highlight: vtt_stamps,
+        highlights: {marker:vtt_stamps,mode:'top'},
         airplay: "vendor",
         chromecast: "vendor"
     });

@@ -144,7 +144,7 @@
             <div class="dplayer-setting-box">
                 <div class="dplayer-setting-origin-panel">
                     <div class="dplayer-setting-item dplayer-setting-speed">
-                        <span class="dplayer-label">{{ tran('speed') }}</span>
+                        <span class="dplayer-label">{{ tran('speed-raw') }}</span>
                         <div class="dplayer-toggle">{{@ icons.right }}</div>
                     </div>
                     <div class="dplayer-setting-item dplayer-setting-loop">
@@ -249,20 +249,11 @@
     </div>
     {{ /if }}
 </div>
-
-
-
-
-
 <div class="dplayer-hotkey-panel dplayer-hotkey-panel-hide">
     <div class="dplayer-hotkey-panel-close">[x]</div>
     <div class="dplayer-hotkey-panel-item dplayer-hotkey-panel-item-keyboard simple-keyboard">
     </div>
 </div>
-
-
-
-
 <div class="dplayer-menu">
     {{ each options.contextmenu }}
         <div class="dplayer-menu-item">

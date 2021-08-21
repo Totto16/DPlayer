@@ -14,7 +14,6 @@ class HotKey {
             if (tag !== 'INPUT' && tag !== 'TEXTAREA' && editable !== '' && editable !== 'true') {
                 const event = e || window.event;
                 let percentage;
-                console.debug(event);
                 this.player.hotkeyPanel.parse(event.keyCode);
                 switch (this.key(event)) {
                     case 'togglePlayer':

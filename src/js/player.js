@@ -72,7 +72,7 @@ class DPlayer {
 
         this.video = this.template.video;
 
-        this.bar = new Bar(this.template);
+        this.bar = new Bar(this.template, this, 'normal');
 
         this.bezel = new Bezel(this.template.bezel);
 
@@ -171,8 +171,8 @@ class DPlayer {
         if (this.danmaku) {
             this.danmaku.seek();
         }
-
         this.bar.set('played', time / this.video.duration, 'width');
+        this.controller.updateChapters({ time, duration: this.video.duration }, this);
         this.template.ptime.innerHTML = utils.secondToTime(time);
     }
 
@@ -463,7 +463,8 @@ class DPlayer {
 
         // show video loaded bar: to inform interested parties of progress downloading the media
         this.on('progress', () => {
-            const percentage = video.buffered.length ? video.buffered.end(video.buffered.length - 1) / video.duration : 0;
+            let percentage = video.buffered.length ? video.buffered.end(video.buffered.length - 1) / video.duration : 0;
+            percentage = percentage > 0.999 ? 1 : percentage;
             this.bar.set('loaded', percentage, 'width');
         });
 
@@ -504,6 +505,7 @@ class DPlayer {
 
         this.on('timeupdate', () => {
             this.bar.set('played', this.video.currentTime / this.video.duration, 'width');
+            this.controller.updateChapters({ time: this.video.currentTime, duration: this.video.duration }, this);
             const currentTime = utils.secondToTime(this.video.currentTime);
             if (this.template.ptime.innerHTML !== currentTime) {
                 this.template.ptime.innerHTML = currentTime;

@@ -11,7 +11,14 @@ class HotkeyPanel {
         this.template.hotkeyPanelClose.addEventListener('click', () => {
             this.hide();
         });
-        this.keyboard = new Keyboard({
+
+        const all = Array.from(document.getElementsByClassName('simple-keyboard'));
+        const keyboard = all[all.length - 1];
+        const name = `keyboard-hotkey-visualizer-${all.length}`;
+        keyboard.classList.add(name);
+        keyboard.classList.remove('simple-keyboard');
+
+        this.keyboard = new Keyboard(`.${name}`, {
             layout: this.layout,
             display: {
                 '{altgreek}': 'Alt Gr',
@@ -30,6 +37,7 @@ class HotkeyPanel {
                 '{shiftleft}': '\u21E7',
                 '{shift}': '\u21E7',
             },
+            theme: 'simple-keyboard hg-theme-default hg-layout-default',
             mergeDisplay: true,
             buttonAttributes: [
                 ...this.hotkeys.map((obj) => ({
@@ -55,7 +63,7 @@ class HotkeyPanel {
             ],
             useButtonTag: false,
             inputPattern: new RegExp(`[${this.hotkeys.map((obj) => obj.key).join('')}]`),
-            baseClass: 'keyboard-hotkey-visualizer',
+            baseClass: name,
         });
     }
 
@@ -82,18 +90,7 @@ class HotkeyPanel {
             all.forEach((div) => {
                 const child = parseInt(div.getAttribute('data-keyCode'));
                 if (child === keyCode) {
-                    console.log(div);
-                    div.animate(
-                        [
-                            {
-                                'background-color': '#00ff10',
-                            },
-                            {
-                                'background-color': '#00b7ff',
-                            },
-                        ],
-                        2000
-                    );
+                    div.animate([{ backgroundColor: '#00ff10' }, { backgroundColor: '#00b7ff' }], 150);
                 }
             });
         }
@@ -109,6 +106,9 @@ class HotkeyPanel {
         } else {
             this.hide();
         }
+    }
+    destroy() {
+        this.keyboard.destroy();
     }
 }
 

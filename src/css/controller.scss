@@ -34,6 +34,9 @@
         &:hover {
             .dplayer-bar .dplayer-played .dplayer-thumb {
                 transform: scale(1);
+                &.invisible{
+                    display:none;
+                }
             }
             .dplayer-highlight {
                 display: block;
@@ -43,6 +46,23 @@
                 height: 40%;
             }
         }
+
+        .dplayer-highlight-top{
+            color:red;
+            z-index: 12;
+            position: absolute;
+            top: 5px;
+            width: 6px;
+            height: 20%;
+            border-radius: 6px;
+            background-color: green;
+            text-align: center;
+            transform: translateX(-3px);
+            transition: all .2s ease-in-out;
+        }
+
+
+
         .dplayer-highlight {
             z-index: 12;
             position: absolute;

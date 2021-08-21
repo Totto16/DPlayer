@@ -64,20 +64,98 @@ class Controller {
     initHighlights() {
         this.player.on('durationchange', () => {
             if (this.player.video.duration !== 1 && this.player.video.duration !== Infinity) {
-                if (this.player.options.highlight) {
-                    const highlights = this.player.template.playedBarWrap.querySelectorAll('.dplayer-highlight');
-                    [].slice.call(highlights, 0).forEach((item) => {
+                if (this.player.options.highlights) {
+                    const marker = this.player.options.highlights.marker.map((mark) => {
+                        const corrected = mark;
+                        if (typeof mark.time !== 'number') {
+                            corrected.time = parseFloat(mark.time);
+                        }
+                        return corrected;
+                    });
+
+                    // TODO  neccessary ?  I dont think so
+                    // remove previous highlights
+                    /* this.player.template.barHighlight.forEach((item) => {
                         this.player.template.playedBarWrap.removeChild(item);
                     });
-                    for (let i = 0; i < this.player.options.highlight.length; i++) {
-                        if (!this.player.options.highlight[i].text || !this.player.options.highlight[i].time) {
-                            continue;
-                        }
-                        const p = document.createElement('div');
-                        p.classList.add('dplayer-highlight');
-                        p.style.left = (this.player.options.highlight[i].time / this.player.video.duration) * 100 + '%';
-                        p.innerHTML = '<span class="dplayer-highlight-text">' + this.player.options.highlight[i].text + '</span>';
-                        this.player.template.playedBarWrap.insertBefore(p, this.player.template.playedBarTime);
+ */
+
+                    /* this.player.template.barHighlightTop.forEach((item) => {
+                        this.player.template.playedBarWrap.removeChild(item);
+                    }); */
+
+                    switch (this.player.options.highlights.mode) {
+                        case 'normal':
+                            for (let i = 0; i < marker.length; i++) {
+                                if (typeof marker[i].text === 'undefined' || typeof marker[i].time === 'undefined') {
+                                    console.warn('highlights format not correct');
+                                    continue;
+                                }
+                                const p = document.createElement('div');
+                                p.classList.add('dplayer-highlight');
+                                const percent = (marker[i].time / this.player.video.duration) * 100;
+                                p.style.left = `${percent}%`;
+                                p.innerHTML = `<span class="dplayer-highlight-text">${marker[i].text}</span>`;
+                                this.player.template.playedBarWrap.insertBefore(p, this.player.template.playedBarTime);
+                                if (marker[0].time === 0) {
+                                    console.warn("This type of highlight isn't meant for chapters beginning at the start, however its required for the other types, consider using those!");
+                                } else {
+                                    this.chapters = { marker, mode: 'normal', currentChapter: -1 };
+                                }
+                                this.player.bar.setMode('normal');
+                            }
+                            break;
+                        case 'side':
+                            if (marker[0].time !== 0) {
+                                console.warn('This type of highlight must have a chapter that starts at 0 / the beginning chapters beginning at the start, however its not required for the highlight type, consider using that mode!');
+                            } else {
+                                this.chapters = { marker, mode: 'side', currentChapter: 0 };
+                            }
+                            this.player.bar.setMode('side');
+                            break;
+                        case 'top':
+                            this.player.template.playedBarWrap.querySelectorAll('.dplayer-bar').forEach((item) => {
+                                this.player.template.playedBarWrap.removeChild(item);
+                                // item.innerHTML = '';
+                                // item.style.background = 'unset';
+                            });
+
+                            for (let i = 0; i < marker.length; i++) {
+                                if (typeof marker[i].text === 'undefined' || typeof marker[i].time === 'undefined') {
+                                    console.warn('highlights format not correct');
+                                    continue;
+                                }
+                                const p = document.createElement('div');
+                                // p.classList.add('dplayer-highlight-top');
+                                p.classList.add('dplayer-bar');
+                                const end = (i < marker.length - 1 ? marker[i + 1].time / this.player.video.duration : 1) * 100;
+                                const start = (marker[i].time / this.player.video.duration) * 100;
+                                p.style.left = start === 0 ? `${start}%` : `calc(${start}% + 2px)`;
+                                p.style.right = end === 100 ? `0%` : `calc(${100 - end}% + 2px)`;
+                                p.style.position = 'absolute';
+                                p.style.width = 'unset';
+                                p.setAttribute('data-start', start / 100);
+                                p.setAttribute('data-end', end / 100);
+                                p.innerHTML = `<div class="dplayer-loaded"></div>
+                                <div class="dplayer-played" style="background: ${this.player.options.theme}">
+                                    <span class="dplayer-thumb" style="background: ${this.player.options.theme}"></span>
+                                </div>`;
+                                // p.innerHTML = `<span class="dplayer-highlight-top-text">${marker[i].text}</span>`;
+                                this.player.template.playedBarWrap.appendChild(p);
+
+                                if (marker[0].time !== 0) {
+                                    console.warn(
+                                        'This type of highlight must have a chapter that starts at 0 / the beginning chapters beginning at the start, however its not required for the highlight type, consider using that mode!'
+                                    );
+                                } else {
+                                    this.chapters = { marker, mode: 'top', currentChapter: 0 };
+                                }
+                                this.player.bar.setMode('top');
+                            }
+
+                            break;
+                        default:
+                            console.warn(`No valid mode for highlights defined: ${this.player.options.highlights.mode}`);
                     }
                 }
             }
@@ -105,6 +183,7 @@ class Controller {
             percentage = Math.max(percentage, 0);
             percentage = Math.min(percentage, 1);
             this.player.bar.set('played', percentage, 'width');
+            this.updateChapters({ percentage }, this.player);
             this.player.template.ptime.innerHTML = utils.secondToTime(percentage * this.player.video.duration);
         };
 
@@ -115,7 +194,8 @@ class Controller {
             percentage = Math.max(percentage, 0);
             percentage = Math.min(percentage, 1);
             this.player.bar.set('played', percentage, 'width');
-            this.player.seek(this.player.bar.get('played') * this.player.video.duration);
+            this.updateChapters({ percentage }, this.player);
+            this.player.seek(percentage * this.player.video.duration);
             this.player.timer.enable('progress');
         };
 
@@ -386,7 +466,59 @@ class Controller {
             this.show();
         }
     }
+    updateChapters(object, player) {
+        // percentage, or time + duration, or we can get that from the video   player.video.currentTime , player.video.duration
+        let { percentage, time, duration } = object;
+        if (percentage) {
+            duration = duration || player.video.duration;
+            time = time || percentage * duration;
+        } else if (time) {
+            duration = duration || player.video.duration;
+            percentage = percentage || time / duration;
+        } else if (duration) {
+            time = time || player.video.currentTime;
+            percentage = percentage || time / duration;
+        } else {
+            duration = duration || player.video.duration;
+            time = time || player.video.currentTime;
+            percentage = percentage || time / duration;
+        }
+        // console.log(duration, time, percentage);
+        if (this.chapters) {
+            const { marker, mode, currentChapter } = this.chapters;
+            const previous = currentChapter >= 1 ? marker[currentChapter - 1] : null;
+            const next = currentChapter < marker.length - 1 ? marker[currentChapter + 1] : null;
+            const current = currentChapter >= 0 && currentChapter < marker.length ? marker[currentChapter] : null;
+            // console.log(previous,current,next, time, currentChapter)
+            switch (mode) {
+                case 'normal':
+                    if (current && current.time >= time) {
+                        this.chapters.currentChapter--;
+                        this.player.events.trigger('chapter', { type: 'simple', direction: 'previous', surpassed: current });
+                    } else if (next && next.time <= time) {
+                        this.chapters.currentChapter++;
+                        this.player.events.trigger('chapter', { type: 'simple', direction: 'next', surpassed: next });
+                    }
 
+                    break;
+                case 'side':
+                    if (previous.time >= time) {
+                        this.chapters.currentChapter = currentChapter;
+                        console.log('chapter', { type: 'previous', previous: marker[Math.max(currentChapter - 2, 0)], current: previous, next: current });
+
+                        this.player.events.trigger('chapter', { type: 'previous', previous: marker[Math.max(currentChapter - 2, 0)], current: previous, next: current });
+                    } else if (next.time <= time) {
+                        console.log('chapter', { type: 'next', previous: current, current: next, next: marker[Math.min(currentChapter + 2, marker.length - 1)] });
+
+                        this.player.events.trigger('chapter', { type: 'next', previous: current, current: next, next: marker[Math.min(currentChapter + 2, marker.length - 1)] });
+                    }
+
+                    break;
+                case 'top':
+                    break;
+            }
+        }
+    }
     muteChanger() {
         console.log(this);
         if (this.player.video.muted) {
