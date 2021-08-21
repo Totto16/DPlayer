@@ -63,12 +63,14 @@ export default (options) => {
         {
             key: 'video-info',
             click: (player) => {
+                player.hotkeyPanel.hide();
                 player.infoPanel.triggle();
             },
         },
         {
             key: 'hotkey-info',
             click: (player) => {
+                player.infoPanel.hide();
                 player.hotkeyPanel.triggle();
             },
         },

@@ -103,11 +103,16 @@ class Template {
         this.infoDanmakuApi = this.container.querySelector('.dplayer-info-panel-item-danmaku-api .dplayer-info-panel-item-data');
         this.infoDanmakuAmount = this.container.querySelector('.dplayer-info-panel-item-danmaku-amount .dplayer-info-panel-item-data');
     }
-    static NewNotice(text, opacity) {
+    static NewNotice(text, opacity, mode) {
+        if (isNaN(opacity)) {
+            opacity = 0.8;
+        }
         const notice = document.createElement('div');
         notice.classList.add('dplayer-notice');
         notice.style.opacity = opacity;
         notice.innerText = text;
+        notice.classList.add(mode);
+        notice.setAttribute('mode', mode);
         return notice;
     }
 }

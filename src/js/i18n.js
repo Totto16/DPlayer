@@ -4,7 +4,7 @@ W3C def language codes is :
         primary-code    ISO 639-1   ( the names of language with 2 code )
         subcode         ISO 3166    ( the names of countries )
 
-NOTE: use lowercase to prevent case typo from user!
+NOTE: use lower
 Use this as shown below..... */
 
 function i18n(lang) {
@@ -22,7 +22,7 @@ function i18n(lang) {
         }
     };
     this.checkPresentTranslations = checkPresentTranslations;
-    this.longCode = getLongCode(this.fallbackLang);
+    this.checkPresentTranslations = checkPresentTranslations;
 }
 
 // abstract model for recognizing if valid translations are present
@@ -37,7 +37,7 @@ const model = {
     'about-dplayer': [],
     'hotkey-info': [],
     loop: [],
-    speed: [],
+    speed: [{ symbol: '%s', name: 'Speed', example: '125%' }],
     'opacity-danmaku': [],
     normal: [],
     'please-input-danmaku': [],
@@ -58,7 +58,7 @@ const model = {
     'web-fullscreen': [],
     send: [],
     'saved-screenshot': [{ symbol: '%n', name: 'Screenshot name', example: 'Awesome_Video_24_04.png' }],
-    screenshot: [],
+    'screenshot-raw': [],
     airplay: [],
     chromecast: [],
     'show-subs': [],
@@ -66,6 +66,23 @@ const model = {
     volume: [],
     live: [],
     'video-info': [],
+    on: [],
+    off: [],
+    toggleplayer: [],
+    left: [],
+    right: [],
+    up: [],
+    down: [],
+    cancelfullscreen: [],
+    togglefullscreen: [],
+    mute: [],
+    screenshot: [],
+    nextchapter: [],
+    previouschapter: [],
+    changeloop: [],
+    speedup: [],
+    speeddown: [],
+    speednormal: [],
 };
 
 // Standard english translations
@@ -80,7 +97,7 @@ const standard = {
     'about-dplayer': 'About DPlayer',
     'hotkey-info': 'Hotkey Info',
     loop: 'Loop',
-    speed: 'Speed',
+    speed: 'Speed %s',
     'opacity-danmaku': 'Opacity for danmaku',
     normal: 'Normal',
     'please-input-danmaku': 'Please input danmaku content!',
@@ -100,7 +117,7 @@ const standard = {
     fullscreen: 'Full screen',
     'web-fullscreen': 'Web full screen',
     send: 'Send',
-    screenshot: 'Screenshot',
+    'screenshot-raw': 'Screenshot',
     'saved-screenshot': 'Saved screenshot as %n',
     airplay: 'AirPlay',
     chromecast: 'ChromeCast',
@@ -109,6 +126,24 @@ const standard = {
     volume: 'Volume',
     live: 'Live',
     'video-info': 'Video info',
+    on: 'On',
+    off: 'Off',
+
+    toggleplayer: 'Pause or Resume Player',
+    left: 'Go backwards',
+    right: 'Go forward',
+    up: 'Decrease Volume',
+    down: 'Increase Volume',
+    cancelfullscreen: 'Exit the Fullscreen',
+    togglefullscreen: 'Enable or Disable Fullscreen',
+    mute: 'Mute or Unmute the audio',
+    screenshot: 'Take a screenshot',
+    nextchapter: 'Go to the next chapter (highlight)',
+    previouschapter: 'Go to the previous chapter (highlight)',
+    changeloop: 'Enable or disable Loop',
+    speedup: 'Increase the playback speed',
+    speeddown: 'Decrease the playback speed',
+    speednormal: 'Set the playback speed to normal (100%)',
 };
 
 // add translation text here
@@ -146,7 +181,7 @@ const tranTxt = {
         'web-fullscreen': '页面全屏',
         send: '发送',
         'saved-screenshot': 'Saved screenshot as %n',
-        screenshot: '截图',
+        'screenshot-raw': '截图',
         airplay: '无线投屏',
         chromecast: 'ChromeCast',
         'show-subs': '显示字幕',
@@ -154,6 +189,24 @@ const tranTxt = {
         volume: '音量',
         live: '直播',
         'video-info': '视频统计信息',
+        on: 'On',
+        off: 'Off',
+
+        toggleplayer: 'Pause or Resume Player',
+        left: 'Go backwards',
+        right: 'Go forward',
+        up: 'Decrease Volume',
+        down: 'Increase Volume',
+        cancelfullscreen: 'Exit the Fullscreen',
+        togglefullscreen: 'Enable or Disable Fullscreen',
+        mute: 'Mute or Unmute the audio',
+        screenshot: 'Take a screenshot',
+        nextchapter: 'Go to the next chapter (highlight)',
+        previouschapter: 'Go to the previous chapter (highlight)',
+        changeloop: 'Enable or disable Loop',
+        speedup: 'Increase the playback speed',
+        speeddown: 'Decrease the playback speed',
+        speednormal: 'Set the playback speed to normal (100%)',
     },
     'zh-tw': {
         'danmaku-loading': '彈幕載入中',
@@ -186,7 +239,7 @@ const tranTxt = {
         fullscreen: '全螢幕',
         'web-fullscreen': '頁面全螢幕',
         send: '發送',
-        screenshot: '截圖',
+        'screenshot-raw': '截圖',
         'saved-screenshot': 'Saved screenshot as %n',
         airplay: '無線投屏',
         chromecast: 'ChromeCast',
@@ -195,6 +248,24 @@ const tranTxt = {
         volume: '音量',
         live: '直播',
         'video-info': '影片統計訊息',
+        on: 'On',
+        off: 'Off',
+
+        toggleplayer: 'Pause or Resume Player',
+        left: 'Go backwards',
+        right: 'Go forward',
+        up: 'Decrease Volume',
+        down: 'Increase Volume',
+        cancelfullscreen: 'Exit the Fullscreen',
+        togglefullscreen: 'Enable or Disable Fullscreen',
+        mute: 'Mute or Unmute the audio',
+        screenshot: 'Take a screenshot',
+        nextchapter: 'Go to the next chapter (highlight)',
+        previouschapter: 'Go to the previous chapter (highlight)',
+        changeloop: 'Enable or disable Loop',
+        speedup: 'Increase the playback speed',
+        speeddown: 'Decrease the playback speed',
+        speednormal: 'Set the playback speed to normal (100%)',
     },
     'ko-kr': {
         'danmaku-loading': 'Danmaku를 불러오는 중입니다.',
@@ -229,7 +300,7 @@ const tranTxt = {
         fullscreen: '전체 화면',
         'web-fullscreen': '웹 내 전체화면',
         send: '보내기',
-        screenshot: '화면 캡쳐',
+        'screenshot-raw': '화면 캡쳐',
         'saved-screenshot': 'Saved screenshot as %n',
         airplay: '에어플레이',
         chromecast: 'ChromeCast',
@@ -238,6 +309,24 @@ const tranTxt = {
         Volume: '볼륨',
         live: '생방송',
         'video-info': '비디오 정보',
+        on: 'On',
+        off: 'Off',
+
+        toggleplayer: 'Pause or Resume Player',
+        left: 'Go backwards',
+        right: 'Go forward',
+        up: 'Decrease Volume',
+        down: 'Increase Volume',
+        cancelfullscreen: 'Exit the Fullscreen',
+        togglefullscreen: 'Enable or Disable Fullscreen',
+        mute: 'Mute or Unmute the audio',
+        screenshot: 'Take a screenshot',
+        nextchapter: 'Go to the next chapter (highlight)',
+        previouschapter: 'Go to the previous chapter (highlight)',
+        changeloop: 'Enable or disable Loop',
+        speedup: 'Increase the playback speed',
+        speeddown: 'Decrease the playback speed',
+        speednormal: 'Set the playback speed to normal (100%)',
     },
     de: {
         'danmaku-loading': 'Danmaku lädt...',
@@ -250,7 +339,7 @@ const tranTxt = {
         'about-dplayer': 'Über DPlayer',
         'hotkey-info': 'Tastenbelegung Info',
         loop: 'Wiederholen',
-        speed: 'Geschwindigkeit',
+        speed: 'Geschwindigkeit %s',
         'opacity-danmaku': 'Transparenz für Danmaku',
         normal: 'Normal',
         'please-input-danmaku': 'Bitte Danmaku Inhalt eingeben!',
@@ -270,7 +359,7 @@ const tranTxt = {
         fullscreen: 'Vollbild',
         'web-fullscreen': 'Browser Vollbild',
         send: 'Senden',
-        screenshot: 'Screenshot',
+        'screenshot-raw': 'Screenshot',
         'saved-screenshot': 'Screenshot als %n gespeichert',
         airplay: 'AirPlay',
         'show-subs': 'Zeige Untertitel',
@@ -279,6 +368,23 @@ const tranTxt = {
         volume: 'Lautstärke',
         live: 'Live',
         'video-info': 'Video Info',
+        on: 'An',
+        off: 'Aus',
+        toggleplayer: 'Pausiere oder Starte das Video',
+        left: 'Zurückspulen',
+        right: 'Vorwärtsspulen',
+        up: 'Laustärke erhöhen',
+        down: 'Laustärke senken',
+        cancelfullscreen: 'Vollbild verlassen',
+        togglefullscreen: 'Vollbild ein oder ausschalten',
+        mute: 'Stummschalten oder Stummschaltung aufheben',
+        screenshot: 'Einen Screenshot machen',
+        nextchapter: 'Zum nächsten Kapitel gehen',
+        previouschapter: 'Zum vorherigen Kapitel gehen',
+        changeloop: 'Enable or disable Loop',
+        speedup: 'Increase the playback speed',
+        speeddown: 'Decrease the playback speed',
+        speednormal: 'Set the playback speed to normal (100%)',
     },
 };
 
@@ -305,11 +411,6 @@ function checkSingleLanguage(language) {
             });
         }
     });
-}
-
-function getLongCode(langCode) {
-    console.log(langCode);
-    return 'not';
 }
 
 export default i18n;

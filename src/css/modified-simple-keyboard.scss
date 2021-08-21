@@ -1,0 +1,254 @@
+/*!
+ * 
+ *   simple-keyboard v3.2.40
+ *   https://github.com/hodgef/simple-keyboard
+ *
+ *   Copyright (c) Francisco Hodge (https://github.com/hodgef) and project contributors.
+ *
+ *   This source code is licensed under the MIT license found in the
+ *   LICENSE file in the root directory of this source tree.
+ *
+ */
+
+.hg-theme-default {
+    background-color: #ececec;
+    border-radius: 5px;
+    box-sizing: border-box;
+    font-family: HelveticaNeue-Light, Helvetica Neue Light, Helvetica Neue, Helvetica, Arial, Lucida Grande, sans-serif;
+    overflow: hidden;
+    padding: 5px;
+    touch-action: manipulation;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    width: 100%;
+    
+    .hg-button span {
+        pointer-events: none;
+    }
+
+    button.hg-button {
+        border-width: 0;
+        font-size: inherit;
+        outline: 0;
+    }
+
+    .hg-button {
+        display: inline-block;
+        flex-grow: 1;
+    }
+
+    .hg-row {
+        display: flex;
+    }
+
+    .hg-row:not(:last-child) {
+        margin-bottom: 5px;
+    }
+
+    .hg-row .hg-button:not(:last-child) {
+        margin-right: 5px;
+    }
+
+    .hg-row .hg-button-container {
+        margin-right: 5px;
+    }
+
+    .hg-row > div:last-child {
+        margin-right: 0;
+    }
+
+    .hg-row .hg-button-container {
+        display: flex;
+    }
+
+    .hg-button {
+        -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+        align-items: center;
+        background: #fff;
+        border-bottom: 1px solid #b5b5b5;
+        border-radius: 5px;
+        box-shadow: 0 0 3px -1px rgba(0, 0, 0, 0.3);
+        box-sizing: border-box;
+        display: flex;
+        height: 40px;
+        justify-content: center;
+        padding: 5px;
+    }
+
+    .hg-button.hg-standardBtn {
+        width: 20px;
+    }
+
+    .shortcuts-enabled{
+        background-color: #00ff10;
+        cursor: help;
+    }
+
+    &.hg-layout-numeric .hg-button {
+        align-items: center;
+        display: flex;
+        height: 60px;
+        justify-content: center;
+        width: 33.3%;
+    }
+
+    .hg-button.hg-button-numpadadd,
+    .hg-button.hg-button-numpadenter {
+        height: 85px;
+    }
+
+    .hg-button.hg-button-numpad0 {
+        width: 105px;
+    }
+
+    .hg-button.hg-button-com {
+        max-width: 85px;
+    }
+
+    .hg-button.hg-standardBtn.hg-button-at {
+        max-width: 45px;
+    }
+
+    .hg-button.hg-selectedButton {
+        background: rgba(5, 25, 70, 0.53);
+        color: #fff;
+    }
+
+    .hg-button.hg-standardBtn[data-skbtn='.com'] {
+        max-width: 82px;
+    }
+
+    .hg-button.hg-standardBtn[data-skbtn='@'] {
+        max-width: 60px;
+    }
+    
+    .hg-button{
+        flex-grow:1;
+    }
+
+    .hg-button-space{
+        flex-grow:20;
+        font-size: 50px;
+        span{
+            position: relative;
+            top: -50%;
+        }
+    }
+    .hg-button-border{
+        width:1px;
+        flex-grow: unset;
+    }
+
+    .constant-width{
+        width:6%;
+        flex-grow: unset;
+    }
+
+    .hg-button-tab{
+        flex-grow:3;
+        font-size: 28px;
+    }
+
+    .hg-button-shiftleft{
+        font-size: 28px;
+        flex-grow:1;
+    } 
+    
+    .hg-button-shift{
+        flex-grow:3;
+        font-size: 28px
+    }
+
+    .hg-button-lock {
+        flex-grow:2;
+        font-size: 28px
+    }
+
+    .hg-button-bksp {
+        flex-grow:5;
+        font-size: 28px;
+    }
+
+    .hg-button-enter2{
+        flex-grow:2;
+    }
+
+    .hg-button-enter{
+        flex-grow:5;
+        font-size: 20px
+
+    }
+
+}
+
+.hg-candidate-box {
+    background: #ececec;
+    border-bottom: 2px solid #b5b5b5;
+    border-radius: 5px;
+    display: inline-flex;
+    margin-top: -10px;
+    max-width: 272px;
+    position: absolute;
+    transform: translateY(-100%);
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+ul.hg-candidate-box-list {
+    display: flex;
+    flex: 1;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+li.hg-candidate-box-list-item {
+    align-items: center;
+    display: flex;
+    height: 40px;
+    justify-content: center;
+    width: 40px;
+}
+
+li.hg-candidate-box-list-item:hover {
+    background: rgba(0, 0, 0, 0.03);
+}
+
+li.hg-candidate-box-list-item:active {
+    background: rgba(0, 0, 0, 0.1);
+}
+
+.hg-candidate-box-prev:before {
+    content: '◄';
+}
+
+.hg-candidate-box-next:before {
+    content: '►';
+}
+
+.hg-candidate-box-next,
+.hg-candidate-box-prev {
+    align-items: center;
+    background: #d0d0d0;
+    color: #969696;
+    display: flex;
+    padding: 0 10px;
+}
+
+.hg-candidate-box-next {
+    border-bottom-right-radius: 5px;
+    border-top-right-radius: 5px;
+}
+
+.hg-candidate-box-prev {
+    border-bottom-left-radius: 5px;
+    border-top-left-radius: 5px;
+}
+
+.hg-candidate-box-btn-active {
+    color: #444;
+}

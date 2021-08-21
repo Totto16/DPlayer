@@ -473,7 +473,7 @@ class DPlayer {
                 // Not a video load error, may be poster load failed, see #307
                 return;
             }
-            this.tran && this.notice && this.type !== 'webtorrent' && this.notice(this.tran('video-failed'), -1);
+            this.tran && this.notice && this.type !== 'webtorrent' && this.notice(this.tran('video-failed'), { time: -1, mode: 'override' });
         });
 
         // video end
@@ -554,7 +554,7 @@ class DPlayer {
         this.video = videoEle;
         this.initVideo(this.video, this.quality.type || this.options.video.type);
         this.seek(this.prevVideo.currentTime);
-        this.notice(`${this.tran('switching-quality').replace('%q', this.quality.name)}`, -1);
+        this.notice(`${this.tran('switching-quality').replace('%q', this.quality.name)}`, { time: -1, mode: `override` });
         this.events.trigger('quality_start', this.quality);
 
         this.on('canplay', () => {
@@ -598,11 +598,27 @@ class DPlayer {
         });
     }
 
-    notice(text, time = 2000, opacity = 0.8) {
-        const notice = Template.NewNotice(text, opacity);
+    notice(text, options) {
+        options = options || {};
+        options.time = options.time || 2000;
+        options.opacity = options.opacity || 0.8;
+        options.mode = options.mode || 'normal';
+
+        if (options.mode === 'override') {
+            options.time = -1;
+        }
+
+        const notice = Template.NewNotice(text, options.opacity, options.mode);
+        Array.from(this.template.noticeList.children).forEach((child) => {
+            const mode = child.getAttribute('mode');
+            if (mode === 'override') {
+                this.template.noticeList.removeChild(child);
+            }
+        });
         this.template.noticeList.appendChild(notice);
         this.events.trigger('notice_show', notice);
-        if (time > 0) {
+
+        if (options.time > 0) {
             setTimeout(
                 (function (e, dp) {
                     return () => {
@@ -613,7 +629,7 @@ class DPlayer {
                         dp.events.trigger('notice_hide');
                     };
                 })(notice, this),
-                time
+                options.time
             );
         }
     }
@@ -629,6 +645,7 @@ class DPlayer {
     }
 
     speed(rate) {
+        this.notice(this.tran('speed').replace('%s', `${rate * 100}%`));
         this.video.playbackRate = rate;
     }
 

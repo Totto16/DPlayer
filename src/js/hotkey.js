@@ -14,7 +14,8 @@ class HotKey {
             if (tag !== 'INPUT' && tag !== 'TEXTAREA' && editable !== '' && editable !== 'true') {
                 const event = e || window.event;
                 let percentage;
-                console.log(event);
+                console.debug(event);
+                this.player.hotkeyPanel.parse(event.keyCode);
                 switch (this.key(event)) {
                     case 'togglePlayer':
                         // toggle player pause / resume
@@ -183,6 +184,19 @@ class HotKey {
                     return 'speedNormal';
             }
         }
+    }
+
+    keys() {
+        const Shortcuts = [];
+        for (let i = 32; i <= 90; i++) {
+            const rep_key = this.key({ keyCode: i });
+            if (rep_key) {
+                const key = String.fromCharCode(i).toLowerCase().replace(' ', '{space}').replace('%', '{arrowleft}').replace('&', '{arrowup}').replace("'", '{arrowright}').replace('(', '{arrowdown}');
+
+                Shortcuts.push({ key, tooltip: rep_key, keyCode: i });
+            }
+        }
+        return Shortcuts;
     }
 
     destroy() {

@@ -1,3 +1,6 @@
+@import './modified-simple-keyboard';
+
+
 .dplayer-hotkey-panel {
     position: absolute;
     top: 10px;
@@ -35,7 +38,17 @@
         width: unset;
         margin: 20px;
     }
+
 }
 
 
-@import 'simple-keyboard/build/css/index.css';
+
+@keyframes keyPressed {
+    from {
+        background-color: #00ff10;
+    }
+    to {
+        background-color: #00b7ff;
+    }
+}
+

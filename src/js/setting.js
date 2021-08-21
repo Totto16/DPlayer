@@ -15,7 +15,7 @@ class Setting {
         this.loop = this.player.options.loop;
         this.player.template.loopToggle.checked = this.loop;
         this.player.template.loop.addEventListener('click', () => {
-            this.toggleLoop.classList(this);
+            this.toggleLoop.call(this);
         });
 
         // show danmaku
@@ -110,6 +110,7 @@ class Setting {
             this.loop = false;
         }
         this.hide();
+        this.player.notice(`${this.player.tran('loop')} ${this.player.tran(this.loop ? 'on' : 'off')}`);
     }
 
     EditSpeed(direction) {
