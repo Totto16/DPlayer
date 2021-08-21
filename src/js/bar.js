@@ -35,12 +35,10 @@ class Bar {
                     } else if (percentage < end && percentage >= start) {
                         const all = end - start;
                         const inHere = percentage - start;
-                        played.style.width = `${inHere / all * 100}%`;
+                        played.style.width = `${(inHere / all) * 100}%`;
                         played.children[0].classList.remove('invisible');
                     }
-
                 });
-
             } else if (type === 'loaded') {
                 this.elements.loaded = this.player.container.querySelectorAll('.dplayer-loaded');
                 this.elements.loaded.forEach((loaded) => {
@@ -54,11 +52,11 @@ class Bar {
                     } else if (percentage < end && percentage >= start) {
                         const all = end - start;
                         const inHere = percentage - start;
-                        loaded.style.width = `${inHere / all * 100}%`;
+                        loaded.style.width = `${(inHere / all) * 100}%`;
                     }
                 });
             } else {
-                console.log(type,direction,percentage)
+                console.log(type, direction, percentage);
                 this.elements[type].style[direction] = percentage * 100 + '%';
             }
         } else {
