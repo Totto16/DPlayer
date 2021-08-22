@@ -30,8 +30,8 @@ export default (options) => {
             options[defaultKey] = defaultOption[defaultKey];
         }
     }
-    if (options.video) {
-        !options.video.type && (options.video.type = 'auto');
+    if (options.video && !options.video.type) {
+        options.video.type = 'auto';
     }
     if (typeof options.danmaku === 'object' && options.danmaku) {
         !options.danmaku.user && (options.danmaku.user = 'DIYgod');
@@ -42,7 +42,7 @@ export default (options) => {
         !options.subtitle.bottom && (options.subtitle.bottom = '40px');
         !options.subtitle.color && (options.subtitle.color = '#fff');
     }
-    if (!options.video.defaultQuality) {
+    if (options.video && !options.video.defaultQuality) {
         options.video.defaultQuality = 0;
     }
     if (options.video.quality) {

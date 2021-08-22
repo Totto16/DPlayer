@@ -116,8 +116,6 @@ class Controller {
                         case 'top':
                             this.player.template.playedBarWrap.querySelectorAll('.dplayer-bar').forEach((item) => {
                                 this.player.template.playedBarWrap.removeChild(item);
-                                // item.innerHTML = '';
-                                // item.style.background = 'unset';
                             });
 
                             for (let i = 0; i < marker.length; i++) {
@@ -128,6 +126,7 @@ class Controller {
                                 const p = document.createElement('div');
                                 // p.classList.add('dplayer-highlight-top');
                                 p.classList.add('dplayer-bar');
+                                p.classList.add('dplayer-highlight-top');
                                 const end = (i < marker.length - 1 ? marker[i + 1].time / this.player.video.duration : 1) * 100;
                                 const start = (marker[i].time / this.player.video.duration) * 100;
                                 p.style.left = start === 0 ? `${start}%` : `calc(${start}% + 2px)`;
@@ -138,7 +137,7 @@ class Controller {
                                 p.setAttribute('data-end', end / 100);
                                 p.innerHTML = `<div class="dplayer-loaded"></div>
                                 <div class="dplayer-played" style="background: ${this.player.options.theme}">
-                                    <span class="dplayer-thumb" style="background: ${this.player.options.theme}"></span>
+                                    <span class="dplayer-thumb${i == 0 ? '' : ' invisible'}" style="background: ${this.player.options.theme}"></span>
                                 </div>`;
                                 // p.innerHTML = `<span class="dplayer-highlight-top-text">${marker[i].text}</span>`;
                                 this.player.template.playedBarWrap.appendChild(p);
@@ -499,22 +498,17 @@ class Controller {
                         this.chapters.currentChapter++;
                         this.player.events.trigger('chapter', { type: 'simple', direction: 'next', surpassed: next });
                     }
-
                     break;
                 case 'side':
-                    if (previous.time >= time) {
-                        this.chapters.currentChapter = currentChapter;
-                        console.log('chapter', { type: 'previous', previous: marker[Math.max(currentChapter - 2, 0)], current: previous, next: current });
-
-                        this.player.events.trigger('chapter', { type: 'previous', previous: marker[Math.max(currentChapter - 2, 0)], current: previous, next: current });
-                    } else if (next.time <= time) {
-                        console.log('chapter', { type: 'next', previous: current, current: next, next: marker[Math.min(currentChapter + 2, marker.length - 1)] });
-
-                        this.player.events.trigger('chapter', { type: 'next', previous: current, current: next, next: marker[Math.min(currentChapter + 2, marker.length - 1)] });
-                    }
-
                     break;
                 case 'top':
+                    if (current && current.time >= time) {
+                        this.chapters.currentChapter--;
+                        this.player.events.trigger('chapter', { type: 'previous', previous: currentChapter >= 2 ? marker[currentChapter - 2] : null, current: previous, next: current });
+                    } else if (next && next.time <= time) {
+                        this.chapters.currentChapter++;
+                        this.player.events.trigger('chapter', { type: 'next', previous: current, current: next, next: currentChapter < marker.length - 2 ? marker[currentChapter + 2] : null });
+                    }
                     break;
             }
         }

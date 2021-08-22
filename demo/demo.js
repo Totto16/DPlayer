@@ -64,6 +64,7 @@ function initPlayers() {
             pic: 'https://i.loli.net/2019/06/06/5cf8c5d9c57b510947.png',
             thumbnails: 'https://i.loli.net/2019/06/06/5cf8c5d9cec8510758.jpg'
         },
+        highlights: {marker:[{time:20,text:"start 20s"},{time:120,text:"2 minuntes"}],mode:'normal'},
         subtitle: {
             url: 'https://s-sh-17-dplayercdn.oss.dogecdn.com/hikarunara.vtt'
         },
