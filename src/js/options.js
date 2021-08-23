@@ -64,13 +64,13 @@ export default (options) => {
     if (options.highlight) {
         options.highlights = {
             marker: options.highlight,
-            mode: 'normal',
+            mode: 'auto',
         };
         options.highlight = null;
     }
 
     if (options.highlights && !options.highlights.mode) {
-        options.highlights.mode = 'normal';
+        options.highlights.mode = 'auto';
     }
 
     options.contextmenu = options.contextmenu.concat([

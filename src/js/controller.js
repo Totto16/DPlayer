@@ -19,7 +19,6 @@ class Controller {
             this.player.on('play', this.setAutoHideHandler);
             this.player.on('pause', this.setAutoHideHandler);
         }
-
         this.initPlayButton();
         this.initThumbnails();
         this.initPlayedBar();
@@ -33,6 +32,7 @@ class Controller {
         if (!utils.isMobile) {
             this.initVolumeButton();
         }
+        this.barWidth = parseFloat(window.getComputedStyle(this.player.template.playedBarWrap).width.replace('px', ''));
     }
 
     initPlayButton() {
@@ -73,6 +73,14 @@ class Controller {
                         return corrected;
                     });
 
+                    if (this.player.options.highlights.mode === 'auto') {
+                        if (marker[0].time === 0) {
+                            this.player.options.highlights.mode = 'top';
+                        } else {
+                            this.player.options.highlights.mode = 'normal';
+                        }
+                    }
+
                     // TODO  neccessary ?  I dont think so
                     // remove previous highlights
                     /* this.player.template.barHighlight.forEach((item) => {
@@ -96,7 +104,7 @@ class Controller {
                                 const percent = (marker[i].time / this.player.video.duration) * 100;
                                 p.style.left = `${percent}%`;
                                 p.innerHTML = `<span class="dplayer-highlight-text">${marker[i].text}</span>`;
-                                this.player.template.playedBarWrap.insertBefore(p, this.player.template.playedBarTime);
+                                this.player.template.playedBarWrap.insertBefore(p, this.player.template.barInfoDiv);
                                 if (marker[0].time === 0) {
                                     console.warn("This type of highlight isn't meant for chapters beginning at the start, however its required for the other types, consider using those!");
                                 } else {
@@ -137,7 +145,7 @@ class Controller {
                                 p.setAttribute('data-end', end / 100);
                                 p.innerHTML = `<div class="dplayer-loaded"></div>
                                 <div class="dplayer-played" style="background: ${this.player.options.theme}">
-                                    <span class="dplayer-thumb${i == 0 ? '' : ' invisible'}" style="background: ${this.player.options.theme}"></span>
+                                    <span class="dplayer-thumb${i === 0 ? '' : ' invisible'}" style="background: ${this.player.options.theme}"></span>
                                 </div>`;
                                 // p.innerHTML = `<span class="dplayer-highlight-top-text">${marker[i].text}</span>`;
                                 this.player.template.playedBarWrap.appendChild(p);
@@ -147,11 +155,23 @@ class Controller {
                                         'This type of highlight must have a chapter that starts at 0 / the beginning chapters beginning at the start, however its not required for the highlight type, consider using that mode!'
                                     );
                                 } else {
-                                    this.chapters = { marker, mode: 'top', currentChapter: 0 };
+                                    this.chapters = {
+                                        marker,
+                                        mode: 'top',
+                                        currentChapter: 0,
+                                        getTextByTime: (time) => {
+                                            for (let i = 0; i < marker.length; i++) {
+                                                const end = i < marker.length - 1 ? marker[i + 1].time : this.player.video.duration;
+                                                if (time < end) {
+                                                    return marker[i].text;
+                                                }
+                                            }
+                                        },
+                                    };
+                                    this.player.template.topChapterDiv.classList.remove('hidden');
                                 }
                                 this.player.bar.setMode('top');
                             }
-
                             break;
                         default:
                             console.warn(`No valid mode for highlights defined: ${this.player.options.highlights.mode}`);
@@ -178,17 +198,18 @@ class Controller {
 
     initPlayedBar() {
         const thumbMove = (e) => {
+            this.moving = true;
             let percentage = ((e.clientX || e.changedTouches[0].clientX) - utils.getBoundingClientRectViewLeft(this.player.template.playedBarWrap)) / this.player.template.playedBarWrap.clientWidth;
             percentage = Math.max(percentage, 0);
             percentage = Math.min(percentage, 1);
             this.player.bar.set('played', percentage, 'width');
-            this.updateChapters({ percentage }, this.player);
             this.player.template.ptime.innerHTML = utils.secondToTime(percentage * this.player.video.duration);
         };
 
         const thumbUp = (e) => {
             document.removeEventListener(utils.nameMap.dragEnd, thumbUp);
             document.removeEventListener(utils.nameMap.dragMove, thumbMove);
+            this.moving = false;
             let percentage = ((e.clientX || e.changedTouches[0].clientX) - utils.getBoundingClientRectViewLeft(this.player.template.playedBarWrap)) / this.player.template.playedBarWrap.clientWidth;
             percentage = Math.max(percentage, 0);
             percentage = Math.min(percentage, 1);
@@ -216,9 +237,15 @@ class Controller {
                     this.thumbnails && this.thumbnails.show();
                 }
                 this.thumbnails && this.thumbnails.move(tx);
-                this.player.template.playedBarTime.style.left = `${tx - (time >= 3600 ? 25 : 20)}px`;
+                // 7px margin in the flex-div!! 20px margin after each progressbar, we want 5 px margin as a result, so we get these formulas! (20 -5 +7)
+                const ElemWidth = (parseFloat(window.getComputedStyle(this.player.template.barInfoDiv).width.replace('px', '')) + 14) / 2;
+                const percentage = this.clamp(-22, tx - ElemWidth, this.barWidth + 22 - 2 * ElemWidth);
+                this.player.template.barInfoDiv.style.left = `${percentage}px`;
+                this.player.template.barInfoDiv.classList.remove('hidden');
                 this.player.template.playedBarTime.innerText = utils.secondToTime(time);
-                this.player.template.playedBarTime.classList.remove('hidden');
+                if (this.chapters && this.chapters.mode === 'top') {
+                    this.player.template.topChapterDiv.innerText = this.chapters.getTextByTime(time);
+                }
             }
         });
 
@@ -232,14 +259,22 @@ class Controller {
             this.player.template.playedBarWrap.addEventListener('mouseenter', () => {
                 if (this.player.video.duration) {
                     this.thumbnails && this.thumbnails.show();
-                    this.player.template.playedBarTime.classList.remove('hidden');
+                    this.player.template.barInfoDiv.classList.remove('hidden');
+                    /*  this.player.template.playedBarTime.classList.remove('hidden');
+                    if (this.chapters && this.chapters.mode === 'top') {
+                        this.player.template.topChapterDiv.classList.remove('hidden');
+                    } */
                 }
             });
 
             this.player.template.playedBarWrap.addEventListener('mouseleave', () => {
                 if (this.player.video.duration) {
                     this.thumbnails && this.thumbnails.hide();
-                    this.player.template.playedBarTime.classList.add('hidden');
+                    this.player.template.barInfoDiv.classList.add('hidden');
+                    /*   this.player.template.playedBarTime.classList.add('hidden');
+                    if (this.chapters && this.chapters.mode === 'top') {
+                        this.player.template.topChapterDiv.classList.add('hidden');
+                    } */
                 }
             });
         }
@@ -346,7 +381,7 @@ class Controller {
                     () => {},
                     (status) => {
                         if (status === cast.ReceiverAvailability.AVAILABLE) {
-                            console.log('chromecast: ', status);
+                            console.info('chromecast: ', status);
                         }
                     }
                 );
@@ -482,13 +517,12 @@ class Controller {
             time = time || player.video.currentTime;
             percentage = percentage || time / duration;
         }
-        // console.log(duration, time, percentage);
+
         if (this.chapters) {
             const { marker, mode, currentChapter } = this.chapters;
             const previous = currentChapter >= 1 ? marker[currentChapter - 1] : null;
             const next = currentChapter < marker.length - 1 ? marker[currentChapter + 1] : null;
             const current = currentChapter >= 0 && currentChapter < marker.length ? marker[currentChapter] : null;
-            // console.log(previous,current,next, time, currentChapter)
             switch (mode) {
                 case 'normal':
                     if (current && current.time >= time) {
@@ -514,7 +548,6 @@ class Controller {
         }
     }
     muteChanger() {
-        console.log(this);
         if (this.player.video.muted) {
             this.player.video.muted = false;
             this.player.switchVolumeIcon();
@@ -552,11 +585,15 @@ class Controller {
                 document.body.removeChild(link);
                 URL.revokeObjectURL(dataURL);
             } else {
-                console.debug('Screenshot Error, video not loaded yet!');
+                console.info('Screenshot Error, video not loaded yet!');
             }
         });
     }
 
+    clamp(min, number, max) {
+        const z = Math.max(Math.min(number, max), min);
+        return z;
+    }
     destroy() {
         if (!utils.isMobile) {
             this.player.container.removeEventListener('mousemove', this.setAutoHideHandler);

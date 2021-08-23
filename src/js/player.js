@@ -156,7 +156,7 @@ class DPlayer {
      * Seek video
      */
     seek(time) {
-        time = Math.max(time, 0);
+        time = Math.max(isNaN(time) ? 0 : time, 0);
         if (this.video.duration) {
             time = Math.min(time, this.video.duration);
         }
@@ -474,7 +474,8 @@ class DPlayer {
                 // Not a video load error, may be poster load failed, see #307
                 return;
             }
-            this.tran && this.notice && this.type !== 'webtorrent' && this.notice(this.tran('video-failed'), { time: -1, mode: 'override' });
+            // duplicate check because this error gets fired twice for some reason
+            this.tran && this.notice && this.type !== 'webtorrent' && this.notice(this.tran('video-failed'), { time: 3000, duplicate: 'check' });
         });
 
         // video end
@@ -504,11 +505,13 @@ class DPlayer {
         });
 
         this.on('timeupdate', () => {
-            this.bar.set('played', this.video.currentTime / this.video.duration, 'width');
-            this.controller.updateChapters({ time: this.video.currentTime, duration: this.video.duration }, this);
-            const currentTime = utils.secondToTime(this.video.currentTime);
-            if (this.template.ptime.innerHTML !== currentTime) {
-                this.template.ptime.innerHTML = currentTime;
+            if (!this.controller.moving) {
+                this.bar.set('played', this.video.currentTime / this.video.duration, 'width');
+                this.controller.updateChapters({ time: this.video.currentTime, duration: this.video.duration }, this);
+                const currentTime = utils.secondToTime(this.video.currentTime);
+                if (this.template.ptime.innerHTML !== currentTime) {
+                    this.template.ptime.innerHTML = currentTime;
+                }
             }
         });
 
@@ -556,7 +559,7 @@ class DPlayer {
         this.video = videoEle;
         this.initVideo(this.video, this.quality.type || this.options.video.type);
         this.seek(this.prevVideo.currentTime);
-        this.notice(`${this.tran('switching-quality').replace('%q', this.quality.name)}`, { time: -1, mode: `override` });
+        this.notice(`${this.tran('switching-quality').replace('%q', this.quality.name)}`, { time: 3000, mode: `override` });
         this.events.trigger('quality_start', this.quality);
 
         this.on('canplay', () => {
@@ -590,10 +593,6 @@ class DPlayer {
                 }
                 this.qualityIndex = this.prevIndex;
                 this.quality = this.options.video.quality[this.qualityIndex];
-                this.noticeTime = setTimeout(() => {
-                    this.template.notice.style.opacity = 0;
-                    this.events.trigger('notice_hide');
-                }, 3000);
                 this.prevVideo = null;
                 this.switchingQuality = false;
             }
@@ -605,9 +604,19 @@ class DPlayer {
         options.time = options.time || 2000;
         options.opacity = options.opacity || 0.8;
         options.mode = options.mode || 'normal';
+        options.duplicate = options.duplicate || 'ignore';
 
         if (options.mode === 'override') {
             options.time = -1;
+        }
+
+        if (options.duplicate === 'check') {
+            Array.from(this.template.noticeList.children).forEach((child) => {
+                const childText = child.innerText;
+                if (childText === text) {
+                    this.template.noticeList.removeChild(child);
+                }
+            });
         }
 
         const notice = Template.NewNotice(text, options.opacity, options.mode);

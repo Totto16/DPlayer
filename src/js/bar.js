@@ -56,7 +56,6 @@ class Bar {
                     }
                 });
             } else {
-                console.log(type, direction, percentage);
                 this.elements[type].style[direction] = percentage * 100 + '%';
             }
         } else {

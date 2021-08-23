@@ -198,8 +198,11 @@
         </div>
     </div>
     <div class="dplayer-bar-wrap">
-        <div class="dplayer-bar-time hidden">00:00</div>
-        <div class="dplayer-bar-preview"></div>
+        <div class="dplayer-info-div hidden">
+            <div class="dplayer-bar-time">00:00</div>
+            <div class="dplayer-thumb-text hidden"></div>
+            <div class="dplayer-bar-preview hidden"></div>
+        </div>
         <div class="dplayer-bar">
             <div class="dplayer-loaded" style="width: 0;"></div>
             <div class="dplayer-played" style="width: 0; background: {{ options.theme }}">

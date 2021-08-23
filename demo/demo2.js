@@ -14,10 +14,9 @@ requestAnimationFrame(animate);
 
 initPlayers();
 
-
 function initPlayers() {
 
-    const qualities = [{
+    const qualities =/*  [{
             "name": "1080p",
             "url": "https://api.dogecloud.com/player/get.mp4?vcode=5ac682e6f8231991&userId=17&ext=.mp",
             "type": "normal"
@@ -28,16 +27,29 @@ function initPlayers() {
             "type": "normal"
         }
     ];
-
-
-    const vtt_stamps = [
+     */
+    [
+        {
+          "name": "1080p",
+          "url": "https://ddl.amalgam-fansubs.moe/content/Conan/1080p/%5BTotto%5DDetektivConan-1002-RFCT-%5B1080p%5D.mp4",
+          "type": "normal"
+        },
+        {
+          "name": "720p",
+          "url": "https://ddl.amalgam-fansubs.moe/content/Conan/720p/%5BAMALGAM%5DConan_1002%5B1280x720%5D%5Bx264%5D%5BHD%5D.mp4",
+          "type": "normal"
+        }
+      ];
+ //only suitable for normal mode
+    /* [{time:20,text:"start 20s"},{time:120,text:"2 minuntes"}]; *//* [
         {time:0,text:"init 0s"},
         {time:20,text:"start 20s"},
-        {time:120,text:"2 minuntes"}
+        {time:120,text:"2 minutes"}
     ]
-    
-    //only suitable for normal mode
-    /* [{time:20,text:"start 20s"},{time:120,text:"2 minuntes"}]; *//*[{
+    */
+   
+    const vtt_stamps =
+   [{
             "text": "Einführung",
             "time": 0
         },
@@ -61,7 +73,7 @@ function initPlayers() {
             "text": "Episoden Vorschau",
             "time": 1424.967
         }
-    ];*/
+    ];
 
 
     const dp = new DPlayer({
@@ -84,6 +96,7 @@ function initPlayers() {
     });
     window.dp = dp;
 };
+
 
 
 

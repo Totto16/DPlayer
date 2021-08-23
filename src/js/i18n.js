@@ -408,11 +408,11 @@ function checkSingleLanguage(language) {
     const translation = tranTxt[language];
     Object.entries(model).forEach(([key, value]) => {
         if (!translation[key]) {
-            console.debug(`Translation for ${language} has no key ${key}!`);
+            console.info(`Translation for ${language} has no key ${key}!`);
         } else if (value.length > 0) {
             value.forEach(({ symbol, name, example }) => {
                 if (!translation[key].includes(symbol)) {
-                    console.debug(`Translation for ${language} misses the symbol ${symbol} in ${key}, it represents ${name}, example value ${example}!`);
+                    console.info(`Translation for ${language} misses the symbol ${symbol} in ${key}, it represents ${name}, example value ${example}!`);
                 }
             });
         }
