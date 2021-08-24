@@ -420,6 +420,22 @@
             }
             &.dplayer-setting-icon {
                 padding-top: 8.5px;
+                transform: rotate(0deg); 
+                transition: all .3s ease-in-out;
+            }
+            &.camera-icon{
+                
+            }
+            &.taking-screenshot{
+                .animate-screenshot{
+                    stroke: blue;
+                    stroke-width: 2;
+                    stroke-dasharray: 1;
+                    animation: dash infinite linear 1s;
+                }
+            }
+            &.dplayer-setting-button-open{
+                transform: rotate(90deg); 
             }
             &.dplayer-volume-icon {
                 width: 43px;
@@ -746,4 +762,10 @@
     left: 50%;
     top: 50%;
     transform: translate(-50%, -50%);
+}
+
+@keyframes dash {
+    to {
+        stroke-dashoffset: 10;
+    }
 }

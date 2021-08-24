@@ -130,6 +130,7 @@ class Setting {
     }
 
     hide() {
+        this.player.template.settingButton.classList.remove('dplayer-setting-button-open');
         this.player.template.settingBox.classList.remove('dplayer-setting-box-open');
         this.player.template.mask.classList.remove('dplayer-mask-show');
         setTimeout(() => {
@@ -141,6 +142,7 @@ class Setting {
     }
 
     show() {
+        this.player.template.settingButton.classList.add('dplayer-setting-button-open');
         this.player.template.settingBox.classList.add('dplayer-setting-box-open');
         this.player.template.mask.classList.add('dplayer-mask-show');
 

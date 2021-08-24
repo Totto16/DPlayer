@@ -331,7 +331,7 @@ class Controller {
 
     initScreenshotButton() {
         if (this.player.options.screenshot) {
-            this.player.template.camareButton.addEventListener('click', () => {
+            this.player.template.cameraButton.addEventListener('click', () => {
                 this.SaveScreenshot.call(this);
             });
         }
@@ -525,7 +525,7 @@ class Controller {
             const current = currentChapter >= 0 && currentChapter < marker.length ? marker[currentChapter] : null;
             switch (mode) {
                 case 'normal':
-                    if (current && current.time >= time) {
+                    if (current && current.time > time) {
                         this.chapters.currentChapter--;
                         this.player.events.trigger('chapter', { type: 'simple', direction: 'previous', surpassed: current });
                     } else if (next && next.time <= time) {
@@ -536,7 +536,7 @@ class Controller {
                 case 'side':
                     break;
                 case 'top':
-                    if (current && current.time >= time) {
+                    if (current && current.time > time) {
                         this.chapters.currentChapter--;
                         this.player.events.trigger('chapter', { type: 'previous', previous: currentChapter >= 2 ? marker[currentChapter - 2] : null, current: previous, next: current });
                     } else if (next && next.time <= time) {
@@ -547,6 +547,41 @@ class Controller {
             }
         }
     }
+
+    goToChapter(number) {
+        if (!this.chapters) {
+            return;
+        }
+        const { marker, mode, currentChapter } = this.chapters;
+        const actualTime = this.player.video.currentTime;
+        let goToChapter = currentChapter + number;
+        let togo;
+        switch (mode) {
+            case 'top':
+                togo = goToChapter >= 0 && goToChapter < marker.length ? marker[goToChapter] : goToChapter === marker.length ? { time: this.player.video.duration } : null;
+                if (number === 0 && Math.abs(togo.time - actualTime) <= 1) {
+                    goToChapter--;
+                    togo = goToChapter >= 0 && goToChapter < marker.length ? marker[goToChapter] : goToChapter === marker.length ? { time: this.player.video.duration } : null;
+                }
+                if (togo !== null) {
+                    this.player.seek(togo.time);
+                }
+                break;
+            case 'side':
+                break;
+            case 'normal':
+                togo = goToChapter >= 0 && goToChapter < marker.length ? marker[goToChapter] : goToChapter === marker.length ? { time: this.player.video.duration } : goToChapter === -1 ? { time: 0 } : null;
+                if (number === 0 && Math.abs(togo.time - actualTime) <= 1) {
+                    goToChapter--;
+                    togo = goToChapter >= 0 && goToChapter < marker.length ? marker[goToChapter] : goToChapter === marker.length ? { time: this.player.video.duration } : goToChapter === -1 ? { time: 0 } : null;
+                }
+                if (togo !== null) {
+                    this.player.seek(togo.time);
+                }
+                break;
+        }
+    }
+
     muteChanger() {
         if (this.player.video.muted) {
             this.player.video.muted = false;
@@ -560,6 +595,7 @@ class Controller {
     }
 
     SaveScreenshot() {
+        this.player.template.cameraButton.classList.add('taking-screenshot');
         const canvas = document.createElement('canvas');
         canvas.width = this.player.video.videoWidth;
         canvas.height = this.player.video.videoHeight;
@@ -587,6 +623,7 @@ class Controller {
             } else {
                 console.info('Screenshot Error, video not loaded yet!');
             }
+            this.player.template.cameraButton.classList.remove('taking-screenshot');
         });
     }
 

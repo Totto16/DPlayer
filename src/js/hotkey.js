@@ -100,6 +100,16 @@ class HotKey {
                         event.preventDefault();
                         this.player.speed(1);
                         break;
+                    case 'previousChapter':
+                        // goes to the previous chapter, if we have chapters
+                        event.preventDefault();
+                        this.player.controller.goToChapter(0); // 0 because we go to the current chapter beginning
+                        break;
+                    case 'nextChapter':
+                        // goes to the next chapter, if we have chapters
+                        event.preventDefault();
+                        this.player.controller.goToChapter(1);
+                        break;
                 }
             }
         }
