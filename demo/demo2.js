@@ -28,7 +28,11 @@ function initPlayers() {
         }
     ];
      */
-    [
+    [ {
+        "name": "FHD",
+        "url": "http://localhost:8080/[Totto]DetektivConan-1002-RFCT-[1080p].mp4",
+        "type": "normal"
+      },
         {
           "name": "1080p",
           "url": "https://ddl.amalgam-fansubs.moe/content/Conan/1080p/%5BTotto%5DDetektivConan-1002-RFCT-%5B1080p%5D.mp4",
@@ -47,7 +51,29 @@ function initPlayers() {
         {time:120,text:"2 minutes"}
     ]
     */
-   
+    const vtt_stamps2 =
+    [
+         {
+             "text": "Opening",
+             "time": 147.022
+         },
+         {
+             "text": "Episode",
+             "time": 262.012
+         },
+         {
+             "text": "Ending",
+             "time": 1285.035
+         },
+         {
+             "text": "Abschluss",
+             "time": 1364.99
+         },
+         {
+             "text": "Episoden Vorschau",
+             "time": 1424.967
+         }
+     ];
     const vtt_stamps =
    [{
             "text": "Einführung",
@@ -86,11 +112,8 @@ function initPlayers() {
         },
         theme: "var(--bar-color)",
         hotkey: true,
-        /* contextmenu: [
-            { text: "custom1", link: "https://github.com/DIYgod/DPlayer" },
-            { text: "custom2", click: function(t) { console.log(t) } }
-        ], */
         highlights: {marker:vtt_stamps,mode:'top'},
+        highlights: {marker:vtt_stamps2,mode:'normal'},
         airplay: "vendor",
         chromecast: "vendor"
     });

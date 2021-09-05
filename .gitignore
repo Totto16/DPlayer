@@ -9,3 +9,4 @@ wxw
 package-lock.json
 docs/.vuepress/dist
 yarn.lock
+demo/*.mp4

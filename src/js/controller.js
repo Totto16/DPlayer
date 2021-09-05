@@ -81,7 +81,7 @@ class Controller {
                         }
                     }
 
-                    // TODO  neccessary ?  I dont think so
+                    // TODO  necessary ?  I dont think so
                     // remove previous highlights
                     /* this.player.template.barHighlight.forEach((item) => {
                         this.player.template.playedBarWrap.removeChild(item);
@@ -202,7 +202,7 @@ class Controller {
             let percentage = ((e.clientX || e.changedTouches[0].clientX) - utils.getBoundingClientRectViewLeft(this.player.template.playedBarWrap)) / this.player.template.playedBarWrap.clientWidth;
             percentage = Math.max(percentage, 0);
             percentage = Math.min(percentage, 1);
-            this.player.bar.set('played', percentage, 'width');
+            this.player.bar.set('played', percentage);
             this.player.template.ptime.innerHTML = utils.secondToTime(percentage * this.player.video.duration);
         };
 
@@ -213,7 +213,7 @@ class Controller {
             let percentage = ((e.clientX || e.changedTouches[0].clientX) - utils.getBoundingClientRectViewLeft(this.player.template.playedBarWrap)) / this.player.template.playedBarWrap.clientWidth;
             percentage = Math.max(percentage, 0);
             percentage = Math.min(percentage, 1);
-            this.player.bar.set('played', percentage, 'width');
+            this.player.bar.set('played', percentage);
             this.updateChapters({ percentage }, this.player);
             this.player.seek(percentage * this.player.video.duration);
             this.player.timer.enable('progress');
@@ -586,11 +586,11 @@ class Controller {
         if (this.player.video.muted) {
             this.player.video.muted = false;
             this.player.switchVolumeIcon();
-            this.player.bar.set('volume', this.player.volume(), 'width');
+            this.player.bar.set('volume', this.player.volume());
         } else {
             this.player.video.muted = true;
             this.player.template.volumeIcon.innerHTML = Icons.volumeOff;
-            this.player.bar.set('volume', 0, 'width');
+            this.player.bar.set('volume', 0);
         }
     }
 

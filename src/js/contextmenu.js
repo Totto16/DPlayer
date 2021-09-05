@@ -6,7 +6,9 @@ class ContextMenu {
         Array.prototype.slice.call(this.player.template.menuItem).forEach((item, index) => {
             if (this.player.options.contextmenu[index].click) {
                 item.addEventListener('click', () => {
+                    console.log(this.player);
                     this.player.options.contextmenu[index].click(this.player);
+
                     this.hide();
                 });
             }

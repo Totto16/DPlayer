@@ -136,13 +136,13 @@ class DPlayer {
 
         this.hotkey = new HotKey(this);
 
-        this.contextmenu = new ContextMenu(this);
-
-        this.initVideo(this.video, (this.quality && this.quality.type) || this.options.video.type);
-
         this.infoPanel = new InfoPanel(this);
 
         this.hotkeyPanel = new HotkeyPanel(this);
+
+        this.contextmenu = new ContextMenu(this);
+
+        this.initVideo(this.video, (this.quality && this.quality.type) || this.options.video.type);
 
         if (!this.danmaku && this.options.autoplay) {
             this.play();
@@ -171,7 +171,7 @@ class DPlayer {
         if (this.danmaku) {
             this.danmaku.seek();
         }
-        this.bar.set('played', time / this.video.duration, 'width');
+        this.bar.set('played', time / this.video.duration);
         this.controller.updateChapters({ time, duration: this.video.duration }, this);
         this.template.ptime.innerHTML = utils.secondToTime(time);
     }
@@ -253,7 +253,7 @@ class DPlayer {
         if (!isNaN(percentage)) {
             percentage = Math.max(percentage, 0);
             percentage = Math.min(percentage, 1);
-            this.bar.set('volume', percentage, 'width');
+            this.bar.set('volume', percentage);
             const formatPercentage = `${(percentage * 100).toFixed(0)}%`;
             this.template.volumeBarWrapWrap.dataset.balloon = formatPercentage;
             if (!nostorage) {
@@ -304,8 +304,8 @@ class DPlayer {
         this.initMSE(this.video, video.type || 'auto');
         if (danmakuAPI) {
             this.template.danmakuLoading.style.display = 'block';
-            this.bar.set('played', 0, 'width');
-            this.bar.set('loaded', 0, 'width');
+            this.bar.set('played', 0);
+            this.bar.set('loaded', 0);
             this.template.ptime.innerHTML = '00:00';
             this.template.danmaku.innerHTML = '';
             if (this.danmaku) {
@@ -456,16 +456,26 @@ class DPlayer {
         // show video time: the metadata has loaded or changed
         this.on('durationchange', () => {
             // compatibility: Android browsers will output 1 or Infinity at first
-            if (video.duration !== 1 && video.duration !== Infinity) {
+            if (video.duration !== 1 && video.duration !== Infinity && video.duration) {
                 this.template.dtime.innerHTML = utils.secondToTime(video.duration);
+                // to get the progress we have to have duration!!!
+                this.events.trigger('progress');
             }
         });
 
         // show video loaded bar: to inform interested parties of progress downloading the media
         this.on('progress', () => {
-            let percentage = video.buffered.length ? video.buffered.end(video.buffered.length - 1) / video.duration : 0;
-            percentage = percentage > 0.999 ? 1 : percentage;
-            this.bar.set('loaded', percentage, 'width');
+            if (!video.duration) {
+                return;
+            }
+            const ranges = [];
+            for (let i = 0; i < video.buffered.length; i++) {
+                const start = video.buffered.start(i);
+                const end = video.buffered.end(i);
+                ranges.push({ start, end });
+            }
+            const percentage = video.buffered.end(video.buffered.length - 1) / video.duration;
+            this.bar.set('loaded', { ranges, percentage });
         });
 
         // video download error: an error occurs
@@ -480,7 +490,7 @@ class DPlayer {
 
         // video end
         this.on('ended', () => {
-            this.bar.set('played', 1, 'width');
+            this.bar.set('played', 1);
             if (!this.setting.loop) {
                 this.pause();
             } else {
@@ -506,7 +516,7 @@ class DPlayer {
 
         this.on('timeupdate', () => {
             if (!this.controller.moving) {
-                this.bar.set('played', this.video.currentTime / this.video.duration, 'width');
+                this.bar.set('played', this.video.currentTime / this.video.duration);
                 this.controller.updateChapters({ time: this.video.currentTime, duration: this.video.duration }, this);
                 const currentTime = utils.secondToTime(this.video.currentTime);
                 if (this.template.ptime.innerHTML !== currentTime) {

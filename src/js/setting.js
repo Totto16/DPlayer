@@ -69,7 +69,7 @@ class Setting {
         if (this.player.danmaku) {
             const dWidth = 130;
             this.player.on('danmaku_opacity', (percentage) => {
-                this.player.bar.set('danmaku', percentage, 'width');
+                this.player.bar.set('danmaku', percentage);
                 this.player.user.set('opacity', percentage);
             });
             this.player.danmaku.opacity(this.player.user.get('opacity'));
