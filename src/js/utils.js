@@ -106,6 +106,23 @@ const utils = {
         get: (key) => localStorage.getItem(key),
     },
 
+    encodeValueAsObject(val) {
+        return { value: val.toString(), type: typeof val };
+    },
+
+    decodeValueFromObject(obj) {
+        const { value, type } = obj;
+        if (type === 'number') {
+            return parseFloat(value);
+        } else if (type === 'string') {
+            return value;
+        } else if (type === 'object') {
+            return JSON.parse(value);
+        } else {
+            return null;
+        }
+    },
+
     supportsAirplay: () => isSafari && !isChrome && !isFirefox,
 
     supportsChromeCast: () => isChrome && !isSafari && !isFirefox,
