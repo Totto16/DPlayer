@@ -32,7 +32,6 @@ class Controller {
         if (!utils.isMobile) {
             this.initVolumeButton();
         }
-        this.barWidth = parseFloat(window.getComputedStyle(this.player.template.playedBarWrap).width.replace('px', ''));
     }
 
     initPlayButton() {
@@ -199,6 +198,9 @@ class Controller {
     initPlayedBar() {
         const thumbMove = (e) => {
             this.moving = true;
+            if (!e.changedTouches) {
+                return;
+            }
             let percentage = ((e.clientX || e.changedTouches[0].clientX) - utils.getBoundingClientRectViewLeft(this.player.template.playedBarWrap)) / this.player.template.playedBarWrap.clientWidth;
             percentage = Math.max(percentage, 0);
             percentage = Math.min(percentage, 1);
@@ -229,6 +231,7 @@ class Controller {
             if (this.player.video.duration) {
                 const px = this.player.template.playedBarWrap.getBoundingClientRect().left;
                 const tx = (e.clientX || e.changedTouches[0].clientX) - px;
+                console.log(this.player.template.playedBarWrap.offsetWidth, tx, this.player.template.playedBarWrap.offsetWidth);
                 if (tx < 0 || tx > this.player.template.playedBarWrap.offsetWidth) {
                     return;
                 }
@@ -239,7 +242,8 @@ class Controller {
                 this.thumbnails && this.thumbnails.move(tx);
                 // 7px margin in the flex-div!! 20px margin after each progressbar, we want 5 px margin as a result, so we get these formulas! (20 -5 +7)
                 const ElemWidth = (parseFloat(window.getComputedStyle(this.player.template.barInfoDiv).width.replace('px', '')) + 14) / 2;
-                const percentage = this.clamp(-22, tx - ElemWidth, this.barWidth + 22 - 2 * ElemWidth);
+               
+                const percentage = this.clamp(-22, tx - ElemWidth, this.player.template.playedBarWrap.offsetWidth + 22 - 2 * ElemWidth);
                 this.player.template.barInfoDiv.style.left = `${percentage}px`;
                 this.player.template.barInfoDiv.classList.remove('hidden');
                 this.player.template.playedBarTime.innerText = utils.secondToTime(time);
