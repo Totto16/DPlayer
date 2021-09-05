@@ -6,6 +6,7 @@
     "scripts": {
         "start": "npm run dev",
         "build": "cross-env NODE_ENV=production webpack --config webpack/prod.config.js --progress --color",
+        "analyze": "cross-env NODE_ENV=production webpack --config webpack/prod.config.js --progress --color --analyze",
         "dev": "cross-env NODE_ENV=development webpack-dev-server --config webpack/dev.config.js --color",
         "test": "eslint src webpack",
         "format": "eslint \"**/*.js\" --fix && prettier \"**/*.{js,json,md}\" --write",
@@ -72,6 +73,7 @@
         "url-loader": "^4.1.1",
         "vuepress": "^1.8.2",
         "webpack": "^5.51.1",
+        "webpack-bundle-analyzer": "^4.4.2",
         "webpack-cli": "^4.8.0",
         "webpack-dev-server": "^4.0.0",
         "yorkie": "^2.0.0"
