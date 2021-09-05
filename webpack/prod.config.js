@@ -90,7 +90,7 @@ module.exports = {
     plugins: [
         new webpack.DefinePlugin({
             DPLAYER_VERSION: `"${require('../package.json').version}"`,
-            GIT_HASH: JSON.stringify(gitRevisionPlugin.version()),
+            GIT_TIME: JSON.stringify(gitRevisionPlugin.lastcommitdatetime()),
         }),
     ],
 
