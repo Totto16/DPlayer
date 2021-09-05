@@ -242,7 +242,6 @@ class Controller {
                 this.thumbnails && this.thumbnails.move(tx);
                 // 7px margin in the flex-div!! 20px margin after each progressbar, we want 5 px margin as a result, so we get these formulas! (20 -5 +7)
                 const ElemWidth = (parseFloat(window.getComputedStyle(this.player.template.barInfoDiv).width.replace('px', '')) + 14) / 2;
-               
                 const percentage = this.clamp(-22, tx - ElemWidth, this.player.template.playedBarWrap.offsetWidth + 22 - 2 * ElemWidth);
                 this.player.template.barInfoDiv.style.left = `${percentage}px`;
                 this.player.template.barInfoDiv.classList.remove('hidden');
