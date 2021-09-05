@@ -107,16 +107,17 @@ class Template {
         this.infoDanmakuApi = this.container.querySelector('.dplayer-info-panel-item-danmaku-api .dplayer-info-panel-item-data');
         this.infoDanmakuAmount = this.container.querySelector('.dplayer-info-panel-item-danmaku-amount .dplayer-info-panel-item-data');
     }
-    static NewNotice(text, opacity, mode) {
-        if (isNaN(opacity)) {
-            opacity = 0.8;
-        }
+    static NewNotice(options) {
+        const { text, opacity, mode, type, DontAnimate } = options;
         const notice = document.createElement('div');
         notice.classList.add('dplayer-notice');
         notice.style.opacity = opacity;
         notice.innerText = text;
-        notice.classList.add(mode);
+        if (DontAnimate) {
+            notice.classList.add('dont_animate');
+        }
         notice.setAttribute('mode', mode);
+        notice.setAttribute('type', type);
         return notice;
     }
 }

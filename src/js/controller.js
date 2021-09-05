@@ -620,6 +620,7 @@ class Controller {
                 this.player.notice(this.player.tran('saved-screenshot').replace('%n', downloadName));
                 document.body.removeChild(link);
                 URL.revokeObjectURL(dataURL);
+                this.player.container.click();
             } else {
                 console.info('Screenshot Error, video not loaded yet!');
             }

@@ -260,7 +260,7 @@ class DPlayer {
                 this.user.set('volume', percentage);
             }
             if (!nonotice) {
-                this.notice(`${this.tran('volume')} ${(percentage * 100).toFixed(0)}%`);
+                this.notice(`${this.tran('volume')} ${(percentage * 100).toFixed(0)}%`, { type: 'volume' });
             }
 
             this.video.volume = percentage;
@@ -615,11 +615,12 @@ class DPlayer {
         options.opacity = options.opacity || 0.8;
         options.mode = options.mode || 'normal';
         options.duplicate = options.duplicate || 'ignore';
+        options.type = options.type || 'normal';
 
         if (options.mode === 'override') {
             options.time = -1;
         }
-
+        let DontAnimate = false;
         if (options.duplicate === 'check') {
             Array.from(this.template.noticeList.children).forEach((child) => {
                 const childText = child.innerText;
@@ -628,11 +629,16 @@ class DPlayer {
                 }
             });
         }
-
-        const notice = Template.NewNotice(text, options.opacity, options.mode);
+        if (options.type !== 'normal') {
+            DontAnimate = Array.from(this.template.noticeList.children).filter((a) => a.getAttribute('type') === options.type).length > 0;
+        }
+        const notice = Template.NewNotice({ text, opacity: options.opacity, mode: options.mode, type: options.type, DontAnimate });
         Array.from(this.template.noticeList.children).forEach((child) => {
             const mode = child.getAttribute('mode');
             if (mode === 'override') {
+                this.template.noticeList.removeChild(child);
+            } else if (options.type !== 'normal' && child.getAttribute('type') === options.type) {
+                // if we don't specify a type, we override all normals, otherwise we override only same types, example when we change the volume very often!
                 this.template.noticeList.removeChild(child);
             }
         });

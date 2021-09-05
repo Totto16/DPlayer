@@ -12,10 +12,13 @@
         display: table;
         pointer-events: none;
         animation: showNotice .3s ease 1 forwards;
+        &.dont_animate{
+            animation: showNotice 0s ease 1 forwards;
+        }
     }
 
     .remove-notice{
-        animation: removeNotice .3s ease 1 forwards;
+        animation: removeNotice .3s ease 1 forwards !important;
     }
 }
 
