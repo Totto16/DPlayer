@@ -213,6 +213,7 @@ class HotKey {
             document.removeEventListener('keydown', this.doHotKeyHandler);
         }
         document.removeEventListener('keydown', this.cancelFullScreenHandler);
+        this.destroyed = true;
     }
 }
 

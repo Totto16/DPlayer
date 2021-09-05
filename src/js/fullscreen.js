@@ -142,6 +142,7 @@ class FullScreen {
             document.removeEventListener('msfullscreenchange', this.docfullscreenchange);
             document.removeEventListener('MSFullscreenChange', this.docfullscreenchange);
         }
+        this.destroyed = true;
     }
 }
 

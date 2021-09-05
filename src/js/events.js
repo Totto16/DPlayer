@@ -65,6 +65,13 @@ class Events {
         }
     }
 
+    off(name) {
+        if (this.type(name)) {
+            if (this.events[name]) {
+                this.events[name] = null;
+            }
+        }
+    }
     trigger(name, info) {
         if (this.events[name] && this.events[name].length) {
             for (let i = 0; i < this.events[name].length; i++) {
@@ -82,6 +89,12 @@ class Events {
 
         console.error(`Unknown event name: ${name}`);
         return null;
+    }
+
+    destroy() {
+        Object.keys(this.events).forEach((key) => {
+            this.off(key);
+        });
     }
 }
 

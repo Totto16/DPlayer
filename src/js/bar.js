@@ -77,7 +77,7 @@ class Bar {
                 this.elements[type].style.width = percentage * 100 + '%';
             }
         } else {
-            const LPercentage = this.player.video.buffered.end(this.player.video.buffered.length - 1) / this.player.video.duration;
+            const LPercentage = this.player.video.buffered.length > 0 ? this.player.video.buffered.end(this.player.video.buffered.length - 1) / this.player.video.duration : percentage;
             if (type === 'loaded') {
                 this.loaded = LPercentage;
             }

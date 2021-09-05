@@ -109,6 +109,7 @@ class HotkeyPanel {
     }
     destroy() {
         this.keyboard.destroy();
+        this.destroyed = true;
     }
 }
 

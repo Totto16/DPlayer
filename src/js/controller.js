@@ -638,6 +638,7 @@ class Controller {
             this.player.container.removeEventListener('click', this.setAutoHideHandler);
         }
         clearTimeout(this.autoHideTimer);
+        this.destroyed = true;
     }
 }
 

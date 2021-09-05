@@ -23,7 +23,7 @@ import HotkeyPanel from './hotkey-panel';
 import tplVideo from '../template/video.art';
 
 let index = 0;
-const instances = [];
+window.DPLAYER_INSTANCES = [];
 
 class DPlayer {
     /**
@@ -33,7 +33,7 @@ class DPlayer {
      * @constructor
      */
     constructor(options) {
-        this.options = handleOption({ preload: options.video.type === 'webtorrent' ? 'none' : 'metadata', ...options });
+        this.options = handleOption({ preload: options && options.video && options.video.type === 'webtorrent' ? 'none' : 'metadata', ...options });
 
         if (this.options.video.quality) {
             this.qualityIndex = this.options.video.defaultQuality;
@@ -149,7 +149,7 @@ class DPlayer {
         }
 
         index++;
-        instances.push(this);
+        window.DPLAYER_INSTANCES.push(this);
     }
 
     /**
@@ -203,9 +203,9 @@ class DPlayer {
             this.danmaku.play();
         }
         if (this.options.mutex) {
-            for (let i = 0; i < instances.length; i++) {
-                if (this !== instances[i]) {
-                    instances[i].pause();
+            for (let i = 0; i < window.DPLAYER_INSTANCES.length; i++) {
+                if (this !== window.DPLAYER_INSTANCES[i]) {
+                    window.DPLAYER_INSTANCES[i].pause();
                 }
             }
         }
@@ -524,11 +524,10 @@ class DPlayer {
                 }
             }
         });
-
+        this.AllVideoEventHandlers = [];
         for (let i = 0; i < this.events.videoEvents.length; i++) {
-            video.addEventListener(this.events.videoEvents[i], () => {
-                this.events.trigger(this.events.videoEvents[i]);
-            });
+            this.AllVideoEventHandlers[i] = this.passVideoEvents.bind(this, this.events.videoEvents[i]);
+            video.addEventListener(this.events.videoEvents[i], this.AllVideoEventHandlers[i]);
         }
 
         this.volume(this.user.get('volume'), true, true);
@@ -539,6 +538,10 @@ class DPlayer {
                 this.subtitle.hide();
             }
         }
+    }
+
+    passVideoEvents(event) {
+        this.events.trigger(event);
     }
 
     switchQuality(index) {
@@ -677,20 +680,33 @@ class DPlayer {
     }
 
     destroy() {
-        instances.splice(instances.indexOf(this), 1);
+        window.DPLAYER_INSTANCES.splice(window.DPLAYER_INSTANCES.indexOf(this), 1);
+
         this.pause();
-        this.controller.destroy();
-        this.timer.destroy();
         document.removeEventListener('click', this.docClickFun, true);
         this.container.removeEventListener('click', this.containerClickFun, true);
+        this.video.src = '';
+        this.container.innerHTML = '';
+
+        for (let i = 0; i < this.events.videoEvents.length; i++) {
+            this.video.removeEventListener(this.events.videoEvents[i], this.AllVideoEventHandlers[i]);
+        }
+        this.events.trigger('destroy');
+
+        this.controller.destroy();
+        this.timer.destroy();
+        this.bezel.destroy();
         this.fullScreen.destroy();
         this.hotkey.destroy();
         this.contextmenu.destroy();
-        this.video.src = '';
-        this.container.innerHTML = '';
-        this.events.trigger('destroy');
-        Object.keys(this.events.events).forEach((key) => {
-            this.off(key);
+        this.events.destroy();
+
+        Object.keys(this).forEach((key) => {
+            // console.debug(`Destroying  Component ${key} ${typeof this[key].destroy === 'function' ? "with" : "without"} destroy()`);
+            if (typeof this[key].destroy === 'function') {
+                this[key].destroyed || this[key].destroy();
+            }
+            delete this[key];
         });
     }
 

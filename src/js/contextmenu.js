@@ -68,6 +68,7 @@ class ContextMenu {
 
     destroy() {
         this.player.container.removeEventListener('contextmenu', this.contextmenuHandler);
+        this.destroyed = true;
     }
 }
 
