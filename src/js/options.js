@@ -69,8 +69,8 @@ export default (options, player) => {
         options.highlight = null;
     }
 
-    if(options.highlights && options.highlights.vtt) {
-        options.highlights.marker = utils.parseVtt(options.highlights.vtt, (marker)=>{
+    if (options.highlights && options.highlights.vtt) {
+        options.highlights.marker = utils.parseVtt(options.highlights.vtt, (marker) => {
             player.options.highlights.marker = marker;
             player.events.trigger('highlight_change');
         });

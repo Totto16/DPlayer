@@ -31,7 +31,7 @@ class DPlayer {
      * @constructor
      */
     constructor(options) {
-        this.options = handleOption({ preload: options && options.video && options.video.type === 'webtorrent' ? 'none' : 'metadata', ...options },this);
+        this.options = handleOption({ preload: options && options.video && options.video.type === 'webtorrent' ? 'none' : 'metadata', ...options }, this);
 
         if (this.options.video.quality) {
             this.qualityIndex = this.options.video.defaultQuality;

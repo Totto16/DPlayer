@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios from 'axios';
 
 const isMobile = /mobile/i.test(window.navigator.userAgent);
 const isChrome = /chrome/i.test(window.navigator.userAgent);
@@ -163,47 +163,53 @@ const utils = {
     parseVtt(vtt_url, callback) {
         const marker = [];
         axios
-        .get(vtt_url)
-        .then((response) => {
-            const status_ok=[200,301,302];
-            if(!status_ok.includes(response.status)){
-                throw new Error("Incorrect Status")
-            }
-            if(response.headers['content-type']!='text/vtt'){
-                throw new Error("Incorrect content-type, should be text/vtt")
-            }
-            if(!response.data){
-                throw new Error("Empty Web-Vtt")
-            }
-            let data = response.data.replaceAll('\r','').split("\n").filter(a=>a.length>0)
-            data.forEach((text,i)=>{
-                if(text.includes('-->')){
-                    let mark = {};
-                    mark.text = data.length>i+1 ? data[i+1] : 'Fehler';
-                    let endTime = text.split("-->")[1].trim()
-                    console.log(endTime)
-                    let multiplier=[1,60,60,24]// second, minute, hour, day
-                    let index = 0;
-                    let time = endTime.split(':').reverse().reduce((sum,act)=>{
-                        let num = isNaN(Math.round(parseFloat(act)))?0:Math.round(parseFloat(act));
-                        num = num * multiplier[index]
-                        index++;
-                        return num + sum;
-                    },0)
-                    mark.time = time;
-                    marker.push(mark)
+            .get(vtt_url)
+            .then((response) => {
+                const status_ok = [200, 301, 302];
+                if (!status_ok.includes(response.status)) {
+                    throw new Error('Incorrect Status');
                 }
+                if (response.headers['content-type'] !== 'text/vtt') {
+                    throw new Error('Incorrect content-type, should be text/vtt');
+                }
+                if (!response.data) {
+                    throw new Error('Empty Web-Vtt');
+                }
+                const data = response.data
+                    .replaceAll('\r', '')
+                    .split('\n')
+                    .filter((a) => a.length > 0);
+                data.forEach((text, i) => {
+                    if (text.includes('-->')) {
+                        const mark = {};
+                        mark.text = data.length > i + 1 ? data[i + 1] : 'Fehler';
+                        const endTime = text.split('-->')[1].trim();
+                        console.log(endTime);
+                        const multiplier = [1, 60, 60, 24]; // second, minute, hour, day
+                        let index = 0;
+                        const time = endTime
+                            .split(':')
+                            .reverse()
+                            .reduce((sum, act) => {
+                                let num = isNaN(Math.round(parseFloat(act))) ? 0 : Math.round(parseFloat(act));
+                                num = num * multiplier[index];
+                                index++;
+                                return num + sum;
+                            }, 0);
+                        mark.time = time;
+                        marker.push(mark);
+                    }
+                });
             })
-        })
-        .catch((e) => {
-            console.error(`Couldn't parse Vtt Url! Fetching Error!`, e);
-        return null;
-        }).finally(()=>{
-            callback(marker)
-        })
+            .catch((e) => {
+                console.error(`Couldn't parse Vtt Url! Fetching Error!`, e);
+                return null;
+            })
+            .finally(() => {
+                callback(marker);
+            });
         return 'processing';
-    }
+    },
 };
-
 
 export default utils;
