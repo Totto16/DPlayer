@@ -1,4 +1,4 @@
-/* global DPLAYER_VERSION GIT_HASH */
+/* global DPLAYER_VERSION GIT_TIME */
 
 class InfoPanel {
     constructor(player) {
@@ -35,7 +35,7 @@ class InfoPanel {
     }
 
     update() {
-        this.template.infoVersion.innerHTML = `v${DPLAYER_VERSION} ${GIT_HASH}`;
+        this.template.infoVersion.innerHTML = `v${DPLAYER_VERSION} ${GIT_TIME}`;
         this.template.infoType.innerHTML = this.player.type;
         this.template.infoUrl.innerHTML = this.player.options.video.url;
         this.template.infoResolution.innerHTML = `${this.player.video.videoWidth} x ${this.player.video.videoHeight}`;

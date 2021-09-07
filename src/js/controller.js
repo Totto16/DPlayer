@@ -231,7 +231,6 @@ class Controller {
             if (this.player.video.duration) {
                 const px = this.player.template.playedBarWrap.getBoundingClientRect().left;
                 const tx = (e.clientX || e.changedTouches[0].clientX) - px;
-                console.log(this.player.template.playedBarWrap.offsetWidth, tx, this.player.template.playedBarWrap.offsetWidth);
                 if (tx < 0 || tx > this.player.template.playedBarWrap.offsetWidth) {
                     return;
                 }
