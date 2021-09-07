@@ -1,3 +1,5 @@
+Forked from https://github.com/DIYgod/DPlayer
+
 <p align="center">
 <img src="https://i.imgur.com/LnPvZvO.png" alt="ADPlayer" width="100">
 </p>
