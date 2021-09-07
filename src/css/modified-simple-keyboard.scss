@@ -83,7 +83,7 @@
 
     .shortcuts-enabled{
         background-color: #00ff10;
-        cursor: help;
+        cursor: help; // if using balloon-css delete this!
     }
 
     &.hg-layout-numeric .hg-button {

@@ -1,5 +1,3 @@
-import Promise from 'promise-polyfill';
-
 import utils from './utils';
 import handleOption from './options';
 import i18n from './i18n';
@@ -33,7 +31,7 @@ class DPlayer {
      * @constructor
      */
     constructor(options) {
-        this.options = handleOption({ preload: options && options.video && options.video.type === 'webtorrent' ? 'none' : 'metadata', ...options });
+        this.options = handleOption({ preload: options && options.video && options.video.type === 'webtorrent' ? 'none' : 'metadata', ...options },this);
 
         if (this.options.video.quality) {
             this.qualityIndex = this.options.video.defaultQuality;

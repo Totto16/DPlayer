@@ -61,9 +61,12 @@ class Controller {
     }
 
     initHighlights() {
-        this.player.on('durationchange', () => {
-            if (this.player.video.duration !== 1 && this.player.video.duration !== Infinity) {
-                if (this.player.options.highlights) {
+        this.player.on(['durationchange', 'highlight_change'], () => {
+            if (this.player.video.duration && this.player.video.duration !== 1 && this.player.video.duration !== Infinity) {
+                if (this.player.options.highlights && this.player.options.highlights.marker) {
+                    if (this.player.options.highlights.marker === 'processing') {
+                        return;
+                    }
                     const marker = this.player.options.highlights.marker.map((mark) => {
                         const corrected = mark;
                         if (typeof mark.time !== 'number') {

@@ -111,8 +111,9 @@ function initPlayers() {
         },
         theme: "var(--bar-color)",
         hotkey: true,
-        highlights: {marker:[]/*vtt_stamps*/,mode:'top'},
+       // highlights: {marker:[]/*vtt_stamps*/,mode:'top'},
      /*    highlights: {marker:vtt_stamps2,mode:'normal'}, */
+        highlights:{vtt:"https://ddl.amalgam-fansubs.moe/config/subs/[Totto]DetektivConan-1002-RFCT-[1080p].vtt"},
         airplay: "vendor",
         chromecast: "vendor"
     });

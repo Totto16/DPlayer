@@ -53,15 +53,20 @@ class Events {
             'subtitle_hide',
             'subtitle_change',
             'chapter',
+            'highlight_change',
         ];
     }
 
     on(name, callback) {
-        if (this.type(name) && typeof callback === 'function') {
-            if (!this.events[name]) {
-                this.events[name] = [];
+        if (Array.isArray(name)) {
+            name.forEach((a) => this.on(a, callback));
+        } else {
+            if (this.type(name) && typeof callback === 'function') {
+                if (!this.events[name]) {
+                    this.events[name] = [];
+                }
+                this.events[name].push(callback);
             }
-            this.events[name].push(callback);
         }
     }
 
