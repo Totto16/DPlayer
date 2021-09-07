@@ -111,7 +111,7 @@ function initPlayers() {
         },
         theme: "var(--bar-color)",
         hotkey: true,
-        //highlights: {marker:vtt_stamps,mode:'top'},
+        highlights: {marker:[]/*vtt_stamps*/,mode:'top'},
      /*    highlights: {marker:vtt_stamps2,mode:'normal'}, */
         airplay: "vendor",
         chromecast: "vendor"

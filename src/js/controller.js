@@ -198,10 +198,11 @@ class Controller {
     initPlayedBar() {
         const thumbMove = (e) => {
             this.moving = true;
-            if (!e.changedTouches) {
+            const x = e.clientX || e.changedTouches[0].clientX;
+            if (!x) {
                 return;
             }
-            let percentage = ((e.clientX || e.changedTouches[0].clientX) - utils.getBoundingClientRectViewLeft(this.player.template.playedBarWrap)) / this.player.template.playedBarWrap.clientWidth;
+            let percentage = (x - utils.getBoundingClientRectViewLeft(this.player.template.playedBarWrap)) / this.player.template.playedBarWrap.clientWidth;
             percentage = Math.max(percentage, 0);
             percentage = Math.min(percentage, 1);
             this.player.bar.set('played', percentage);

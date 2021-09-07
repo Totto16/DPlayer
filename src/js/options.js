@@ -72,7 +72,9 @@ export default (options) => {
     if (options.highlights && !options.highlights.mode) {
         options.highlights.mode = 'auto';
     }
-
+    if (options.highlights.marker && options.highlights.marker.length <= 0) {
+        options.highlights.marker = null;
+    }
     options.contextmenu = options.contextmenu.concat([
         {
             key: 'video-info',
