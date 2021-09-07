@@ -52,12 +52,9 @@
         "cssnano": "^5.0.8",
         "eslint": "^7.0.0",
         "eslint-config-prettier": "^8.3.0",
-        "eslint-loader": "^4.0.0",
         "eslint-plugin-prettier": "^3.1.1",
-        "exports-loader": "^3.0.0",
         "file-loader": "^6.0.0",
         "git-revision-webpack-plugin": "^5.0.0",
-        "mini-css-extract-plugin": "^2.2.0",
         "node-sass": "^6.0.1",
         "postcss-loader": "^6.1.1",
         "prettier": "^2.0.4",
@@ -65,8 +62,6 @@
         "pretty-quick": "^3.0.0",
         "sass-loader": "^12.1.0",
         "simple-keyboard": "^3.2.40",
-        "simple-keyboard-layouts": "^3.0.163",
-        "strip-loader": "^0.1.2",
         "style-loader": "^3.2.1",
         "svg-inline-loader": "0.8.2",
         "template-string-optimize-loader": "^3.0.0",
@@ -79,9 +74,8 @@
         "yorkie": "^2.0.0"
     },
     "dependencies": {
-        "axios": "^0.21.1",
-        "balloon-css": "^1.2.0",
-        "promise-polyfill": "^8.2.0",
-        "rxjs": "^7.3.0"
+        "axios": "0.21.4",
+        "balloon-css": "1.2.0",
+        "rxjs": "7.3.0"
     }
 }

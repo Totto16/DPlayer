@@ -61,9 +61,12 @@ class Controller {
     }
 
     initHighlights() {
-        this.player.on('durationchange', () => {
-            if (this.player.video.duration !== 1 && this.player.video.duration !== Infinity) {
-                if (this.player.options.highlights) {
+        this.player.on(['durationchange', 'highlight_change'], () => {
+            if (this.player.video.duration && this.player.video.duration !== 1 && this.player.video.duration !== Infinity) {
+                if (this.player.options.highlights && this.player.options.highlights.marker) {
+                    if (this.player.options.highlights.marker === 'processing') {
+                        return;
+                    }
                     const marker = this.player.options.highlights.marker.map((mark) => {
                         const corrected = mark;
                         if (typeof mark.time !== 'number') {
@@ -198,10 +201,11 @@ class Controller {
     initPlayedBar() {
         const thumbMove = (e) => {
             this.moving = true;
-            if (!e.changedTouches) {
+            const x = e.clientX || e.changedTouches[0].clientX;
+            if (!x) {
                 return;
             }
-            let percentage = ((e.clientX || e.changedTouches[0].clientX) - utils.getBoundingClientRectViewLeft(this.player.template.playedBarWrap)) / this.player.template.playedBarWrap.clientWidth;
+            let percentage = (x - utils.getBoundingClientRectViewLeft(this.player.template.playedBarWrap)) / this.player.template.playedBarWrap.clientWidth;
             percentage = Math.max(percentage, 0);
             percentage = Math.min(percentage, 1);
             this.player.bar.set('played', percentage);

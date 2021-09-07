@@ -2,7 +2,7 @@
 import defaultApiBackend from './api.js';
 import utils from './utils.js';
 
-export default (options) => {
+export default (options, player) => {
     // default options
     const defaultOption = {
         container: options.element || document.getElementsByClassName('dplayer')[0],
@@ -69,8 +69,19 @@ export default (options) => {
         options.highlight = null;
     }
 
+    if (options.highlights && options.highlights.vtt) {
+        options.highlights.marker = utils.parseVtt(options.highlights.vtt, (marker) => {
+            player.options.highlights.marker = marker;
+            player.events.trigger('highlight_change');
+        });
+    }
+
     if (options.highlights && !options.highlights.mode) {
         options.highlights.mode = 'auto';
+    }
+
+    if (options.highlights && options.highlights.marker && options.highlights.marker.length <= 0) {
+        options.highlights = null;
     }
 
     options.contextmenu = options.contextmenu.concat([

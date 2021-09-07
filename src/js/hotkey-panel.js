@@ -45,6 +45,16 @@ class HotkeyPanel {
                     value: this.player.tran(obj.tooltip),
                     buttons: obj.key,
                 })),
+                /*      ...this.hotkeys.map((obj) => ({
+                    attribute: 'aria-label',
+                    value: this.player.tran(obj.tooltip),
+                    buttons: obj.key,
+                })),
+                ...this.hotkeys.map((obj) => ({
+                    attribute: 'data-balloon-pos',
+                    value:  'up',
+                    buttons: obj.key,
+                })), */ // Looks Better, but has problems with overflow-hidden
                 ...this.hotkeys.map((obj) => ({
                     attribute: 'data-keyCode',
                     value: `${obj.keyCode}`,
