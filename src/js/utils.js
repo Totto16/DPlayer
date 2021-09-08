@@ -160,7 +160,7 @@ const utils = {
         }
     },
     // parsing according to web standards (https://developer.mozilla.org/en-US/docs/Web/API/WebVTT_API)
-    parseVtt(vtt_url, callback) {
+    parseVtt(vtt_url, callback, startOrEnd = 0) {
         const marker = [];
         axios
             .get(vtt_url)
@@ -183,15 +183,14 @@ const utils = {
                     if (text.includes('-->')) {
                         const mark = {};
                         mark.text = data.length > i + 1 ? data[i + 1] : 'Fehler';
-                        const endTime = text.split('-->')[1].trim();
-                        console.log(endTime);
-                        const multiplier = [1, 60, 60, 24]; // second, minute, hour, day
+                        const endTime = text.split('-->')[startOrEnd].trim();
+                        const multiplier = [1, 60, 60 * 60, 60 * 60 * 24]; // second, minute, hour, day
                         let index = 0;
                         const time = endTime
                             .split(':')
                             .reverse()
                             .reduce((sum, act) => {
-                                let num = isNaN(Math.round(parseFloat(act))) ? 0 : Math.round(parseFloat(act));
+                                let num = isNaN(parseFloat(act)) ? 0 : parseFloat(act);
                                 num = num * multiplier[index];
                                 index++;
                                 return num + sum;

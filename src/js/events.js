@@ -54,6 +54,7 @@ class Events {
             'subtitle_change',
             'chapter',
             'highlight_change',
+            'ranges_change',
         ];
     }
 

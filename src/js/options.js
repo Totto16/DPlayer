@@ -23,7 +23,7 @@ export default (options, player) => {
         video: {},
         contextmenu: [],
         mutex: true,
-        pluginOptions: { hls: {}, flv: {}, dash: {}, webtorrent: {} },
+        pluginOptions: { hls: {}, flv: {}, dash: {}, webtorrent: {}, mkv: {}, ass: {} },
     };
     for (const defaultKey in defaultOption) {
         if (defaultOption.hasOwnProperty(defaultKey) && !options.hasOwnProperty(defaultKey)) {
@@ -37,7 +37,12 @@ export default (options, player) => {
         !options.danmaku.user && (options.danmaku.user = 'DIYgod');
     }
     if (options.subtitle) {
-        !options.subtitle.type && (options.subtitle.type = 'webvtt');
+        if (!options.subtitle.type) {
+            options.subtitle.type = 'webvtt';
+            if (/ass(#|\?|$)/i.exec(options.subtitle.url) || /ssa(#|\?|$)/i.exec(options.subtitle.url)) {
+                options.subtitle.type = 'ass';
+            }
+        }
         !options.subtitle.fontSize && (options.subtitle.fontSize = '20px');
         !options.subtitle.bottom && (options.subtitle.bottom = '40px');
         !options.subtitle.color && (options.subtitle.color = '#fff');

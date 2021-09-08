@@ -83,7 +83,7 @@ class Controller {
                         }
                     }
 
-                    // TODO  necessary ?  I dont think so
+                    // TODO  only necessary if we change chapters on the fly
                     // remove previous highlights
                     /* this.player.template.barHighlight.forEach((item) => {
                         this.player.template.playedBarWrap.removeChild(item);
@@ -93,7 +93,7 @@ class Controller {
                     /* this.player.template.barHighlightTop.forEach((item) => {
                         this.player.template.playedBarWrap.removeChild(item);
                     }); */
-
+                    const inbetween = 1;
                     switch (this.player.options.highlights.mode) {
                         case 'normal':
                             for (let i = 0; i < marker.length; i++) {
@@ -108,16 +108,16 @@ class Controller {
                                 p.innerHTML = `<span class="dplayer-highlight-text">${marker[i].text}</span>`;
                                 this.player.template.playedBarWrap.insertBefore(p, this.player.template.barInfoDiv);
                                 if (marker[0].time === 0) {
-                                    console.warn("This type of highlight isn't meant for chapters beginning at the start, however its required for the other types, consider using those!");
+                                    console.warn('The mode "normal" isn\'t meant for chapters beginning at the start, however its required for the other modes, consider using those!');
                                 } else {
                                     this.chapters = { marker, mode: 'normal', currentChapter: -1 };
                                 }
-                                this.player.bar.setMode('normal');
                             }
+                            this.player.bar.setMode('normal');
                             break;
                         case 'side':
                             if (marker[0].time !== 0) {
-                                console.warn('This type of highlight must have a chapter that starts at 0 / the beginning chapters beginning at the start, however its not required for the highlight type, consider using that mode!');
+                                console.warn('The mode "side" must have a chapter that starts at 0 / the beginning chapters beginning at the start, however its not required for the "normal" mode", consider using that mode!');
                             } else {
                                 this.chapters = { marker, mode: 'side', currentChapter: 0 };
                             }
@@ -127,7 +127,6 @@ class Controller {
                             this.player.template.playedBarWrap.querySelectorAll('.dplayer-bar').forEach((item) => {
                                 this.player.template.playedBarWrap.removeChild(item);
                             });
-
                             for (let i = 0; i < marker.length; i++) {
                                 if (typeof marker[i].text === 'undefined' || typeof marker[i].time === 'undefined') {
                                     console.warn('highlights format not correct');
@@ -139,8 +138,8 @@ class Controller {
                                 p.classList.add('dplayer-highlight-top');
                                 const end = (i < marker.length - 1 ? marker[i + 1].time / this.player.video.duration : 1) * 100;
                                 const start = (marker[i].time / this.player.video.duration) * 100;
-                                p.style.left = start === 0 ? `${start}%` : `calc(${start}% + 2px)`;
-                                p.style.right = end === 100 ? `0%` : `calc(${100 - end}% + 2px)`;
+                                p.style.left = start === 0 ? `${start}%` : `calc(${start}% + ${inbetween}px)`;
+                                p.style.right = end === 100 ? `0%` : `calc(${100 - end}% + ${inbetween}px)`;
                                 p.style.position = 'absolute';
                                 p.style.width = 'unset';
                                 p.setAttribute('data-start', start / 100);
@@ -153,9 +152,7 @@ class Controller {
                                 this.player.template.playedBarWrap.appendChild(p);
 
                                 if (marker[0].time !== 0) {
-                                    console.warn(
-                                        'This type of highlight must have a chapter that starts at 0 / the beginning chapters beginning at the start, however its not required for the highlight type, consider using that mode!'
-                                    );
+                                    console.warn('The mode "top" must have a chapter that starts at 0 / the beginning chapters beginning at the start, however its not required for the "normal" mode, consider using that mode!');
                                 } else {
                                     this.chapters = {
                                         marker,
@@ -172,14 +169,15 @@ class Controller {
                                     };
                                     this.player.template.topChapterDiv.classList.remove('hidden');
                                 }
-                                this.player.bar.setMode('top');
                             }
+                            this.player.bar.setMode('top');
                             break;
                         default:
                             console.warn(`No valid mode for highlights defined: ${this.player.options.highlights.mode}`);
                     }
                 }
             }
+            this.player.events.trigger('progress'); // update loaded!
         });
     }
 
@@ -206,8 +204,10 @@ class Controller {
                 return;
             }
             let percentage = (x - utils.getBoundingClientRectViewLeft(this.player.template.playedBarWrap)) / this.player.template.playedBarWrap.clientWidth;
-            percentage = Math.max(percentage, 0);
-            percentage = Math.min(percentage, 1);
+            if (this.chapters && this.chapters.mode === 'top') {
+                // percentage = we should compute the time based on the gaps, so that ist correct, but with inbetween = 1 it should be fine also like this
+            }
+            percentage = this.clamp(0, percentage, 1);
             this.player.bar.set('played', percentage);
             this.player.template.ptime.innerHTML = utils.secondToTime(percentage * this.player.video.duration);
         };
@@ -216,9 +216,15 @@ class Controller {
             document.removeEventListener(utils.nameMap.dragEnd, thumbUp);
             document.removeEventListener(utils.nameMap.dragMove, thumbMove);
             this.moving = false;
-            let percentage = ((e.clientX || e.changedTouches[0].clientX) - utils.getBoundingClientRectViewLeft(this.player.template.playedBarWrap)) / this.player.template.playedBarWrap.clientWidth;
-            percentage = Math.max(percentage, 0);
-            percentage = Math.min(percentage, 1);
+            const x = e.clientX || e.changedTouches[0].clientX;
+            if (!x) {
+                return;
+            }
+            let percentage = (x - utils.getBoundingClientRectViewLeft(this.player.template.playedBarWrap)) / this.player.template.playedBarWrap.clientWidth;
+            if (this.chapters && this.chapters.mode === 'top') {
+                // percentage = we should compute the time based on the gaps, so that ist correct, but with inbetween = 1 it should be fine also like this
+            }
+            percentage = this.clamp(0, percentage, 1);
             this.player.bar.set('played', percentage);
             this.updateChapters({ percentage }, this.player);
             this.player.seek(percentage * this.player.video.duration);
@@ -266,10 +272,6 @@ class Controller {
                 if (this.player.video.duration) {
                     this.thumbnails && this.thumbnails.show();
                     this.player.template.barInfoDiv.classList.remove('hidden');
-                    /*  this.player.template.playedBarTime.classList.remove('hidden');
-                    if (this.chapters && this.chapters.mode === 'top') {
-                        this.player.template.topChapterDiv.classList.remove('hidden');
-                    } */
                 }
             });
 
@@ -277,10 +279,6 @@ class Controller {
                 if (this.player.video.duration) {
                     this.thumbnails && this.thumbnails.hide();
                     this.player.template.barInfoDiv.classList.add('hidden');
-                    /*   this.player.template.playedBarTime.classList.add('hidden');
-                    if (this.chapters && this.chapters.mode === 'top') {
-                        this.player.template.topChapterDiv.classList.add('hidden');
-                    } */
                 }
             });
         }

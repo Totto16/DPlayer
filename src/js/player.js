@@ -70,7 +70,7 @@ class DPlayer {
 
         this.video = this.template.video;
 
-        this.bar = new Bar(this.template, this, 'normal');
+        this.bar = new Bar(this.template, this);
 
         this.bezel = new Bezel(this.template.bezel);
 
@@ -335,15 +335,15 @@ class DPlayer {
                     this.type = 'flv';
                 } else if (/.mpd(#|\?|$)/i.exec(video.src)) {
                     this.type = 'dash';
+                } else if (/.mkv(#|\?|$)/i.exec(video.src)) {
+                    this.type = 'mkv';
                 } else {
                     this.type = 'normal';
                 }
             }
-
             if (this.type === 'hls' && (video.canPlayType('application/x-mpegURL') || video.canPlayType('application/vnd.apple.mpegURL'))) {
                 this.type = 'normal';
             }
-
             switch (this.type) {
                 // https://github.com/video-dev/hls.js
                 case 'hls':
@@ -359,10 +359,10 @@ class DPlayer {
                                 delete this.plugins.hls;
                             });
                         } else {
-                            this.notice('Error: Hls is not supported.');
+                            this.notice('Error: Hls is not supported.', { warn: true });
                         }
                     } else {
-                        this.notice("Error: Can't find Hls.");
+                        this.notice("Error: Can't find Hls.", { warn: true });
                     }
                     break;
 
@@ -387,10 +387,10 @@ class DPlayer {
                                 delete this.plugins.flvjs;
                             });
                         } else {
-                            this.notice('Error: flvjs is not supported.');
+                            this.notice('Error: flvjs is not supported.', { warn: true });
                         }
                     } else {
-                        this.notice("Error: Can't find flvjs.");
+                        this.notice("Error: Can't find flvjs.", { warn: true });
                     }
                     break;
 
@@ -406,7 +406,7 @@ class DPlayer {
                             delete this.plugins.dash;
                         });
                     } else {
-                        this.notice("Error: Can't find dashjs.");
+                        this.notice("Error: Can't find dashjs.", { warn: true });
                     }
                     break;
 
@@ -435,10 +435,24 @@ class DPlayer {
                                 delete this.plugins.webtorrent;
                             });
                         } else {
-                            this.notice('Error: Webtorrent is not supported.');
+                            this.notice('Error: Webtorrent is not supported.', { warn: true });
                         }
                     } else {
-                        this.notice("Error: Can't find Webtorrent.");
+                        this.notice("Error: Can't find Webtorrent.", { warn: true });
+                    }
+                    break;
+                case 'mkv':
+                    if (window.mkv) {
+                        const dashjsPlayer = window.dashjs.MediaPlayer().create().initialize(video, video.src, false);
+                        const options = this.options.pluginOptions.dash;
+                        dashjsPlayer.updateSettings(options);
+                        this.plugins.dash = dashjsPlayer;
+                        this.events.on('destroy', () => {
+                            window.dashjs.MediaPlayer().reset();
+                            delete this.plugins.dash;
+                        });
+                    } else {
+                        this.notice("Error: Can't find mkv support.", { warn: true });
                     }
                     break;
             }
@@ -454,6 +468,11 @@ class DPlayer {
         // show video time: the metadata has loaded or changed
         this.on('durationchange', () => {
             // compatibility: Android browsers will output 1 or Infinity at first
+            // accordind to https://developer.mozilla.org/en-US/docs/Web/Guide/Audio_and_video_delivery/buffering_seeking_time_ranges
+            if (this.video.seekable.length > 1 || this.video.seekable.end(0) - this.video.seekable.start(0) < this.video.duration) {
+                console.warn("The Source of the video probably doesn't support byte ranges, but the video isn't seekable the entire way!");
+            }
+
             if (video.duration !== 1 && video.duration !== Infinity && video.duration) {
                 this.template.dtime.innerHTML = utils.secondToTime(video.duration);
                 // to get the progress we have to have duration!!!
@@ -531,7 +550,7 @@ class DPlayer {
         this.volume(this.user.get('volume'), true, true);
 
         if (this.options.subtitle) {
-            this.subtitle = new Subtitle(this.template.subtitle, this.video, this.options.subtitle, this.events);
+            this.subtitle = new Subtitle(this, this.template.subtitle, this.options.subtitle, this.events);
             if (!this.user.get('subtitle')) {
                 this.subtitle.hide();
             }
@@ -617,6 +636,9 @@ class DPlayer {
         options.mode = options.mode || 'normal';
         options.duplicate = options.duplicate || 'ignore';
         options.type = options.type || 'normal';
+        if (options.warn) {
+            console.warn(text);
+        }
 
         if (options.mode === 'override') {
             options.time = -1;
