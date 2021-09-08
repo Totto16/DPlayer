@@ -10,3 +10,6 @@ package-lock.json
 docs/.vuepress/dist
 yarn.lock
 demo/*.mp4
+demo/*.ass
+demo/*.mkv
+src/plugins/*
