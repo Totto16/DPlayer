@@ -359,10 +359,10 @@ class DPlayer {
                                 delete this.plugins.hls;
                             });
                         } else {
-                            this.notice('Error: Hls is not supported.');
+                            this.notice('Error: Hls is not supported.', { warn: true });
                         }
                     } else {
-                        this.notice("Error: Can't find Hls.");
+                        this.notice("Error: Can't find Hls.", { warn: true });
                     }
                     break;
 
@@ -387,10 +387,10 @@ class DPlayer {
                                 delete this.plugins.flvjs;
                             });
                         } else {
-                            this.notice('Error: flvjs is not supported.');
+                            this.notice('Error: flvjs is not supported.', { warn: true });
                         }
                     } else {
-                        this.notice("Error: Can't find flvjs.");
+                        this.notice("Error: Can't find flvjs.", { warn: true });
                     }
                     break;
 
@@ -406,7 +406,7 @@ class DPlayer {
                             delete this.plugins.dash;
                         });
                     } else {
-                        this.notice("Error: Can't find dashjs.");
+                        this.notice("Error: Can't find dashjs.", { warn: true });
                     }
                     break;
 
@@ -435,10 +435,10 @@ class DPlayer {
                                 delete this.plugins.webtorrent;
                             });
                         } else {
-                            this.notice('Error: Webtorrent is not supported.');
+                            this.notice('Error: Webtorrent is not supported.', { warn: true });
                         }
                     } else {
-                        this.notice("Error: Can't find Webtorrent.");
+                        this.notice("Error: Can't find Webtorrent.", { warn: true });
                     }
                     break;
                 case 'mkv':
@@ -452,7 +452,7 @@ class DPlayer {
                             delete this.plugins.dash;
                         });
                     } else {
-                        this.notice("Error: Can't find mkv support.");
+                        this.notice("Error: Can't find mkv support.", { warn: true });
                     }
                     break;
             }
@@ -550,7 +550,7 @@ class DPlayer {
         this.volume(this.user.get('volume'), true, true);
 
         if (this.options.subtitle) {
-            this.subtitle = new Subtitle(this.template.subtitle, this.video, this.options.subtitle, this.events);
+            this.subtitle = new Subtitle(this, this.template.subtitle, this.options.subtitle, this.events);
             if (!this.user.get('subtitle')) {
                 this.subtitle.hide();
             }
@@ -636,6 +636,9 @@ class DPlayer {
         options.mode = options.mode || 'normal';
         options.duplicate = options.duplicate || 'ignore';
         options.type = options.type || 'normal';
+        if (options.warn) {
+            console.warn(text);
+        }
 
         if (options.mode === 'override') {
             options.time = -1;
