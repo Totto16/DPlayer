@@ -6,7 +6,7 @@
         <img src="{{ options.logo }}">
     </div>
     {{ /if }}
-    <div class="dplayer-danmaku"{{ if options.danmaku && options.danmaku.bottm }} style="margin-bottom:{{ options.danmaku.bottm }}"{{ /if }}>
+    <div class="dplayer-danmaku"{{ if options.danmaku && options.danmaku.bottom }} style="margin-bottom:{{ options.danmaku.bottm }}"{{ /if }}>
         <div class="dplayer-danmaku-item dplayer-danmaku-item--demo"></div>
     </div>
     <div class="dplayer-subtitle"></div>
@@ -21,7 +21,7 @@
 <div class="dplayer-controller-mask"></div>
 <div class="dplayer-controller">
     <div class="dplayer-icons dplayer-comment-box">
-        <button class="dplayer-icon dplayer-comment-setting-icon" aria-label="{{ tran('setting') }}" data-balloon-pos="up">
+        <button class="dplayer-icon dplayer-comment-setting-icon" {{balloon('setting','up')}}>
             <span class="dplayer-icon-content">{{@ icons.pallette }}</span>
         </button>
         <div class="dplayer-comment-setting-box">
@@ -69,7 +69,7 @@
             </div>
         </div>
         <input class="dplayer-comment-input" type="text" placeholder="{{ tran('input-danmaku-enter') }}" maxlength="30">
-        <button class="dplayer-icon dplayer-send-icon" aria-label="{{ tran('send') }}" data-balloon-pos="up">
+        <button class="dplayer-icon dplayer-send-icon" {{balloon('send','up')}}>
             <span class="dplayer-icon-content">{{@ icons.send }}</span>
         </button>
     </div>
@@ -111,34 +111,34 @@
         </div>
         {{ /if }}
         {{ if options.screenshot }}
-        <div class="dplayer-icon dplayer-camera-icon" aria-label="{{ tran('screenshot') }}" data-balloon-pos="up">
+        <div class="dplayer-icon dplayer-camera-icon" {{balloon('screenshot','up')}}>
             <span class="dplayer-icon-content">{{@ icons.camera }}</span>
         </div>
         {{ /if }}
         {{ if options.airplay }}
-        <div class="dplayer-icon dplayer-airplay-icon" aria-label="{{ tran('airplay') }}" data-balloon-pos="up">
+        <div class="dplayer-icon dplayer-airplay-icon" {{balloon('airplay','up')}}>
             <span class="dplayer-icon-content">{{@ icons.airplay }}</span>
         </div>
         {{ /if }}
         {{ if options.chromecast }}
-        <div class="dplayer-icon dplayer-chromecast-icon" aria-label="{{ tran('chromecast') }}" data-balloon-pos="up">
+        <div class="dplayer-icon dplayer-chromecast-icon" {{balloon('chromecast','up')}}>
             <span class="dplayer-icon-content">{{@ icons.chromecast }}</span>
         </div>
         {{ /if }}
         <div class="dplayer-comment">
-            <button class="dplayer-icon dplayer-comment-icon" aria-label="{{ tran('send-danmaku') }}" data-balloon-pos="up">
+            <button class="dplayer-icon dplayer-comment-icon" {{balloon('send-danmaku','up')}}'>
                 <span class="dplayer-icon-content">{{@ icons.comment }}</span>
             </button>
         </div>
         {{ if options.subtitle }}
         <div class="dplayer-subtitle-btn">
-            <button class="dplayer-icon dplayer-subtitle-icon" aria-label="{{ tran('hide-subs') }}" data-balloon-pos="up">
+            <button class="dplayer-icon dplayer-subtitle-icon" {{balloon('hide-subs','up')}}>
                 <span class="dplayer-icon-content">{{@ icons.subtitle }}</span>
             </button>
         </div>
         {{ /if }}
         <div class="dplayer-setting">
-            <button class="dplayer-icon dplayer-setting-icon" aria-label="{{ tran('setting') }}" data-balloon-pos="up">
+            <button class="dplayer-icon dplayer-setting-icon" {{balloon('setting','up')}}>
                 <span class="dplayer-icon-content">{{@ icons.setting }}</span>
             </button>
             <div class="dplayer-setting-box">
@@ -189,10 +189,10 @@
             </div>
         </div>
         <div class="dplayer-full">
-            <button class="dplayer-icon dplayer-full-in-icon" aria-label="{{ tran('web-fullscreen') }}" data-balloon-pos="up">
+            <button class="dplayer-icon dplayer-full-in-icon" {{balloon('web-fullscreen','up')}}>
                 <span class="dplayer-icon-content">{{@ icons.fullWeb }}</span>
             </button>
-            <button class="dplayer-icon dplayer-full-icon" aria-label="{{ tran('fullscreen') }}" data-balloon-pos="up">
+            <button class="dplayer-icon dplayer-full-icon" {{balloon('fullscreen','up')}}>
                 <span class="dplayer-icon-content">{{@ icons.full }}</span>
             </button>
         </div>

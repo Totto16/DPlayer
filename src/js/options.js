@@ -24,6 +24,7 @@ export default (options, player) => {
         contextmenu: [],
         mutex: true,
         pluginOptions: { hls: {}, flv: {}, dash: {}, webtorrent: {}, ass: {} },
+        balloon: false,
     };
     for (const defaultKey in defaultOption) {
         if (defaultOption.hasOwnProperty(defaultKey) && !options.hasOwnProperty(defaultKey)) {
