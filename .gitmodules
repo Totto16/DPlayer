@@ -1,0 +1,4 @@
+[submodule "src/plugins/ass"]
+	path = src/plugins/ass
+	url = https://github.com/libass/JavascriptSubtitlesOctopus.git
+	ignore = dirty
