@@ -63,6 +63,7 @@ class DPlayer {
 
         this.template = new Template({
             container: this.container,
+            player: this,
             options: this.options,
             index: index,
             tran: this.tran,
@@ -678,6 +679,14 @@ class DPlayer {
     speed(rate) {
         this.notice(this.tran('speed').replace('%s', `${rate * 100}%`));
         this.video.playbackRate = rate;
+    }
+
+    balloon(translate, mode) {
+        if (this.options.balloon === true) {
+            return `aria-label="${this.tran(translate)}" data-balloon-pos="${mode}"`;
+        } else {
+            return '';
+        }
     }
 
     destroy() {

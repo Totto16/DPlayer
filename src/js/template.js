@@ -6,6 +6,7 @@ class Template {
     constructor(options) {
         this.container = options.container;
         this.options = options.options;
+        this.player = options.player;
         this.index = options.index;
         this.tran = options.tran;
         this.init();
@@ -16,6 +17,9 @@ class Template {
             options: this.options,
             index: this.index,
             tran: this.tran,
+            balloon: (a, b) => {
+                this.player.balloon.call(this.player, a, b);
+            },
             icons: Icons,
             mobile: utils.isMobile,
             video: {
