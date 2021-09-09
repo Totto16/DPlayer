@@ -12,6 +12,7 @@ module.exports = {
 
     entry: {
         DPlayer: './src/js/index.js',
+        ass: '.src/plugins/ass.js',
     },
 
     output: {

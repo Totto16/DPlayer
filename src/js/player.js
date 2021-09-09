@@ -335,8 +335,6 @@ class DPlayer {
                     this.type = 'flv';
                 } else if (/.mpd(#|\?|$)/i.exec(video.src)) {
                     this.type = 'dash';
-                } else if (/.mkv(#|\?|$)/i.exec(video.src)) {
-                    this.type = 'mkv';
                 } else {
                     this.type = 'normal';
                 }
@@ -439,20 +437,6 @@ class DPlayer {
                         }
                     } else {
                         this.notice("Error: Can't find Webtorrent.", { warn: true });
-                    }
-                    break;
-                case 'mkv':
-                    if (window.mkv) {
-                        const dashjsPlayer = window.dashjs.MediaPlayer().create().initialize(video, video.src, false);
-                        const options = this.options.pluginOptions.dash;
-                        dashjsPlayer.updateSettings(options);
-                        this.plugins.dash = dashjsPlayer;
-                        this.events.on('destroy', () => {
-                            window.dashjs.MediaPlayer().reset();
-                            delete this.plugins.dash;
-                        });
-                    } else {
-                        this.notice("Error: Can't find mkv support.", { warn: true });
                     }
                     break;
             }
