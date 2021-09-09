@@ -14,16 +14,24 @@ module.exports = {
 
     entry: {
         DPlayer: './src/js/index.js',
+        ass: './src/plugins/ass.js',
     },
 
     output: {
         path: path.resolve(__dirname, '..', 'dist'),
-        filename: '[name].min.js',
+        filename: (a) => {
+            if (a.runtime === 'DPlayer') {
+                return '[name].min.js';
+            } else {
+                return '[name]/[name].min.js';
+            }
+        },
         library: '[name]',
         libraryTarget: 'umd',
         libraryExport: 'default',
         umdNamedDefine: true,
         publicPath: '/',
+        clean: true,
     },
 
     resolve: {
@@ -98,5 +106,8 @@ module.exports = {
         global: false,
         __filename: false,
         __dirname: false,
+    },
+    optimization: {
+        mangleWasmImports: false,
     },
 };

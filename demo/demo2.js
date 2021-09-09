@@ -111,10 +111,12 @@ function initPlayers() {
         },
         theme: "var(--bar-color)",
         hotkey: true,
-       // highlights: {marker:[]/*vtt_stamps*/,mode:'top'},
+        //highlights: {marker:vtt_stamps,mode:'top'},
      /*    highlights: {marker:vtt_stamps2,mode:'normal'}, */
-        highlights:{vtt:"https://ddl.amalgam-fansubs.moe/config/subs/[Totto]DetektivConan-1002-RFCT-[1080p].vtt"},
+        highlights:{vtt:"https://ddl.amalgam-fansubs.moe/config/subs/[Totto]DetektivConan-1002-RFCT-[1080p].vtt",mode:"auto"},
         airplay: "vendor",
+        //subtitle:{url:"http://localhost:8080/CONAN1002.vtt"},
+        subtitle:{url:"http://localhost:8080/CONAN1002.ass"},
         chromecast: "vendor"
     });
     window.dp = dp;

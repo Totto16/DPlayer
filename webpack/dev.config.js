@@ -8,15 +8,22 @@ const cssnano = require('cssnano');
 module.exports = {
     mode: 'development',
 
-    devtool: 'cheap-module-source-map',
+    devtool: 'eval',
 
     entry: {
         DPlayer: './src/js/index.js',
+        ass: './src/plugins/ass.js',
     },
 
     output: {
         path: path.resolve(__dirname, '..', 'dist'),
-        filename: '[name].js',
+        filename: (a) => {
+            if (a.runtime === 'DPlayer') {
+                return '[name].js';
+            } else {
+                return '[name]/[name].js';
+            }
+        },
         library: '[name]',
         libraryTarget: 'umd',
         libraryExport: 'default',
@@ -90,9 +97,14 @@ module.exports = {
 
     devServer: {
         compress: true,
-        static: {
-            directory: path.resolve(__dirname, '..', 'demo'),
-        },
+        static: [
+            {
+                directory: path.resolve(__dirname, '..', 'demo'),
+            },
+            {
+                directory: path.resolve(__dirname, '..', 'dist/ass'), // you should put these into root!!!! (only ass.js is not bound to that, but the subtitle octopus files cant't be set to other dirs :( )
+            },
+        ],
         open: true,
         historyApiFallback: {
             disableDotRule: true,
@@ -118,5 +130,8 @@ module.exports = {
 
     performance: {
         hints: false,
+    },
+    optimization: {
+        mangleWasmImports: false,
     },
 };

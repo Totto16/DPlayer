@@ -12,4 +12,4 @@ yarn.lock
 demo/*.mp4
 demo/*.ass
 demo/*.mkv
-src/plugins/*
+demo/*.vtt
