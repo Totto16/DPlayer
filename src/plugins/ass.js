@@ -1,7 +1,7 @@
 // using https://github.com/libass/JavascriptSubtitlesOctopus in folder ass/
 
 // Subtitle Octopus has many bugs and errors, some of them are: - When you seek the subtitles get shown even if the video hasn't loaded yet!
-//                                                              - The Browser Image decoding isn't available to an coding error! (maybe I'll fix that)
+//                                                              - The Browser Image decoding isn't available to an coding error! (I'll fixed that)
 //                                                              - fonts are complicated and its hard to only load the necessary fonts, I have a font folder with over 400 fonts but i don't want them to load all, it would be better to load them when needed on a set folder! (this could be solved with a font config file on the server, that it understands, currently you can define something like availableFonts{'arial':'whatever.ttf'}, but thats not enough!)
 
 import SubtitlesOctopus from './js/subtitles-octopus.js';
