@@ -10,4 +10,9 @@
 @import './subtitle';
 @import './video';
 @import './info-panel';
-@import './hotkey-panel'
+@import './hotkey-panel';
+
+
+.hide-force {
+    display: none !important;
+}

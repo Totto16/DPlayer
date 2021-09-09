@@ -535,9 +535,6 @@ class DPlayer {
 
         if (this.options.subtitle) {
             this.subtitle = new Subtitle(this, this.template.subtitle, this.options.subtitle, this.events);
-            if (!this.user.get('subtitle')) {
-                this.subtitle.hide();
-            }
         }
     }
 
