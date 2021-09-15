@@ -55,10 +55,14 @@ class Events {
             'chapter',
             'highlight_change',
             'ranges_change',
+            'all',
         ];
     }
 
     on(name, callback) {
+        if (name === 'all' || name === '*') {
+            name = [...this.playerEvents, ...this.videoEvents];
+        }
         if (Array.isArray(name)) {
             name.forEach((a) => this.on(a, callback));
         } else {
