@@ -6,15 +6,20 @@
 
 import SubtitlesOctopus from './js/subtitles-octopus.js';
 
-const ass = (options, player, onReady) => {
+// To define async functions compiled to regenerators!
+import 'regenerator-runtime/runtime.js';
+
+const ass = async (options, player, onReady, callback) => {
     if (!SubtitlesOctopus) {
         console.error('SubtitlesOctopus is not defined, fatal Error!');
         return;
     }
+    const { allFonts, usedFonts } = await getAvaiableFonts('/fonts/config.json', '');
     const default_options = {
-        fonts: [],
         workerUrl: 'subtitles-octopus-worker.js',
         legacyWorkerUrl: 'subtitles-octopus-worker-legacy.js',
+        fonts: usedFonts,
+        availableFonts: allFonts,
         onReady,
         onError: (err) => {
             console.log(err);
@@ -35,7 +40,29 @@ const ass = (options, player, onReady) => {
     const data_l = require('!!file-loader?name=ass/[name].[ext]!./js/subtitles-octopus-worker-legacy.data');
     options = { ...default_options, ...options };
     player.options.pluginOptions.ass = options;
-    return new SubtitlesOctopus(options);
+    const SO = new SubtitlesOctopus(options);
+    if (callback) {
+        callback(SO);
+    }
+    return SO;
 };
+
+async function getAvaiableFonts(location = 'https://ddl.amalgam-fansubs.moe/fonts/config.json', url = 'https://ddl.amalgam-fansubs.moe') {
+    // {"arial": "/font1.ttf"}
+    return await new Promise((resolve) => {
+        fetch(location)
+            .then((response) => response.json())
+            .then((data) => {
+                Object.keys(data).forEach((a) => {
+                    data[a] = `${url}${data[a]}`;
+                });
+                resolve({ allFonts: data, usedFonts: Object.values(data) });
+            })
+            .catch((err) => {
+                console.error(err);
+                resolve({ allFonts: [], usedFonts: {} });
+            });
+    });
+}
 
 export default ass;

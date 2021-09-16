@@ -29,6 +29,10 @@ function initPlayers() {
     ];
      */
     [ {
+        "name": "RAW",
+        "url": "http://localhost:8080/1002.mp4",
+        "type": "normal"
+      },{
         "name": "FHD",
         "url": "http://localhost:8080/[Totto]DetektivConan-1002-RFCT-[1080p].mp4",
         "type": "normal"
