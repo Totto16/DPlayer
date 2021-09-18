@@ -18,6 +18,7 @@ const ass = async (options, player, onReady, callback) => {
     const default_options = {
         workerUrl: 'subtitles-octopus-worker.js',
         legacyWorkerUrl: 'subtitles-octopus-worker-legacy.js',
+        fallbackFont: '/fonts/arialbd.ttf', // Fallback font to be used in case none can be loaded / or has special characters
         fonts: usedFonts,
         availableFonts: allFonts,
         onReady,
@@ -31,13 +32,13 @@ const ass = async (options, player, onReady, callback) => {
     // eslint-disable-next-line no-unused-vars
     const worker = require('!!file-loader?name=ass/[name].[ext]!./js/subtitles-octopus-worker.js');
     // eslint-disable-next-line no-unused-vars
-    const data = require('!!file-loader?name=ass/[name].[ext]!./js/subtitles-octopus-worker.data');
+    //  const data = require('!!file-loader?name=ass/[name].[ext]!./js/subtitles-octopus-worker.data');
     // eslint-disable-next-line no-unused-vars
     const wasm = require('!!file-loader?name=ass/[name].[ext]!./js/subtitles-octopus-worker.wasm');
     // eslint-disable-next-line no-unused-vars
-    const worker_l = require('!!file-loader?name=ass/[name].[ext]!./js/subtitles-octopus-worker-legacy.js');
+    //  const worker_l = require('!!file-loader?name=ass/[name].[ext]!./js/subtitles-octopus-worker-legacy.js');
     // eslint-disable-next-line no-unused-vars
-    const data_l = require('!!file-loader?name=ass/[name].[ext]!./js/subtitles-octopus-worker-legacy.data');
+    //  const data_l = require('!!file-loader?name=ass/[name].[ext]!./js/subtitles-octopus-worker-legacy.data');
     options = { ...default_options, ...options };
     player.options.pluginOptions.ass = options;
     const SO = new SubtitlesOctopus(options);
