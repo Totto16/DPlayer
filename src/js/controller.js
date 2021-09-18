@@ -145,8 +145,8 @@ class Controller {
                                 p.setAttribute('data-start', start / 100);
                                 p.setAttribute('data-end', end / 100);
                                 p.innerHTML = `<div class="dplayer-loaded"></div>
-                                <div class="dplayer-played" style="background: ${this.player.options.theme}">
-                                    <span class="dplayer-thumb${i === 0 ? '' : ' invisible'}" style="background: ${this.player.options.theme}"></span>
+                                <div class="dplayer-played" style="background: var(--dplayer-theme-color);">
+                                    <span class="dplayer-thumb${i === 0 ? '' : ' invisible'}" style="background: -var(--dplayer-theme-color);"></span>
                                 </div>`;
                                 // p.innerHTML = `<span class="dplayer-highlight-top-text">${marker[i].text}</span>`;
                                 this.player.template.playedBarWrap.appendChild(p);

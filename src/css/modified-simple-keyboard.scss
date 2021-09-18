@@ -11,7 +11,7 @@
  */
 
 .hg-theme-default {
-    background-color: #ececec;
+    background-color:var(--dplayer-simple-keyboard-bk);
     border-radius: 5px;
     box-sizing: border-box;
     font-family: HelveticaNeue-Light, Helvetica Neue Light, Helvetica Neue, Helvetica, Arial, Lucida Grande, sans-serif;
@@ -26,6 +26,7 @@
     
     .hg-button span {
         pointer-events: none;
+        color:var(--dplayer-simple-keyboard-span-text);
     }
 
     button.hg-button {
@@ -64,12 +65,12 @@
     }
 
     .hg-button {
-        -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+        -webkit-tap-highlight-color: rgba(0, 0, 0, 0); //we don't use vars for that
         align-items: center;
-        background: #fff;
-        border-bottom: 1px solid #b5b5b5;
+        background:var(--dplayer-simple-keyboard-button-bk);
+        border-bottom: 1px solid var(--dplayer-simple-keyboard-button-border);
         border-radius: 5px;
-        box-shadow: 0 0 3px -1px rgba(0, 0, 0, 0.3);
+        box-shadow: 0 0 3px -1px var(--dplayer-simple-keyboard-button-box-sh);
         box-sizing: border-box;
         display: flex;
         height: 40px;
@@ -82,8 +83,8 @@
     }
 
     .shortcuts-enabled{
-        background-color: #00ff10;
-        cursor: help; // if using balloon-css delete this!
+        background-color:var(--dplayer-simple-keyboard-keys-bk-available);
+        cursor: help; // if using balloon-css (for this too) delete this!
     }
 
     &.hg-layout-numeric .hg-button {
@@ -112,8 +113,8 @@
     }
 
     .hg-button.hg-selectedButton {
-        background: rgba(5, 25, 70, 0.53);
-        color: #fff;
+        background: var(--dplayer-simple-keyboard-button-selected-default);
+        color:var(--dplayer-simple-keyboard-button-selected-default-color);
     }
 
     .hg-button.hg-standardBtn[data-skbtn='.com'] {
@@ -184,8 +185,8 @@
 }
 
 .hg-candidate-box {
-    background: #ececec;
-    border-bottom: 2px solid #b5b5b5;
+    background: var(--dplayer-simple-keyboard-bk);
+    border-bottom: 2px solid var(--dplayer-simple-keyboard-candidate-box-border);
     border-radius: 5px;
     display: inline-flex;
     margin-top: -10px;
@@ -215,11 +216,11 @@ li.hg-candidate-box-list-item {
 }
 
 li.hg-candidate-box-list-item:hover {
-    background: rgba(0, 0, 0, 0.03);
+    background:var(--dplayer-simple-keyboard-candidate-box-hover);
 }
 
 li.hg-candidate-box-list-item:active {
-    background: rgba(0, 0, 0, 0.1);
+    background: var(--dplayer-simple-keyboard-candidate-box-active);
 }
 
 .hg-candidate-box-prev:before {
@@ -233,8 +234,8 @@ li.hg-candidate-box-list-item:active {
 .hg-candidate-box-next,
 .hg-candidate-box-prev {
     align-items: center;
-    background: #d0d0d0;
-    color: #969696;
+    background:var(--dplayer-simple-keyboard-candidate-box-prev-bk);
+    color:var(--dplayer-simple-keyboard-candidate-box-prev-color);
     display: flex;
     padding: 0 10px;
 }
@@ -250,5 +251,5 @@ li.hg-candidate-box-list-item:active {
 }
 
 .hg-candidate-box-btn-active {
-    color: #444;
+    color:var(--dplayer-simple-keyboard-candidate-btn);
 }

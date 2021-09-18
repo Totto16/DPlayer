@@ -84,6 +84,7 @@ const model = {
     speedup: [],
     speeddown: [],
     speednormal: [],
+    'hotkey-disabled': [],
 };
 
 // Standard english translations
@@ -146,6 +147,7 @@ const standard = {
     speedup: 'Increase the playback speed',
     speeddown: 'Decrease the playback speed',
     speednormal: 'Set the playback speed to normal (100%)',
+    'hotkey-disabled': 'Hotkeys are disabled for this video!',
 };
 
 // add translation text here
@@ -391,6 +393,7 @@ const tranTxt = {
         speedup: 'Wiedergabegeschwindigkeit erhöhen',
         speeddown: 'Wiedergabegeschwindigkeit  senken',
         speednormal: 'Wiedergabegeschwindigkeit auf normal setzen (100%)',
+        'hotkey-disabled': 'Navigation mit der Tastatur ist für dieses Video Deaktiviert!',
     },
 };
 

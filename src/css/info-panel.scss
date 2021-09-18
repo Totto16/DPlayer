@@ -4,9 +4,9 @@
     left: 10px;
     width: #{"clamp(200px, 80%, 800px)"};
     overflow: hidden;
-    background: rgba(28, 28, 28, 0.8);
+    background:var(--dplayer-panel-bk);
     padding: 10px;
-    color: #fff;
+    color: var(--dplayer-text-color);
     font-size: 12px;
     border-radius: 2px;
 

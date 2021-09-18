@@ -4,8 +4,8 @@
     width: 90%;
     left: 5%;
     text-align: center;
-    color: #fff;
-    text-shadow: 0.5px 0.5px 0.5px rgba(0, 0, 0, 0.5);
+    color: var(--dplayer-subtitle-text-color);
+    text-shadow: 0.5px 0.5px 0.5px var(--dplayer-subtitle-box-sh);
     font-size: 20px;
     &.dplayer-subtitle-hide {
         display: none;

@@ -5,14 +5,14 @@
     top: 0;
     bottom: 0;
     font-size: 22px;
-    color: #fff;
+    color: var(--dplayer-text-color);
     .dplayer-danmaku-item {
         display: inline-block;
         pointer-events: none;
         user-select: none;
         cursor: default;
         white-space: nowrap;
-        text-shadow: .5px .5px .5px rgba(0, 0, 0, .5);
+        text-shadow: .5px .5px .5px var(--dplayer-danmaku-item-text-sh);
         &--demo {
             position: absolute;
             visibility: hidden;
