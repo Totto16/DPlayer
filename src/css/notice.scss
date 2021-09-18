@@ -5,10 +5,10 @@
 
     .dplayer-notice {
         border-radius: 2px;
-        background: rgba(28, 28, 28, 0.9);
+        background:var(--dplayer-notice-bk);
         transition: all .3s ease-in-out;
         overflow: hidden;
-        color: #fff;
+        color:var(--dplayer-notice-text);
         display: table;
         pointer-events: none;
         animation: showNotice .3s ease 1 forwards;

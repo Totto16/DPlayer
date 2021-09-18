@@ -45,11 +45,18 @@ class Subtitle {
                         video: this.player.video,
                         subUrl: this.options.url,
                     };
-                    this.instance = window.ass(options, this.player, () => {
-                        if (!this.player.user.get('subtitle')) {
-                            this.hide();
+                    window.ass(
+                        options,
+                        this.player,
+                        () => {
+                            if (!this.player.user.get('subtitle')) {
+                                this.hide();
+                            }
+                        },
+                        (SO) => {
+                            this.instance = SO;
                         }
-                    });
+                    );
                 } else {
                     this.player.notice("Error: Can't find ass support.", { warn: true });
                 }

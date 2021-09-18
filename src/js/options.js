@@ -8,10 +8,11 @@ export default (options, player) => {
         container: options.element || document.getElementsByClassName('dplayer')[0],
         live: false,
         autoplay: false,
-        theme: '#b7daff',
+        themeName: 'standard',
+        disableDarkMode: false,
         loop: false,
         lang: (navigator.language || navigator.browserLanguage).toLowerCase(),
-        screenshot: false,
+        screenshot: true,
         airplay: 'vendor',
         chromecast: 'vendor',
         hotkey: true,
@@ -21,7 +22,12 @@ export default (options, player) => {
         playbackSpeed: [0.5, 0.75, 1, 1.25, 1.5, 2],
         apiBackend: defaultApiBackend,
         video: {},
-        contextmenu: [],
+        contextmenu: [
+            {
+                text: `DPlayer v${DPLAYER_VERSION}`,
+                link: 'https://github.com/Totto16/DPlayer',
+            },
+        ],
         mutex: true,
         pluginOptions: { hls: {}, flv: {}, dash: {}, webtorrent: {}, ass: {} },
         balloon: false,
@@ -90,7 +96,16 @@ export default (options, player) => {
         options.highlights = null;
     }
 
-    options.contextmenu = options.contextmenu.concat([
+    if (options.theme) {
+        console.warn('Setting the Theme in this way is deprecated!');
+        const style = document.createElement('style');
+        style.type = 'text/css';
+        style.innerHTML = `:root { --dplayer-theme-color:${options.theme}; };`;
+        document.head.appendChild(style);
+        options.theme = null;
+    }
+
+    options.contextmenu = [
         {
             key: 'video-info',
             click: (player) => {
@@ -101,15 +116,15 @@ export default (options, player) => {
         {
             key: 'hotkey-info',
             click: (player) => {
-                player.infoPanel.hide();
-                player.hotkeyPanel.triggle();
+                if (player.options.hotkey) {
+                    player.infoPanel.hide();
+                    player.hotkeyPanel.triggle();
+                } else {
+                    player.notice(player.trans('hotkey_disabled'));
+                }
             },
         },
-        {
-            text: `DPlayer v${DPLAYER_VERSION}`,
-            link: 'https://github.com/Totto16/DPlayer',
-        },
-    ]);
+    ].concat(options.contextmenu);
 
     return options;
 };

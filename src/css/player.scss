@@ -1,3 +1,179 @@
+@media (prefers-color-scheme:light) {
+    .dplayer,.dplayer.standard {
+        --dplayer-text-color: rgb(255, 255, 255);
+        --dplayer-bezel-icon-background-color:rgba(0, 0, 0, .5);
+        --dplayer-bezel-icon-color:rgb(255, 255, 255);
+        --dplayer-highlight-background:rgb(255, 255, 255);
+        --dplayer-highlight-text-bk:rgba(0, 0, 0, .62);
+        --dplayer-bar-preview-bk: rgb(255, 255, 255);
+        --dplayer-bar-normal-bk:rgba(212, 203, 203, 0.2);
+        --dplayer-bar-loaded-bk:rgba(255, 255, 255, 0);
+        --dplayer-bar-loaded-strips-bk:rgba(255, 255, 255, .4);
+        --dplayer-comment-bk:rgba(28, 28, 28, 0.9);
+        --dplayer-comment-box-sh:rgba(0, 0, 0, .3);
+        --dplayer-span-border:rgb(255, 255, 255);
+        --dplayer-span-checked-bk:rgb(228, 228, 230);
+        --dplayer-span-checked-color:rgb(28, 28, 28);
+        --dplayer-live-text-color: rgb(238, 238, 238);
+        --dplayer-live-text-sh:rgba(0, 0, 0, .5);
+        --dplayer-volume-bar-bk:rgb(170, 170, 170);
+        --dplayer-settings-box-bk:rgba(28, 28, 28, 0.9);
+        --dplayer-settings-hover-bk:rgba(255, 255, 255, .1);
+        --dplayer-danmaku-bar-bk:rgb(255, 255, 255);
+        --dplayer-danmaku-bar-inner-bk:rgb(170, 170, 170);
+        --dplayer-danmaku-thumb-bk: rgb(170, 170, 170);
+        --dplayer-danmaku-item-text-sh:rgba(0, 0, 0, .5);
+        --dplayer-panel-bk:rgba(28, 28, 28, 0.8);
+        --dplayer-black-simple-keyboard-keys:rgb(0, 0, 0);
+        --dplayer-simple-keyboard-keys-bk-available:rgb(0, 255, 16);
+        --dplayer-simple-keyboard-keys-bk-pressed:rgb(0, 183, 255);
+        --dplayer-simple-keyboard-span-text:rgb(0, 0, 0);
+        --dplayer-menu-bk:rgba(28, 28, 28, 0.85);
+        --dplayer-menu-item-hover:rgba(255, 255, 255, .1);
+        --dplayer-menu-a-color:rgb(238, 238, 238);
+        --dplayer-simple-keyboard-bk: rgb(236, 236, 236);
+        --dplayer-simple-keyboard-button-bk:rgb(255, 255, 255);
+        --dplayer-simple-keyboard-button-border:rgb(181, 181, 181);
+        --dplayer-simple-keyboard-button-box-sh:rgba(0, 0, 0, 0.3);
+        --dplayer-simple-keyboard-button-selected-default:rgba(5, 25, 70, 0.53);
+        --dplayer-simple-keyboard-button-selected-default-color:rgb(255, 255, 255);
+        --dplayer-simple-keyboard-candidate-box-border:rgb(181, 181, 181);
+        --dplayer-simple-keyboard-candidate-box-hover:rgba(0, 0, 0, 0.03);
+        --dplayer-simple-keyboard-candidate-box-active:rgba(0, 0, 0, 0.1);
+        --dplayer-simple-keyboard-candidate-box-prev-bk:rgb(208, 208, 208);
+        --dplayer-simple-keyboard-candidate-box-prev-color:rgb(150, 150, 150);
+        --dplayer-simple-keyboard-candidate-btn:rgb(68, 68, 68);
+        --dplayer-notice-bk:rgba(28, 28, 28, 0.9);
+        --dplayer-notice-text:rgb(255, 255, 255);
+        --dplayer-svg-paths-fill:rgb(255, 255, 255);
+        --dplayer-prefix-wk-fullscreen:rgb(0, 0, 0);
+        --dplayer-subtitle-text-color:rgb(255, 255, 255);
+        --dplayer-subtitle-box-sh:rgba(0, 0, 0, 0.5);
+        --dplayer-video-wrap-bk:rgb(0, 0, 0);
+        --dplayer-theme-color:rgb(183, 218, 255);
+        --dplayer-quality-bk: rgba(198, 198, 198, 0.9);
+        --dplayer-quality-item-hover: rgba(111, 108, 108, 0.35);
+        --dplayer-label-bk:rgb(255, 255, 255);
+    }
+}
+
+@media (prefers-color-scheme:dark) {
+    .dplayer:not(.nodark),.dplayer.standard:not(.nodark) {
+        --dplayer-text-color: rgb(0, 0, 0);
+        --dplayer-bezel-icon-background-color: rgba(247, 247, 247, 0.5);
+        --dplayer-bezel-icon-color: rgb(0, 0, 0);
+        --dplayer-highlight-background: rgb(6, 6, 6);
+        --dplayer-highlight-text-bk: rgba(202, 191, 191, 0.62);
+        --dplayer-bar-preview-bk: rgb(0, 0, 0);
+        --dplayer-bar-normal-bk: rgba(0, 0, 0, 0.2);
+        --dplayer-bar-loaded-bk: rgba(0, 0, 0, 0);
+        --dplayer-bar-loaded-strips-bk:rgba(0, 0, 0, 0.4);
+        --dplayer-comment-bk:rgba(28, 28, 28, 0.9);
+        --dplayer-comment-box-sh:rgba(0, 0, 0, .3);
+        --dplayer-span-border:rgb(255, 255, 255);
+        --dplayer-span-checked-bk:rgb(228, 228, 230);
+        --dplayer-span-checked-color:rgb(28, 28, 28);
+        --dplayer-live-text-color: rgb(0, 0, 0);
+        --dplayer-live-text-sh:rgba(0, 0, 0, .5);
+        --dplayer-volume-bar-bk:rgb(68, 67, 67);
+        --dplayer-settings-box-bk:rgba(193, 192, 192, 0.9);
+        --dplayer-settings-hover-bk:rgba(255, 255, 255, .1);
+        --dplayer-danmaku-bar-bk:rgb(255, 255, 255);
+        --dplayer-danmaku-bar-inner-bk:rgb(170, 170, 170);
+        --dplayer-danmaku-thumb-bk: rgb(170, 170, 170);
+        --dplayer-danmaku-item-text-sh:rgba(0, 0, 0, 0.5);
+        --dplayer-panel-bk:rgba(227, 227, 227, 0.8);
+        --dplayer-black-simple-keyboard-keys: rgb(255, 255, 255);
+        --dplayer-simple-keyboard-keys-bk-available: rgb(17, 115, 23);
+        --dplayer-simple-keyboard-keys-bk-pressed: rgb(9, 51, 115);
+        --dplayer-simple-keyboard-span-text:rgb(255, 255, 255);
+        --dplayer-menu-bk: rgba(255, 255, 255, 0.851);
+        --dplayer-menu-item-hover: rgba(255, 255, 255, 0.1);
+        --dplayer-menu-a-color: rgb(17, 16, 16);
+        --dplayer-simple-keyboard-bk: rgb(15, 14, 14);
+        --dplayer-simple-keyboard-button-bk: rgb(0, 0, 0);
+        --dplayer-simple-keyboard-button-border: rgb(96, 96, 96);
+        --dplayer-simple-keyboard-button-box-sh: rgba(198, 196, 196, 0.3);
+        --dplayer-simple-keyboard-button-selected-default: rgba(5,25,70,0.53);
+        --dplayer-simple-keyboard-button-selected-default-color: rgb(255, 255, 255);
+        --dplayer-simple-keyboard-candidate-box-border: rgb(181, 181, 181);
+        --dplayer-simple-keyboard-candidate-box-hover: rgba(0,0,0,0.03);
+        --dplayer-simple-keyboard-candidate-box-active: rgba(0,0,0,0.1);
+        --dplayer-simple-keyboard-candidate-box-prev-bk: rgb(208, 208, 208);
+        --dplayer-simple-keyboard-candidate-box-prev-color: rgb(150, 150, 150);
+        --dplayer-simple-keyboard-candidate-btn: rgb(68, 68, 68);
+        --dplayer-notice-bk: rgba(255, 255, 255, 0.9);
+        --dplayer-notice-text: rgb(19, 19, 19);
+        --dplayer-svg-paths-fill:rgb(0, 0, 0);
+        --dplayer-prefix-wk-fullscreen:rgb(0, 0, 0);
+        --dplayer-subtitle-text-color:rgb(255, 255, 255);
+        --dplayer-subtitle-box-sh:rgba(0, 0, 0, 0.5);
+        --dplayer-video-wrap-bk:rgb(0, 0, 0);
+        --dplayer-theme-color:rgb(21, 17, 145);
+        --dplayer-quality-bk:rgba(28, 28, 28, 0.9);
+        --dplayer-quality-item-hover:rgba(255, 255, 255, .1);
+        --dplayer-label-bk:rgb(255, 255, 255);
+    }
+
+    .dplayer.nodark,.dplayer.standard.nodark { // Raw Copy of that above, du e to lack of better method :( 
+        --dplayer-text-color: rgb(255, 255, 255);
+        --dplayer-bezel-icon-background-color:rgba(0, 0, 0, .5);
+        --dplayer-bezel-icon-color:rgb(255, 255, 255);
+        --dplayer-highlight-background:rgb(255, 255, 255);
+        --dplayer-highlight-text-bk:rgba(0, 0, 0, .62);
+        --dplayer-bar-preview-bk: rgb(255, 255, 255);
+        --dplayer-bar-normal-bk:rgba(212, 203, 203, 0.2);
+        --dplayer-bar-loaded-bk:rgba(255, 255, 255, 0);
+        --dplayer-bar-loaded-strips-bk:rgba(255, 255, 255, .4);
+        --dplayer-comment-bk:rgba(28, 28, 28, 0.9);
+        --dplayer-comment-box-sh:rgba(0, 0, 0, .3);
+        --dplayer-span-border:rgb(255, 255, 255);
+        --dplayer-span-checked-bk:rgb(228, 228, 230);
+        --dplayer-span-checked-color:rgb(28, 28, 28);
+        --dplayer-live-text-color: rgb(238, 238, 238);
+        --dplayer-live-text-sh:rgba(0, 0, 0, .5);
+        --dplayer-vostandardlume-bar-bk:rgb(170, 170, 170);
+        --dplayer-settings-box-bk:rgba(28, 28, 28, 0.9);
+        --dplayer-settings-hover-bk:rgba(255, 255, 255, .1);
+        --dplayer-danmaku-bar-bk:rgb(255, 255, 255);
+        --dplayer-danmaku-bar-inner-bk:rgb(170, 170, 170);
+        --dplayer-danmaku-thumb-bk: rgb(170, 170, 170);
+        --dplayer-danmaku-item-text-sh:rgba(0, 0, 0, .5);
+        --dplayer-panel-bk:rgba(28, 28, 28, 0.8);
+        --dplayer-black-simple-keyboard-keys:rgb(0, 0, 0);
+        --dplayer-simple-keyboard-keys-bk-available:rgb(0, 255, 16);
+        --dplayer-simple-keyboard-keys-bk-pressed:rgb(0, 183, 255);
+        --dplayer-simple-keyboard-span-text:rgb(0, 0, 0);
+        --dplayer-menu-bk:rgba(28, 28, 28, 0.85);
+        --dplayer-menu-item-hover:rgba(255, 255, 255, .1);
+        --dplayer-menu-a-color:rgb(238, 238, 238);
+        --dplayer-simple-keyboard-bk: rgb(236, 236, 236);
+        --dplayer-simple-keyboard-button-bk:rgb(255, 255, 255);
+        --dplayer-simple-keyboard-button-border:rgb(181, 181, 181);
+        --dplayer-simple-keyboard-button-box-sh:rgba(0, 0, 0, 0.3);
+        --dplayer-simple-keyboard-button-selected-default:rgba(5, 25, 70, 0.53);
+        --dplayer-simple-keyboard-button-selected-default-color:rgb(255, 255, 255);
+        --dplayer-simple-keyboard-candidate-box-border:rgb(181, 181, 181);
+        --dplayer-simple-keyboard-candidate-box-hover:rgba(0, 0, 0, 0.03);
+        --dplayer-simple-keyboard-candidate-box-active:rgba(0, 0, 0, 0.1);
+        --dplayer-simple-keyboard-candidate-box-prev-bk:rgb(208, 208, 208);
+        --dplayer-simple-keyboard-candidate-box-prev-color:rgb(150, 150, 150);
+        --dplayer-simple-keyboard-candidate-btn:rgb(68, 68, 68);
+        --dplayer-notice-bk:rgba(28, 28, 28, 0.9);
+        --dplayer-notice-text:rgb(255, 255, 255);
+        --dplayer-svg-paths-fill:rgb(255, 255, 255);
+        --dplayer-prefix-wk-fullscreen:rgb(0, 0, 0);
+        --dplayer-subtitle-text-color:rgb(255, 255, 255);
+        --dplayer-subtitle-box-sh:rgba(0, 0, 0, 0.5);
+        --dplayer-video-wrap-bk:rgb(0, 0, 0);
+        --dplayer-theme-color:rgb(183, 218, 255);
+        --dplayer-quality-bk: rgba(198, 198, 198, 0.9);
+        --dplayer-quality-item-hover: rgba(111, 108, 108, 0.35);
+        --dplayer-label-bk:rgb(255, 255, 255);
+    }
+}
+
+
 .dplayer {
     position: relative;
     overflow: hidden;
@@ -6,6 +182,7 @@
 
     * {
         box-sizing: content-box;
+        color: var(--dplayer-text-color);
     }
 
     svg {
@@ -14,14 +191,14 @@
 
         path,
         circle {
-            fill: #fff;
+            fill: var(--dplayer-svg-paths-fill);
         }
     }
 
     &:-webkit-full-screen {
         width: 100%;
         height: 100%;
-        background: #000;
+        background: var(--dplayer-prefix-wk-fullscreen);
         position: fixed;
         z-index: 100000;
         left: 0;

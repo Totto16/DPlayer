@@ -45,6 +45,10 @@ class DPlayer {
         this.container = this.options.container;
 
         this.container.classList.add('dplayer');
+        this.container.classList.add(this.options.themeName);
+        if (this.options.disableDarkMode) {
+            this.container.classList.add('nodark');
+        }
         if (!this.options.danmaku) {
             this.container.classList.add('dplayer-no-danmaku');
         }
@@ -98,7 +102,7 @@ class DPlayer {
                     this.notice(msg);
                 },
                 apiBackend: this.options.apiBackend,
-                borderColor: this.options.theme,
+                borderColor: 'var(--dplayer-theme-color)',
                 height: this.arrow ? 24 : 30,
                 time: () => this.video.currentTime,
                 unlimited: this.user.get('unlimited'),
@@ -454,8 +458,8 @@ class DPlayer {
         this.on('durationchange', () => {
             // compatibility: Android browsers will output 1 or Infinity at first
             // accordind to https://developer.mozilla.org/en-US/docs/Web/Guide/Audio_and_video_delivery/buffering_seeking_time_ranges
-            if (this.video.seekable.length > 1 || this.video.seekable.end(0) - this.video.seekable.start(0) < this.video.duration) {
-                console.warn("The Source of the video probably doesn't support byte ranges, but the video isn't seekable the entire way!");
+            if (this.video.seekable.length > 1 || Math.abs(this.video.duration - (this.video.seekable.end(0) - this.video.seekable.start(0))) >= 0.5) {
+                console.warn("The Source of the video probably doesn't support byte ranges or the video format doesn't support seeking! The video isn't seekable the entire way!");
             }
 
             if (video.duration !== 1 && video.duration !== Infinity && video.duration) {
@@ -467,7 +471,7 @@ class DPlayer {
 
         // show video loaded bar: to inform interested parties of progress downloading the media
         this.on('progress', () => {
-            if (!video.duration) {
+            if (!video.duration || video.buffered.length <= 0) {
                 return;
             }
             const ranges = [];
@@ -682,7 +686,7 @@ class DPlayer {
     }
 
     balloon(translate, mode) {
-        if (this.options.balloon === true) {
+        if (this.options.balloon) {
             return `aria-label="${this.tran(translate)}" data-balloon-pos="${mode}"`;
         } else {
             return '';

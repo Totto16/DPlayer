@@ -17,9 +17,7 @@ class Template {
             options: this.options,
             index: this.index,
             tran: this.tran,
-            balloon: (a, b) => {
-                this.player.balloon.call(this.player, a, b);
-            },
+            balloon: (a, b) => this.player.balloon.call(this.player, a, b),
             icons: Icons,
             mobile: utils.isMobile,
             video: {

@@ -100,7 +100,7 @@ class HotkeyPanel {
             all.forEach((div) => {
                 const child = parseInt(div.getAttribute('data-keyCode'));
                 if (child === keyCode) {
-                    div.animate([{ backgroundColor: '#00ff10' }, { backgroundColor: '#00b7ff' }], 150);
+                    div.animate([{ backgroundColor: 'var(--dplayer-simple-keyboard-keys-bk-available)' }, { backgroundColor: 'var(--dplayer-simple-keyboard-keys-bk-pressed)' }], 150);
                 }
             });
         }

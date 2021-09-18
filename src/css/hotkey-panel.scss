@@ -7,9 +7,9 @@
     left: 10px;
     width: #{"clamp(200px, 80%, 800px)"};
     overflow: hidden;
-    background: rgba(28, 28, 28, 0.8);
+    background:var(--dplayer-panel-bk);
     padding: 10px;
-    color: #fff;
+    color: var(--dplayer-text-color);
     font-size: 12px;
     border-radius: 2px;
 
@@ -34,7 +34,7 @@
 
     }
     .simple-keyboard {
-        color:black;
+        color:var(--dplayer-black-simple-keyboard-keys);
         width: unset;
         margin: 20px;
     }
@@ -45,10 +45,10 @@
 
 @keyframes keyPressed {
     from {
-        background-color: #00ff10;
+        background-color: var(--dplayer-simple-keyboard-keys-bk-available);
     }
     to {
-        background-color: #00b7ff;
+        background-color:var(--dplayer-simple-keyboard-keys-bk-pressed);
     }
 }
 
