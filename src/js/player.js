@@ -470,7 +470,7 @@ class DPlayer {
         });
 
         // show video loaded bar: to inform interested parties of progress downloading the media
-        this.lastRecieveTime
+        this.lastRecieveTime;
         this.on('progress', () => {
             if (!video.duration || video.buffered.length <= 0) {
                 return;
