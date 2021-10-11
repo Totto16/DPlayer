@@ -113,7 +113,7 @@ function initPlayers() {
             quality: qualities,
             defaultQuality: 0,
         },
-        themeName: "customTheme",
+        theme:"red",
         hotkey: true,
         //highlights: {marker:vtt_stamps,mode:'top'},
      //   highlights: {marker:vtt_stamps2,mode:'normal'}, 

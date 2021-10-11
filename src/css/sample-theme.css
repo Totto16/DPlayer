@@ -30,8 +30,7 @@ How to define your custom Style, you have to load this style sheet yourself!
     }
 }
 
-/*STANDRAD CONFIG, gere the .dplayer selector is added, to have defaults for non defined vars!!!*/
-
+/*STANDRAD CONFIG, where the .dplayer selector is added, to have defaults for non defined vars!!!*/
 
 @media (prefers-color-scheme:light) {
     .dplayer,.dplayer.standard {
@@ -51,9 +50,9 @@ How to define your custom Style, you have to load this style sheet yourself!
         --dplayer-span-checked-color:rgb(28, 28, 28);
         --dplayer-live-text-color: rgb(238, 238, 238);
         --dplayer-live-text-sh:rgba(0, 0, 0, .5);
-        --dplayer-volume-bar-bk:rgb(170, 170, 170);
-        --dplayer-settings-box-bk:rgba(28, 28, 28, 0.9);
-        --dplayer-settings-hover-bk:rgba(255, 255, 255, .1);
+        --dplayer-vostandardlume-bar-bk:rgb(170, 170, 170);
+        --dplayer-modals-bk:rgba(28, 28, 28, 0.9);
+        --dplayer-modals-hover-bk:rgba(255, 255, 255, .1);
         --dplayer-danmaku-bar-bk:rgb(255, 255, 255);
         --dplayer-danmaku-bar-inner-bk:rgb(170, 170, 170);
         --dplayer-danmaku-thumb-bk: rgb(170, 170, 170);
@@ -86,8 +85,6 @@ How to define your custom Style, you have to load this style sheet yourself!
         --dplayer-subtitle-box-sh:rgba(0, 0, 0, 0.5);
         --dplayer-video-wrap-bk:rgb(0, 0, 0);
         --dplayer-theme-color:rgb(183, 218, 255);
-        --dplayer-quality-bk: rgba(198, 198, 198, 0.9);
-        --dplayer-quality-item-hover: rgba(111, 108, 108, 0.35);
         --dplayer-label-bk:rgb(255, 255, 255);
     }
 }
@@ -111,8 +108,8 @@ How to define your custom Style, you have to load this style sheet yourself!
         --dplayer-live-text-color: rgb(0, 0, 0);
         --dplayer-live-text-sh:rgba(0, 0, 0, .5);
         --dplayer-volume-bar-bk:rgb(68, 67, 67);
-        --dplayer-settings-box-bk:rgba(193, 192, 192, 0.9);
-        --dplayer-settings-hover-bk:rgba(255, 255, 255, .1);
+        --dplayer-modals-bk:rgba(193, 192, 192, 0.9);
+        --dplayer-modals-hover-bk:rgba(255, 255, 255, .1);
         --dplayer-danmaku-bar-bk:rgb(255, 255, 255);
         --dplayer-danmaku-bar-inner-bk:rgb(170, 170, 170);
         --dplayer-danmaku-thumb-bk: rgb(170, 170, 170);
@@ -145,8 +142,6 @@ How to define your custom Style, you have to load this style sheet yourself!
         --dplayer-subtitle-box-sh:rgba(0, 0, 0, 0.5);
         --dplayer-video-wrap-bk:rgb(0, 0, 0);
         --dplayer-theme-color:rgb(21, 17, 145);
-        --dplayer-quality-bk:rgba(28, 28, 28, 0.9);
-        --dplayer-quality-item-hover:rgba(255, 255, 255, .1);
         --dplayer-label-bk:rgb(255, 255, 255);
     }
 
@@ -168,8 +163,8 @@ How to define your custom Style, you have to load this style sheet yourself!
         --dplayer-live-text-color: rgb(238, 238, 238);
         --dplayer-live-text-sh:rgba(0, 0, 0, .5);
         --dplayer-vostandardlume-bar-bk:rgb(170, 170, 170);
-        --dplayer-settings-box-bk:rgba(28, 28, 28, 0.9);
-        --dplayer-settings-hover-bk:rgba(255, 255, 255, .1);
+        --dplayer-modals-bk:rgba(28, 28, 28, 0.9);
+        --dplayer-modals-hover-bk:rgba(255, 255, 255, .1);
         --dplayer-danmaku-bar-bk:rgb(255, 255, 255);
         --dplayer-danmaku-bar-inner-bk:rgb(170, 170, 170);
         --dplayer-danmaku-thumb-bk: rgb(170, 170, 170);
@@ -202,8 +197,6 @@ How to define your custom Style, you have to load this style sheet yourself!
         --dplayer-subtitle-box-sh:rgba(0, 0, 0, 0.5);
         --dplayer-video-wrap-bk:rgb(0, 0, 0);
         --dplayer-theme-color:rgb(183, 218, 255);
-        --dplayer-quality-bk: rgba(198, 198, 198, 0.9);
-        --dplayer-quality-item-hover: rgba(111, 108, 108, 0.35);
         --dplayer-label-bk:rgb(255, 255, 255);
     }
 }

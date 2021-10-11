@@ -100,7 +100,7 @@ export default (options, player) => {
         console.warn('Setting the Theme in this way is deprecated!');
         const style = document.createElement('style');
         style.type = 'text/css';
-        style.innerHTML = `:root { --dplayer-theme-color:${options.theme}; };`;
+        style.innerHTML = `.dplayer { --dplayer-theme-color:${options.theme} !important; };`;
         document.head.appendChild(style);
         options.theme = null;
     }
