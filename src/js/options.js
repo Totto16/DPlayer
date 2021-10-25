@@ -28,6 +28,12 @@ export default (options, player) => {
                 link: 'https://github.com/Totto16/DPlayer',
             },
         ],
+        enableWebFullScreen: false, // TODO implement these functions!
+        advanced: {
+            highlightSkipArray: ['Opening', 'Ending', 'OP', 'ED', 'Intro', 'Outro', 'Credits', 'Pause'],
+            highlightSkipMode: 'smoothPrompt', // avaiable "smoothPrompt", "immediately", "smoothCancelPrompt" , "loadingSkip"
+            highlightSkip: false,
+        },
         mutex: true,
         pluginOptions: { hls: {}, flv: {}, dash: {}, webtorrent: {}, ass: {} },
         balloon: false,
@@ -58,6 +64,27 @@ export default (options, player) => {
         options.video.defaultQuality = 0;
     }
     if (options.video.quality) {
+        if (options.video.quality === 'auto') {
+            // maybe require hsl for that, so that we have per example:
+            /*      #EXTM3U
+            #EXT-X-VERSION:6
+            #EXT-X-STREAM-INF:BANDWIDTH=3547276,RESOLUTION=1920x1080
+            1019.m3u8
+             */
+            // TODO get network speed and than decide, we have to get a) network speed
+            // b) bitrate of the avaiable options!
+            /*  var xhr = new XMLHttpRequest;
+        xhr.onreadystatechange = function () {
+        if (xhr.readyState != 4) {
+            return;
+        }
+        alert(xhr.status);
+        };
+        https://stackoverflow.com/questions/5529718/how-to-detect-internet-speed-in-javascript
+        xhr.open('GET', 'https://somesite.com/something.smt', true);
+        xhr.setRequestHeader('Range', 'bytes=100-200'); // the bytes (incl.) you request
+        xhr.send(null); */
+        }
         options.video.url = options.video.quality[options.video.defaultQuality].url;
     }
 
@@ -95,12 +122,36 @@ export default (options, player) => {
     if (options.highlights && options.highlights.marker && options.highlights.marker.length <= 0) {
         options.highlights = null;
     }
+    if (options.advanced && options.advanced.highlightSkip) {
+        switch (options.advanced.highlightSkipMode) {
+            case 'smoothPrompt':
+                break;
+            case 'immediately':
+                break;
+            case 'smoothCancelPrompt':
+                break;
+            case 'loadingSkip':
+                break;
+            default:
+                console.warn(`'${options.advanced.highlightSkipMode}' highlightSkipMode option not available, set to default!`);
+                options.advanced.highlightSkipMode = defaultOption.advanced.highlightSkipMode;
+                break;
+        }
+        if (!options.advanced.highlightSkipArray) {
+            options.advanced.highlightSkipArray = defaultOption.advanced.highlightSkipMode;
+        }
+        options.advanced.highlightSkipArray.forEach((a) => {
+            if (a === '*') {
+                options.advanced.highlightSkipArray.concat(defaultOption.advanced.highlightSkipArray);
+            }
+        });
+    }
 
     if (options.theme) {
         console.warn('Setting the Theme in this way is deprecated!');
         const style = document.createElement('style');
         style.type = 'text/css';
-        style.innerHTML = `:root { --dplayer-theme-color:${options.theme}; };`;
+        style.innerHTML = `.dplayer { --dplayer-theme-color:${options.theme} !important; };`;
         document.head.appendChild(style);
         options.theme = null;
     }

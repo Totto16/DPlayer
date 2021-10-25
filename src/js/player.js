@@ -457,7 +457,7 @@ class DPlayer {
         // show video time: the metadata has loaded or changed
         this.on('durationchange', () => {
             // compatibility: Android browsers will output 1 or Infinity at first
-            // accordind to https://developer.mozilla.org/en-US/docs/Web/Guide/Audio_and_video_delivery/buffering_seeking_time_ranges
+            // according to https://developer.mozilla.org/en-US/docs/Web/Guide/Audio_and_video_delivery/buffering_seeking_time_ranges
             if (this.video.seekable.length > 1 || Math.abs(this.video.duration - (this.video.seekable.end(0) - this.video.seekable.start(0))) >= 0.5) {
                 console.warn("The Source of the video probably doesn't support byte ranges or the video format doesn't support seeking! The video isn't seekable the entire way!");
             }
@@ -470,6 +470,7 @@ class DPlayer {
         });
 
         // show video loaded bar: to inform interested parties of progress downloading the media
+        this.lastRecieveTime;
         this.on('progress', () => {
             if (!video.duration || video.buffered.length <= 0) {
                 return;

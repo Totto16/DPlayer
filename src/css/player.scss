@@ -16,9 +16,9 @@
         --dplayer-span-checked-color:rgb(28, 28, 28);
         --dplayer-live-text-color: rgb(238, 238, 238);
         --dplayer-live-text-sh:rgba(0, 0, 0, .5);
-        --dplayer-volume-bar-bk:rgb(170, 170, 170);
-        --dplayer-settings-box-bk:rgba(28, 28, 28, 0.9);
-        --dplayer-settings-hover-bk:rgba(255, 255, 255, .1);
+        --dplayer-vostandardlume-bar-bk:rgb(170, 170, 170);
+        --dplayer-modals-bk:rgba(28, 28, 28, 0.9);
+        --dplayer-modals-hover-bk:rgba(255, 255, 255, .1);
         --dplayer-danmaku-bar-bk:rgb(255, 255, 255);
         --dplayer-danmaku-bar-inner-bk:rgb(170, 170, 170);
         --dplayer-danmaku-thumb-bk: rgb(170, 170, 170);
@@ -51,8 +51,6 @@
         --dplayer-subtitle-box-sh:rgba(0, 0, 0, 0.5);
         --dplayer-video-wrap-bk:rgb(0, 0, 0);
         --dplayer-theme-color:rgb(183, 218, 255);
-        --dplayer-quality-bk: rgba(198, 198, 198, 0.9);
-        --dplayer-quality-item-hover: rgba(111, 108, 108, 0.35);
         --dplayer-label-bk:rgb(255, 255, 255);
     }
 }
@@ -76,8 +74,8 @@
         --dplayer-live-text-color: rgb(0, 0, 0);
         --dplayer-live-text-sh:rgba(0, 0, 0, .5);
         --dplayer-volume-bar-bk:rgb(68, 67, 67);
-        --dplayer-settings-box-bk:rgba(193, 192, 192, 0.9);
-        --dplayer-settings-hover-bk:rgba(255, 255, 255, .1);
+        --dplayer-modals-bk:rgba(193, 192, 192, 0.9);
+        --dplayer-modals-hover-bk:rgba(255, 255, 255, .1);
         --dplayer-danmaku-bar-bk:rgb(255, 255, 255);
         --dplayer-danmaku-bar-inner-bk:rgb(170, 170, 170);
         --dplayer-danmaku-thumb-bk: rgb(170, 170, 170);
@@ -110,12 +108,10 @@
         --dplayer-subtitle-box-sh:rgba(0, 0, 0, 0.5);
         --dplayer-video-wrap-bk:rgb(0, 0, 0);
         --dplayer-theme-color:rgb(21, 17, 145);
-        --dplayer-quality-bk:rgba(28, 28, 28, 0.9);
-        --dplayer-quality-item-hover:rgba(255, 255, 255, .1);
         --dplayer-label-bk:rgb(255, 255, 255);
     }
 
-    .dplayer.nodark,.dplayer.standard.nodark { // Raw Copy of that above, du e to lack of better method :( 
+    .dplayer.nodark,.dplayer.standard.nodark { // Raw Copy of that above, due to lack of better method :( 
         --dplayer-text-color: rgb(255, 255, 255);
         --dplayer-bezel-icon-background-color:rgba(0, 0, 0, .5);
         --dplayer-bezel-icon-color:rgb(255, 255, 255);
@@ -133,8 +129,8 @@
         --dplayer-live-text-color: rgb(238, 238, 238);
         --dplayer-live-text-sh:rgba(0, 0, 0, .5);
         --dplayer-vostandardlume-bar-bk:rgb(170, 170, 170);
-        --dplayer-settings-box-bk:rgba(28, 28, 28, 0.9);
-        --dplayer-settings-hover-bk:rgba(255, 255, 255, .1);
+        --dplayer-modals-bk:rgba(28, 28, 28, 0.9);
+        --dplayer-modals-hover-bk:rgba(255, 255, 255, .1);
         --dplayer-danmaku-bar-bk:rgb(255, 255, 255);
         --dplayer-danmaku-bar-inner-bk:rgb(170, 170, 170);
         --dplayer-danmaku-thumb-bk: rgb(170, 170, 170);
@@ -167,8 +163,6 @@
         --dplayer-subtitle-box-sh:rgba(0, 0, 0, 0.5);
         --dplayer-video-wrap-bk:rgb(0, 0, 0);
         --dplayer-theme-color:rgb(183, 218, 255);
-        --dplayer-quality-bk: rgba(198, 198, 198, 0.9);
-        --dplayer-quality-item-hover: rgba(111, 108, 108, 0.35);
         --dplayer-label-bk:rgb(255, 255, 255);
     }
 }

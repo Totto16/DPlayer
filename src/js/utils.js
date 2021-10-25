@@ -182,7 +182,7 @@ const utils = {
                 data.forEach((text, i) => {
                     if (text.includes('-->')) {
                         const mark = {};
-                        mark.text = data.length > i + 1 ? data[i + 1] : 'Fehler';
+                        mark.text = data.length > i + 1 ? data[i + 1] : 'Error';
                         const endTime = text.split('-->')[startOrEnd].trim();
                         const multiplier = [1, 60, 60 * 60, 60 * 60 * 24]; // second, minute, hour, day
                         let index = 0;

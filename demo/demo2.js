@@ -105,7 +105,7 @@ function initPlayers() {
         }
     ];
 
-    const dp = new DPlayer({
+    const dpOptions = {
         container: document.getElementById("video-wrapper"),
         screenshot: true,
         lang: "de",
@@ -113,7 +113,7 @@ function initPlayers() {
             quality: qualities,
             defaultQuality: 0,
         },
-        themeName: "customTheme",
+        theme:"red",
         hotkey: true,
         //highlights: {marker:vtt_stamps,mode:'top'},
      //   highlights: {marker:vtt_stamps2,mode:'normal'}, 
@@ -122,7 +122,14 @@ function initPlayers() {
         //subtitle:{url:"http://localhost:8080/CONAN1002.vtt"},
        // subtitle:{url:"http://localhost:8080/CONAN1002.ass"},
         chromecast: "vendor"
-    }); 
+    };
+    //const dp = new DPlayer(dpOptions); 
+    
+    if(typeof DPlayer !== "undefined"){
+        window.dp = new DPlayer(dpOptions); 
+    }else{
+        window.DPLAYER_AUTO = {name:"dp",options:dpOptions}
+    }
 
     /* const dp = new DPlayer({
         container: document.getElementById("video-wrapper"),
