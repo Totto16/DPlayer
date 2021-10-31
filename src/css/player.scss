@@ -25,7 +25,8 @@
         --dplayer-danmaku-item-text-sh:rgba(0, 0, 0, .5);
         --dplayer-panel-bk:rgba(28, 28, 28, 0.8);
         --dplayer-black-simple-keyboard-keys:rgb(0, 0, 0);
-        --dplayer-simple-keyboard-keys-bk-available:rgb(0, 255, 16);
+        --dplayer-simple-keyboard-keys-bk-enabled:rgb(0, 255, 16);
+        --dplayer-simple-keyboard-keys-bk-disabled:rgb(255, 174, 0);
         --dplayer-simple-keyboard-keys-bk-pressed:rgb(0, 183, 255);
         --dplayer-simple-keyboard-span-text:rgb(0, 0, 0);
         --dplayer-menu-bk:rgba(28, 28, 28, 0.85);
@@ -82,7 +83,8 @@
         --dplayer-danmaku-item-text-sh:rgba(0, 0, 0, 0.5);
         --dplayer-panel-bk:rgba(227, 227, 227, 0.8);
         --dplayer-black-simple-keyboard-keys: rgb(255, 255, 255);
-        --dplayer-simple-keyboard-keys-bk-available: rgb(17, 115, 23);
+        --dplayer-simple-keyboard-keys-bk-enabled: rgb(17, 115, 23);
+        --dplayer-simple-keyboard-keys-bk-disabled:rgb(201, 93, 21);
         --dplayer-simple-keyboard-keys-bk-pressed: rgb(9, 51, 115);
         --dplayer-simple-keyboard-span-text:rgb(255, 255, 255);
         --dplayer-menu-bk: rgba(255, 255, 255, 0.851);
@@ -137,7 +139,8 @@
         --dplayer-danmaku-item-text-sh:rgba(0, 0, 0, .5);
         --dplayer-panel-bk:rgba(28, 28, 28, 0.8);
         --dplayer-black-simple-keyboard-keys:rgb(0, 0, 0);
-        --dplayer-simple-keyboard-keys-bk-available:rgb(0, 255, 16);
+        --dplayer-simple-keyboard-keys-bk-enabled:rgb(0, 255, 16);
+        --dplayer-simple-keyboard-keys-bk-disabled:rgb(255, 174, 0);
         --dplayer-simple-keyboard-keys-bk-pressed:rgb(0, 183, 255);
         --dplayer-simple-keyboard-span-text:rgb(0, 0, 0);
         --dplayer-menu-bk:rgba(28, 28, 28, 0.85);

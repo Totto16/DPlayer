@@ -28,10 +28,10 @@ export default (options, player) => {
                 link: 'https://github.com/Totto16/DPlayer',
             },
         ],
-        enableWebFullScreen: false, // TODO implement these functions!
+        fullScreenPolicy: 'OnlyNormal', // available "OnlyNormal","OnlyWeb","Both" or 0,1,2
         advanced: {
             highlightSkipArray: ['Opening', 'Ending', 'OP', 'ED', 'Intro', 'Outro', 'Credits', 'Pause'],
-            highlightSkipMode: 'smoothPrompt', // avaiable "smoothPrompt", "immediately", "smoothCancelPrompt" , "loadingSkip"
+            highlightSkipMode: 'smoothPrompt', // available "smoothPrompt", "immediately", "smoothCancelPrompt" , "loadingSkip" or 0,1,2,3
             highlightSkip: false,
         },
         mutex: true,
@@ -123,14 +123,26 @@ export default (options, player) => {
         options.highlights = null;
     }
     if (options.advanced && options.advanced.highlightSkip) {
-        switch (options.advanced.highlightSkipMode) {
-            case 'smoothPrompt':
+        switch (options.advanced.highlightSkipMode.toString().toLowerCase()) {
+            case 'smoothprompt':
                 break;
             case 'immediately':
                 break;
-            case 'smoothCancelPrompt':
+            case 'smoothcancelprompt':
                 break;
-            case 'loadingSkip':
+            case 'loadingskip':
+                break;
+            case '0':
+                options.advanced.highlightSkipMode = 'smoothPrompt';
+                break;
+            case '1':
+                options.advanced.highlightSkipMode = 'immediately';
+                break;
+            case '2':
+                options.advanced.highlightSkipMode = 'smoothCancelPrompt';
+                break;
+            case '3':
+                options.advanced.highlightSkipMode = 'loadingSkip';
                 break;
             default:
                 console.warn(`'${options.advanced.highlightSkipMode}' highlightSkipMode option not available, set to default!`);
@@ -154,6 +166,28 @@ export default (options, player) => {
         style.innerHTML = `.dplayer { --dplayer-theme-color:${options.theme} !important; };`;
         document.head.appendChild(style);
         options.theme = null;
+    }
+
+    switch (options.fullScreenPolicy.toString().toLowerCase()) {
+        case 'onlynormal':
+            break;
+        case 'onlyweb':
+            break;
+        case 'both':
+            break;
+        case '0':
+            options.fullScreenPolicy = 'OnlyNormal';
+            break;
+        case '1':
+            options.fullScreenPolicy = 'OnlyWeb';
+            break;
+        case '2':
+            options.fullScreenPolicy = 'Both';
+            break;
+        default:
+            console.warn(`'${options.fullScreenPolicy}' fullScreenPolicy option not available, set to default!`);
+            options.fullScreenPolicy = defaultOption.fullScreenPolicy;
+            break;
     }
 
     options.contextmenu = [

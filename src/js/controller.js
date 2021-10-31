@@ -285,6 +285,21 @@ class Controller {
     }
 
     initFullButton() {
+        switch (this.player.options.fullScreenPolicy.toString().toLowerCase()) {
+            case 'onlynormal':
+                this.player.template.webFullButton.classList.add('only-normal-mode');
+                break;
+            case 'onlyweb':
+                this.player.template.browserFullButton.classList.add('only-web-mode');
+                break;
+            case 'both':
+                this.player.template.browserFullButton.classList.add('both-mode');
+                this.player.template.webFullButton.classList.add('both-mode');
+                break;
+            default:
+                console.warn(`'options.fullScreenPolicy' not set correctly, this should not occur!`);
+                break;
+        }
         this.player.template.browserFullButton.addEventListener('click', () => {
             this.player.fullScreen.toggle('browser');
         });

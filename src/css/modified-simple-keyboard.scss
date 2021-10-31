@@ -83,10 +83,13 @@
     }
 
     .shortcuts-enabled{
-        background-color:var(--dplayer-simple-keyboard-keys-bk-available);
+        background-color:var(--dplayer-simple-keyboard-keys-bk-enabled);
         cursor: help; // if using balloon-css (for this too) delete this!
     }
-
+    .shortcuts-disabled{
+        background-color:var(--dplayer-simple-keyboard-keys-bk-disabled);
+        cursor: help; // if using balloon-css (for this too) delete this!
+    }
     &.hg-layout-numeric .hg-button {
         align-items: center;
         display: flex;

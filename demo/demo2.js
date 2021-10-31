@@ -119,6 +119,7 @@ function initPlayers() {
      //   highlights: {marker:vtt_stamps2,mode:'normal'}, 
         highlights:{vtt:"https://ddl.amalgam-fansubs.moe/config/subs/[Totto]DetektivConan-1002-RFCT-[1080p].vtt",mode:"auto"},
         airplay: "vendor",
+        fullScreenPolicy:0, // available "OnlyNormal","OnlyWeb","Both" or 0,1,2
         //subtitle:{url:"http://localhost:8080/CONAN1002.vtt"},
        // subtitle:{url:"http://localhost:8080/CONAN1002.ass"},
         chromecast: "vendor"

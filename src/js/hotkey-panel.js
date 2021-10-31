@@ -18,6 +18,25 @@ class HotkeyPanel {
         keyboard.classList.add(name);
         keyboard.classList.remove('simple-keyboard');
 
+        const btThemes = [
+            {
+                class: 'constant-width',
+                buttons: '{insert} {home} {pageup} {delete} {end} {pagedown} {whitespace} {arrowup} {arrowleft} {arrowdown} {arrowright}',
+            },
+        ];
+        if (this.hotkeys.enabled.length > 0) {
+            btThemes.push({
+                class: 'shortcuts-enabled',
+                buttons: this.hotkeys.enabled.map((obj) => obj.key).join(' '),
+            });
+        }
+        if (this.hotkeys.disabled.length > 0) {
+            btThemes.push({
+                class: 'shortcuts-disabled',
+                buttons: this.hotkeys.disabled.map((obj) => obj.key).join(' '),
+            });
+        }
+
         this.keyboard = new Keyboard(`.${name}`, {
             layout: this.layout,
             display: {
@@ -40,7 +59,7 @@ class HotkeyPanel {
             theme: 'simple-keyboard hg-theme-default hg-layout-default',
             mergeDisplay: true,
             buttonAttributes: [
-                ...this.hotkeys.map((obj) => ({
+                ...this.hotkeys.all.map((obj) => ({
                     attribute: 'title',
                     value: this.player.tran(obj.tooltip),
                     buttons: obj.key,
@@ -55,24 +74,15 @@ class HotkeyPanel {
                     value:  'up',
                     buttons: obj.key,
                 })), */ // Looks Better, but has problems with overflow-hidden
-                ...this.hotkeys.map((obj) => ({
+                ...this.hotkeys.all.map((obj) => ({
                     attribute: 'data-keyCode',
                     value: `${obj.keyCode}`,
                     buttons: obj.key,
                 })),
             ],
-            buttonTheme: [
-                {
-                    class: 'shortcuts-enabled',
-                    buttons: this.hotkeys.map((obj) => obj.key).join(' '),
-                },
-                {
-                    class: 'constant-width',
-                    buttons: '{insert} {home} {pageup} {delete} {end} {pagedown} {whitespace} {arrowup} {arrowleft} {arrowdown} {arrowright}',
-                },
-            ],
+            buttonTheme: [...btThemes],
             useButtonTag: false,
-            inputPattern: new RegExp(`[${this.hotkeys.map((obj) => obj.key).join('')}]`),
+            inputPattern: new RegExp(`[${this.hotkeys.enabled.map((obj) => obj.key).join('')}]`),
             baseClass: name,
         });
     }

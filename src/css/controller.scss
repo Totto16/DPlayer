@@ -396,7 +396,7 @@
             vertical-align: middle;
             box-sizing: border-box;
             display: inline-block;
-            .dplayer-icon-content {
+            .dplayer-icon-content{
                 transition: all .2s ease-in-out;
                 opacity: .8;
             }
@@ -617,15 +617,26 @@
             height: 100%;
             position: relative;
             &:hover {
-                .dplayer-full-in-icon {
+                .dplayer-full-in-icon.both-mode {
                     display: block;
                 }
             }
-            .dplayer-full-in-icon {
+            .dplayer-full-in-icon.both-mode {
                 position: absolute;
                 top: -30px;
                 z-index: 1;
                 display: none;
+            }
+            .dplayer-full-in-icon.only-normal-mode{
+                display: none;
+            }
+            .only-web-mode{
+                display: none;
+            }
+            .dplayer-full-in-icon.only-web-mode {
+                display: inline-block;
+                height: 100%;
+                position: relative;
             }
         }
         .dplayer-quality {
