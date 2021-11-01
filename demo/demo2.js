@@ -28,15 +28,15 @@ function initPlayers() {
         }
     ];
      */
-    [/*  {
+    [  {
         "name": "RAW",
-        "url": "http://localhost:8080/1002.mp4",
+        "url": "http://localhost:9090/1002.mp4",
         "type": "normal"
       },{
         "name": "FHD",
-        "url": "http://localhost:8080/[Totto]DetektivConan-1002-RFCT-[1080p].mp4",
+        "url": "http://localhost:9090/[Totto]DetektivConan-1002-RFCT-[1080p].mp4",
         "type": "normal"
-      }, */
+      },
         {
           "name": "1080p",
           "url": "https://ddl.amalgam-fansubs.moe/content/Conan/1080p/%5BTotto%5DDetektivConan-1002-RFCT-%5B1080p%5D.mp4",
@@ -120,8 +120,11 @@ function initPlayers() {
         highlights:{vtt:"https://ddl.amalgam-fansubs.moe/config/subs/[Totto]DetektivConan-1002-RFCT-[1080p].vtt",mode:"auto"},
         airplay: "vendor",
         fullScreenPolicy:0, // available "OnlyNormal","OnlyWeb","Both" or 0,1,2
-        //subtitle:{url:"http://localhost:8080/CONAN1002.vtt"},
-       // subtitle:{url:"http://localhost:8080/CONAN1002.ass"},
+        highlightSkip:true,
+        highlightSkipMode:"0",// available "smoothPrompt", "immediately", "smoothCancelPrompt", "always" or 0,1,2,3
+        hardSkipHighlights:false,
+        //subtitle:{url:"http://localhost:9090/CONAN1002.vtt"},
+       // subtitle:{url:"http://localhost:9090/CONAN1002.ass"},
         chromecast: "vendor"
     };
     //const dp = new DPlayer(dpOptions); 

@@ -29,11 +29,11 @@ export default (options, player) => {
             },
         ],
         fullScreenPolicy: 'OnlyNormal', // available "OnlyNormal","OnlyWeb","Both" or 0,1,2
-        advanced: {
-            highlightSkipArray: ['Opening', 'Ending', 'OP', 'ED', 'Intro', 'Outro', 'Credits', 'Pause'],
-            highlightSkipMode: 'smoothPrompt', // available "smoothPrompt", "immediately", "smoothCancelPrompt" , "loadingSkip" or 0,1,2,3
-            highlightSkip: false,
-        },
+
+        highlightSkipArray: ['Opening', 'Ending', 'OP', 'ED', 'Intro', 'Outro', 'Credits', 'Pause'],
+        highlightSkipMode: 'smoothPrompt', // available "smoothPrompt", "immediately", "smoothCancelPrompt", "always" or 0,1,2,3
+        highlightSkip: false,
+        hardSkipHighlights: false, // if we go backwards and end in a Skip Highlight, we normally stay there, but with that mode, we skip hard, that means, we skip the skip chapters ALWAYS
         mutex: true,
         pluginOptions: { hls: {}, flv: {}, dash: {}, webtorrent: {}, ass: {} },
         balloon: false,
@@ -122,39 +122,39 @@ export default (options, player) => {
     if (options.highlights && options.highlights.marker && options.highlights.marker.length <= 0) {
         options.highlights = null;
     }
-    if (options.advanced && options.advanced.highlightSkip) {
-        switch (options.advanced.highlightSkipMode.toString().toLowerCase()) {
+    if (options.highlightSkip) {
+        switch (options.highlightSkipMode.toString().toLowerCase()) {
             case 'smoothprompt':
                 break;
             case 'immediately':
                 break;
             case 'smoothcancelprompt':
                 break;
-            case 'loadingskip':
+            case 'always':
                 break;
             case '0':
-                options.advanced.highlightSkipMode = 'smoothPrompt';
+                options.highlightSkipMode = 'smoothPrompt';
                 break;
             case '1':
-                options.advanced.highlightSkipMode = 'immediately';
+                options.highlightSkipMode = 'immediately';
                 break;
             case '2':
-                options.advanced.highlightSkipMode = 'smoothCancelPrompt';
+                options.highlightSkipMode = 'smoothCancelPrompt';
                 break;
             case '3':
-                options.advanced.highlightSkipMode = 'loadingSkip';
+                options.highlightSkipMode = 'always';
                 break;
             default:
-                console.warn(`'${options.advanced.highlightSkipMode}' highlightSkipMode option not available, set to default!`);
-                options.advanced.highlightSkipMode = defaultOption.advanced.highlightSkipMode;
+                console.warn(`'${options.highlightSkipMode}' highlightSkipMode option not available, set to default!`);
+                options.highlightSkipMode = defaultOption.highlightSkipMode;
                 break;
         }
-        if (!options.advanced.highlightSkipArray) {
-            options.advanced.highlightSkipArray = defaultOption.advanced.highlightSkipMode;
+        if (!options.highlightSkipArray) {
+            options.highlightSkipArray = defaultOption.highlightSkipMode;
         }
-        options.advanced.highlightSkipArray.forEach((a) => {
+        options.highlightSkipArray.forEach((a) => {
             if (a === '*') {
-                options.advanced.highlightSkipArray.concat(defaultOption.advanced.highlightSkipArray);
+                options.highlightSkipArray.concat(defaultOption.highlightSkipArray);
             }
         });
     }
@@ -205,7 +205,7 @@ export default (options, player) => {
                     player.infoPanel.hide();
                     player.hotkeyPanel.triggle();
                 } else {
-                    player.notice(player.trans('hotkey_disabled'));
+                    player.notice(player.tran('hotkey_disabled'));
                 }
             },
         },

@@ -265,6 +265,14 @@
     {{ /each }}
 </div>
 <div class="dplayer-notice-list"></div>
+
+<div class="dplayer-skip-window" style="display:none">
+    <div class="title">TITEL</div>
+    <button class="skip">überspringen</button>
+    <canvas class="circle">
+    </canvas>
+</div>
+
 <button class="dplayer-mobile-play">
     {{@ icons.play }}
 </button>

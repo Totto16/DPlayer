@@ -95,6 +95,7 @@ class Template {
         this.barPreview = this.container.querySelector('.dplayer-bar-preview');
         this.barWrap = this.container.querySelector('.dplayer-bar-wrap');
         this.noticeList = this.container.querySelector('.dplayer-notice-list');
+        this.skipWindow = this.container.querySelector('.dplayer-skip-window');
         this.infoPanel = this.container.querySelector('.dplayer-info-panel');
         this.infoPanelClose = this.container.querySelector('.dplayer-info-panel-close');
         this.hotkeyPanel = this.container.querySelector('.dplayer-hotkey-panel');

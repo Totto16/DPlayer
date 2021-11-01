@@ -179,6 +179,133 @@ class Controller {
             }
             this.player.events.trigger('progress'); // update loaded!
         });
+        this.player.on('chapter', (event) => {
+            if (!this.player.options.highlightSkip) {
+                return;
+            }
+
+            switch (event.type) {
+                case 'simple':
+                    break;
+                case 'next':
+                    this.player.options.highlightSkipArray.forEach((a) => {
+                        if (a.toLowerCase() === event.current.text.toLowerCase()) {
+                            this.skipHighlight(event.next, event.current.text);
+                        }
+                    });
+                    break;
+                case 'previous':
+                    if (this.player.options.hardSkipHighlights) {
+                        this.player.options.highlightSkipArray.forEach((a) => {
+                            if (a.toLowerCase() === event.current.text.toLowerCase()) {
+                                this.skipHighlight.call(this, event.previous, event.current.text);
+                            }
+                        });
+                    }
+                    break;
+                default:
+                    console.warn("This shouldn't be Called, we only have three types of chapter events!");
+            }
+        });
+    }
+
+    skipHighlight(chapter, name) {
+        switch (this.player.options.highlightSkipMode.toString().toLowerCase()) {
+            case 'smoothprompt':
+                this.showSkipPrompt.call(this, false, 5000, name, () => {
+                    this.player.seek(chapter.time, true);
+                    this.player.notice(this.player.tran('skipped_chapter', name));
+                });
+                break;
+            case 'immediately':
+                this.player.seek(chapter.time, true);
+                this.player.notice(this.player.tran('skipped_chapter', name));
+                break;
+            case 'smoothcancelprompt':
+                this.showSkipPrompt.call(this, true, 5000, name, () => {
+                    this.player.seek(chapter.time, true);
+                    this.player.notice(this.player.tran('skipped_chapter', name));
+                });
+                break;
+            case 'always':
+                // TODO remove after we are on another chapter!!!
+                this.showSkipPrompt.call(this, false, -1, name, () => {
+                    this.player.seek(chapter.time, true);
+                    this.player.notice(this.player.tran('skipped_chapter', name));
+                });
+                break;
+            default:
+                console.warn(`'options.highlightSkipMode' not set correctly, this should not occur!`);
+                break;
+        }
+    }
+    // TODO horizontal animatet bar!!
+    showSkipPrompt(cancellable, timeShown, name, callback) {
+        const prompt = this.player.template.skipWindow;
+        const button = prompt.querySelector('.skip');
+        const text = prompt.querySelector('.title');
+        const circle = prompt.querySelector('.circle');
+
+        if (cancellable) {
+            button.innerText = this.player.tran('cancel');
+            text.innerText = this.player.tran('skip_chapter', name);
+
+            const timeoutID = setTimeout(
+                () => {
+                    button.onclick = null;
+                    prompt.style.display = 'none';
+                    callback();
+                },
+                timeShown > 0 ? timeShown : 1000000
+            );
+            button.onclick = () => {
+                button.onclick = null;
+                prompt.style.display = 'none';
+                clearTimeout(timeoutID);
+            };
+        } else {
+            button.innerText = this.player.tran('skip');
+            text.innerText = this.player.tran('skip_chapter', name);
+            const timeoutID = setTimeout(
+                () => {
+                    button.onclick = null;
+                    prompt.style.display = 'none';
+                },
+                timeShown > 0 ? timeShown : 1000000
+            );
+            button.onclick = () => {
+                button.onclick = null;
+                prompt.style.display = 'none';
+                clearTimeout(timeoutID);
+                callback();
+            };
+        }
+
+        if (timeShown > 0) {
+            const ctx = circle.getContext('2d');
+            const x = circle.width / 2;
+            const y = circle.height / 2;
+            const radius = Math.min(x, y);
+            const endPercent = 1.0;
+            const startDate = new Date().getTime();
+            let currentPercent = 0.0;
+            ctx.strokeStyle = 'blue';
+            ctx.lineWidth = 15;
+            const animate = () => {
+                ctx.clearRect(0, 0, circle.width, circle.height);
+                ctx.beginPath();
+                ctx.arc(x, y, radius, -0.5 * Math.PI, 2 * Math.PI * currentPercent - 0.5 * Math.PI);
+                ctx.stroke();
+                currentPercent = (new Date().getTime() - startDate) / timeShown;
+                if (currentPercent < endPercent) {
+                    requestAnimationFrame(animate);
+                }
+            };
+            animate();
+        }
+        prompt.style.display = 'grid';
+
+        // circle.animate([{ backgroundColor: 'var(--dplayer-simple-keyboard-keys-bk-available)' }, { backgroundColor: 'var(--dplayer-simple-keyboard-keys-bk-pressed)' }], 150);
     }
 
     initThumbnails() {
@@ -636,7 +763,7 @@ class Controller {
                 document.body.appendChild(link);
                 link.click();
                 this.player.events.trigger('screenshot', dataURL);
-                this.player.notice(this.player.tran('saved-screenshot').replace('%n', downloadName));
+                this.player.notice(this.player.tran('saved-screenshot', downloadName));
                 document.body.removeChild(link);
                 URL.revokeObjectURL(dataURL);
                 this.player.container.click();
