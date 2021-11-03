@@ -228,7 +228,6 @@ class Controller {
                 });
                 break;
             case 'always':
-                // TODO remove after we are on another chapter!!!
                 this.showSkipPrompt.call(this, false, -1, name, () => {
                     this.player.seek(chapter.time, true);
                     this.player.notice(this.player.tran('skipped_chapter', name));
@@ -239,71 +238,80 @@ class Controller {
                 break;
         }
     }
-    // TODO horizontal animatet bar!!
+
     showSkipPrompt(cancellable, timeShown, name, callback) {
         const prompt = this.player.template.skipWindow;
         const button = prompt.querySelector('.skip');
         const text = prompt.querySelector('.title');
-        const circle = prompt.querySelector('.circle');
+        const progress = prompt.querySelector('.progress');
+        if (timeShown > 0) {
+            if (cancellable) {
+                button.innerText = this.player.tran('cancel');
+                text.innerText = this.player.tran('skip_chapter', name);
 
-        if (cancellable) {
-            button.innerText = this.player.tran('cancel');
-            text.innerText = this.player.tran('skip_chapter', name);
-
-            const timeoutID = setTimeout(
-                () => {
+                const timeoutID = setTimeout(() => {
                     button.onclick = null;
                     prompt.style.display = 'none';
                     callback();
-                },
-                timeShown > 0 ? timeShown : 1000000
-            );
-            button.onclick = () => {
-                button.onclick = null;
-                prompt.style.display = 'none';
-                clearTimeout(timeoutID);
-            };
+                }, timeShown);
+                button.onclick = () => {
+                    button.onclick = null;
+                    prompt.style.display = 'none';
+                    clearTimeout(timeoutID);
+                };
+                this.player.once(
+                    'chapter',
+                    () => {
+                        button.onclick = null;
+                        prompt.style.display = 'none';
+                        clearTimeout(timeoutID);
+                    },
+                    true
+                );
+            } else {
+                button.innerText = this.player.tran('skip');
+                text.innerText = this.player.tran('skip_chapter', name);
+                const timeoutID = setTimeout(() => {
+                    button.onclick = null;
+                    prompt.style.display = 'none';
+                }, timeShown);
+                button.onclick = () => {
+                    button.onclick = null;
+                    prompt.style.display = 'none';
+                    clearTimeout(timeoutID);
+                    callback();
+                };
+                this.player.once(
+                    'chapter',
+                    () => {
+                        button.onclick = null;
+                        prompt.style.display = 'none';
+                        clearTimeout(timeoutID);
+                    },
+                    true
+                );
+            }
+            progress.style.display = 'unset';
+            progress.animate([{ width: '0%' }, { width: '100%' }], timeShown);
         } else {
             button.innerText = this.player.tran('skip');
             text.innerText = this.player.tran('skip_chapter', name);
-            const timeoutID = setTimeout(
+            progress.style.display = 'none';
+            button.onclick = () => {
+                button.onclick = null;
+                // prompt.style.display = 'none';
+                callback();
+            };
+            this.player.once(
+                'chapter',
                 () => {
                     button.onclick = null;
                     prompt.style.display = 'none';
                 },
-                timeShown > 0 ? timeShown : 1000000
+                true
             );
-            button.onclick = () => {
-                button.onclick = null;
-                prompt.style.display = 'none';
-                clearTimeout(timeoutID);
-                callback();
-            };
         }
-
-        if (timeShown > 0) {
-            const ctx = circle.getContext('2d');
-            const x = circle.width / 2;
-            const y = circle.height / 2;
-            const radius = Math.min(x, y);
-            const endPercent = 1.0;
-            const startDate = new Date().getTime();
-            let currentPercent = 0.0;
-            ctx.strokeStyle = 'blue';
-            ctx.lineWidth = 15;
-            const animate = () => {
-                ctx.clearRect(0, 0, circle.width, circle.height);
-                ctx.beginPath();
-                ctx.arc(x, y, radius, -0.5 * Math.PI, 2 * Math.PI * currentPercent - 0.5 * Math.PI);
-                ctx.stroke();
-                currentPercent = (new Date().getTime() - startDate) / timeShown;
-                if (currentPercent < endPercent) {
-                    requestAnimationFrame(animate);
-                }
-            };
-            animate();
-        }
-        prompt.style.display = 'grid';
+        prompt.style.display = 'flex';
 
         // circle.animate([{ backgroundColor: 'var(--dplayer-simple-keyboard-keys-bk-available)' }, { backgroundColor: 'var(--dplayer-simple-keyboard-keys-bk-pressed)' }], 150);
     }

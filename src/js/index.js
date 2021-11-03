@@ -4,7 +4,7 @@ import DPlayer from './player';
 /* global DPLAYER_VERSION  GIT_TIME */
 console.log(`${'\n'} %c DPlayer v${DPLAYER_VERSION} ${GIT_TIME} %c http://dplayer.js.org ${'\n'}${'\n'}`, 'color: #a912ee; background: #aaa; padding:5px 0;', 'background: #a912ee; color:#fff; padding:5px 0;');
 
-/* New Format of starting Dplayer, it will start automatically, after its loaded, for avaiable options see future ReadME //TODO add readme !!!!*/
+/* New Format of starting Dplayer, it will start automatically, after its loaded, for available options see future ReadME //TODO add readme !!!!*/
 
 if (window.DPLAYER_AUTO) {
     if (!window.DPLAYER_AUTO.name) {
