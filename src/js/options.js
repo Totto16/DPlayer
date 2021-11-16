@@ -64,27 +64,6 @@ export default (options, player) => {
         options.video.defaultQuality = 0;
     }
     if (options.video.quality) {
-        if (options.video.quality === 'auto') {
-            // maybe require hsl for that, so that we have per example:
-            /*      #EXTM3U
-            #EXT-X-VERSION:6
-            #EXT-X-STREAM-INF:BANDWIDTH=3547276,RESOLUTION=1920x1080
-            1019.m3u8
-             */
-            // TODO get network speed and than decide, we have to get a) network speed
-            // b) bitrate of the avaiable options!
-            /*  var xhr = new XMLHttpRequest;
-        xhr.onreadystatechange = function () {
-        if (xhr.readyState != 4) {
-            return;
-        }
-        alert(xhr.status);
-        };
-        https://stackoverflow.com/questions/5529718/how-to-detect-internet-speed-in-javascript
-        xhr.open('GET', 'https://somesite.com/something.smt', true);
-        xhr.setRequestHeader('Range', 'bytes=100-200'); // the bytes (incl.) you request
-        xhr.send(null); */
-        }
         options.video.url = options.video.quality[options.video.defaultQuality].url;
     }
 
@@ -122,7 +101,7 @@ export default (options, player) => {
     if (options.highlights && options.highlights.marker && options.highlights.marker.length <= 0) {
         options.highlights = null;
     }
-    if (options.highlightSkip) {
+    if (options.highlightSkipMode) {
         switch (options.highlightSkipMode.toString().toLowerCase()) {
             case 'smoothprompt':
                 break;

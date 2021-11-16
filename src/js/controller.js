@@ -83,7 +83,7 @@ class Controller {
                         }
                     }
 
-                    // TODO  only necessary if we change chapters on the fly
+                    // NOTICE  only necessary if we change chapters on the fly
                     // remove previous highlights
                     /* this.player.template.barHighlight.forEach((item) => {
                         this.player.template.playedBarWrap.removeChild(item);
@@ -180,33 +180,58 @@ class Controller {
             this.player.events.trigger('progress'); // update loaded!
         });
         this.player.on('chapter', (event) => {
-            if (!this.player.options.highlightSkip) {
-                return;
-            }
-
-            switch (event.type) {
-                case 'simple':
-                    break;
-                case 'next':
+            this.checkSkipState.call(this, event);
+        });
+    }
+    checkSkipState(event) {
+        if (!this.player.options.highlightSkip) {
+            return;
+        }
+        console.log(event);
+        switch (event.type) {
+            case 'simple':
+                break;
+            case 'next':
+                this.player.options.highlightSkipArray.forEach((a) => {
+                    if (a.toLowerCase() === event.current.text.toLowerCase()) {
+                        this.skipHighlight(event.next, event.current.text);
+                    }
+                });
+                break;
+            case 'previous':
+                if (this.player.options.hardSkipHighlights) {
                     this.player.options.highlightSkipArray.forEach((a) => {
                         if (a.toLowerCase() === event.current.text.toLowerCase()) {
-                            this.skipHighlight(event.next, event.current.text);
+                            this.skipHighlight.call(this, event.previous, event.current.text);
                         }
                     });
-                    break;
-                case 'previous':
-                    if (this.player.options.hardSkipHighlights) {
-                        this.player.options.highlightSkipArray.forEach((a) => {
-                            if (a.toLowerCase() === event.current.text.toLowerCase()) {
-                                this.skipHighlight.call(this, event.previous, event.current.text);
-                            }
-                        });
-                    }
-                    break;
-                default:
-                    console.warn("This shouldn't be Called, we only have three types of chapter events!");
-            }
-        });
+                }
+                break;
+            default:
+                console.warn("This shouldn't be Called, we only have three types of chapter events!");
+        }
+    }
+    changeSkipHighlight(value) {
+        if (this.player.options.highlightSkip === value) {
+            return;
+        }
+        this.player.options.highlightSkip = value;
+        const { marker, mode, currentChapter } = this.chapters;
+        const previous = currentChapter >= 1 ? marker[currentChapter - 1] : null;
+        const current = currentChapter >= 0 && currentChapter < marker.length ? marker[currentChapter] : null;
+        const next = currentChapter < marker.length - 1 ? marker[currentChapter + 1] : null;
+        switch (mode) {
+            case 'normal':
+                // we never skip 'normal' mode chapters, so this is redundant!
+                // this.checkSkipState({ type: 'simple', direction: 'next', surpassed: next });
+                break;
+            case 'side':
+                break;
+            case 'top':
+                // TODO DEBUG and fix!!
+                this.checkSkipState({ type: 'next', previous, current, next });
+                break;
+        }
     }
 
     skipHighlight(chapter, name) {
@@ -281,6 +306,7 @@ class Controller {
                     clearTimeout(timeoutID);
                     callback();
                 };
+                // TODO debug !!!!
                 this.player.once(
                     'chapter',
                     () => {
@@ -654,7 +680,7 @@ class Controller {
             this.show();
         }
     }
-    updateChapters(object, player) {
+    updateChapters(object = {}, player = this.player) {
         // percentage, or time + duration, or we can get that from the video   player.video.currentTime , player.video.duration
         let { percentage, time, duration } = object;
         if (percentage) {
@@ -677,12 +703,14 @@ class Controller {
             const previous = currentChapter >= 1 ? marker[currentChapter - 1] : null;
             const next = currentChapter < marker.length - 1 ? marker[currentChapter + 1] : null;
             const current = currentChapter >= 0 && currentChapter < marker.length ? marker[currentChapter] : null;
+            const previous_condition = current && current.time > time;
+            const next_condition = next && next.time <= time;
             switch (mode) {
                 case 'normal':
-                    if (current && current.time > time) {
+                    if (previous_condition) {
                         this.chapters.currentChapter--;
                         this.player.events.trigger('chapter', { type: 'simple', direction: 'previous', surpassed: current });
-                    } else if (next && next.time <= time) {
+                    } else if (next_condition) {
                         this.chapters.currentChapter++;
                         this.player.events.trigger('chapter', { type: 'simple', direction: 'next', surpassed: next });
                     }
@@ -690,10 +718,10 @@ class Controller {
                 case 'side':
                     break;
                 case 'top':
-                    if (current && current.time > time) {
+                    if (previous_condition) {
                         this.chapters.currentChapter--;
                         this.player.events.trigger('chapter', { type: 'previous', previous: currentChapter >= 2 ? marker[currentChapter - 2] : null, current: previous, next: current });
-                    } else if (next && next.time <= time) {
+                    } else if (next_condition) {
                         this.chapters.currentChapter++;
                         this.player.events.trigger('chapter', { type: 'next', previous: current, current: next, next: currentChapter < marker.length - 2 ? marker[currentChapter + 2] : null });
                     }
