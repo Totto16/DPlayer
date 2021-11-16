@@ -8,6 +8,7 @@ export default (options, player) => {
         container: options.element || document.getElementsByClassName('dplayer')[0],
         live: false,
         autoplay: false,
+        once_delay: 100,
         themeName: 'standard',
         disableDarkMode: false,
         loop: false,

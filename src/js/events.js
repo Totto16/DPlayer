@@ -1,7 +1,7 @@
 class Events {
     constructor() {
         this.events = {};
-
+        this.currentUUID = 0;
         this.videoEvents = [
             'abort',
             'canplay',
@@ -70,7 +70,17 @@ class Events {
                 if (!this.events[name]) {
                     this.events[name] = [];
                 }
-                this.events[name].push({ callback, delayed, once });
+                const UUID = this.currentUUID++;
+
+                if (typeof delayed === 'number') {
+                    const ID = setTimeout(() => {
+                        this.events[name].filter((item) => item.UUID === UUID)[0].delayed = false;
+                        clearTimeout(ID);
+                    }, delayed);
+                    this.events[name].push({ callback, delayed: true, once, UUID });
+                } else {
+                    this.events[name].push({ callback, delayed: !!delayed, once, UUID });
+                }
             }
         }
     }

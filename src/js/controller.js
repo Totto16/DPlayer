@@ -187,7 +187,6 @@ class Controller {
         if (!this.player.options.highlightSkip) {
             return;
         }
-        console.log(event);
         switch (event.type) {
             case 'simple':
                 break;
@@ -228,7 +227,6 @@ class Controller {
             case 'side':
                 break;
             case 'top':
-                // TODO DEBUG and fix!!
                 this.checkSkipState({ type: 'next', previous, current, next });
                 break;
         }
@@ -263,7 +261,6 @@ class Controller {
                 break;
         }
     }
-
     showSkipPrompt(cancellable, timeShown, name, callback) {
         const prompt = this.player.template.skipWindow;
         const button = prompt.querySelector('.skip');
@@ -291,7 +288,7 @@ class Controller {
                         prompt.style.display = 'none';
                         clearTimeout(timeoutID);
                     },
-                    true
+                    this.player.options.once_delay
                 );
             } else {
                 button.innerText = this.player.tran('skip');
@@ -306,7 +303,6 @@ class Controller {
                     clearTimeout(timeoutID);
                     callback();
                 };
-                // TODO debug !!!!
                 this.player.once(
                     'chapter',
                     () => {
@@ -314,7 +310,7 @@ class Controller {
                         prompt.style.display = 'none';
                         clearTimeout(timeoutID);
                     },
-                    true
+                    this.player.options.once_delay
                 );
             }
             progress.style.display = 'unset';
@@ -334,7 +330,7 @@ class Controller {
                     button.onclick = null;
                     prompt.style.display = 'none';
                 },
-                true
+                this.player.options.once_delay
             );
         }
         prompt.style.display = 'flex';
