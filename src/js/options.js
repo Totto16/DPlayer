@@ -31,7 +31,7 @@ export default (options, player) => {
         ],
         fullScreenPolicy: 'OnlyNormal', // available "OnlyNormal","OnlyWeb","Both" or 0,1,2
 
-        highlightSkipArray: ['Opening', 'Ending', 'OP', 'ED', 'Intro', 'Outro', 'Credits', 'Pause'],
+        highlightSkipArray: [/^Opening$/i, /^Ending$/i, /^OP$/i, /^ED$/i, /^Intro$/i, /^Outro$/i, /^Credits$/i, /^Pause$/i],
         highlightSkipMode: 'smoothPrompt', // available "smoothPrompt", "immediately", "smoothCancelPrompt", "always" or 0,1,2,3
         highlightSkip: false,
         hardSkipHighlights: false, // if we go backwards and end in a Skip Highlight, we normally stay there, but with that mode, we skip hard, that means, we skip the skip chapters ALWAYS
@@ -132,10 +132,26 @@ export default (options, player) => {
         if (!options.highlightSkipArray) {
             options.highlightSkipArray = defaultOption.highlightSkipMode;
         }
-        options.highlightSkipArray.forEach((a) => {
+
+        const temp = options.highlightSkipArray;
+        options.highlightSkipArray = [];
+        temp.forEach((a) => {
             if (a === '*') {
-                options.highlightSkipArray.concat(defaultOption.highlightSkipArray);
+                options.highlightSkipArray.push(...defaultOption.highlightSkipArray);
+                return;
             }
+            if (!(a instanceof RegExp)) {
+                let temp;
+                try {
+                    temp = new RegExp(a, 'i');
+                    options.highlightSkipArray.push(temp);
+                    return;
+                } catch (e) {
+                    console.warn(`String converted to RegExp not Valid, skipped: '${a}'`);
+                    return;
+                }
+            }
+            options.highlightSkipArray.push(a);
         });
     }
 

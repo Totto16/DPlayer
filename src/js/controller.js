@@ -191,18 +191,21 @@ class Controller {
             case 'simple':
                 break;
             case 'next':
-                this.player.options.highlightSkipArray.forEach((a) => {
-                    if (a.toLowerCase() === event.current.text.toLowerCase()) {
-                        this.skipHighlight(event.next, event.current.text);
+                this.player.options.highlightSkipArray.some((a) => {
+                    if (event.current.text.match(a)) {
+                        this.skipHighlight.call(this, event.next, event.current.text);
+                        return true;
                     }
+                    return false;
                 });
                 break;
             case 'previous':
                 if (this.player.options.hardSkipHighlights) {
-                    this.player.options.highlightSkipArray.forEach((a) => {
-                        if (a.toLowerCase() === event.current.text.toLowerCase()) {
+                    this.player.options.highlightSkipArray.some((a) => {
+                        if (event.current.text.match(a)) {
                             this.skipHighlight.call(this, event.previous, event.current.text);
                         }
+                        return false;
                     });
                 }
                 break;
