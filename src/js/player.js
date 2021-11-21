@@ -39,7 +39,7 @@ class DPlayer {
         }
         this.languageFeatures = new i18n(this.options.lang);
         this.tran = this.languageFeatures.tran;
-        this.languageFeatures.checkPresentTranslations(this.options.lang);
+        this.languageFeatures.checkPresentTranslations(this.options.lang, true);
         this.events = new Events();
         this.user = new User(this);
         this.container = this.options.container;
@@ -158,15 +158,15 @@ class DPlayer {
     /**
      * Seek video
      */
-    seek(time) {
+    seek(time, silent = false) {
         time = Math.max(isNaN(time) ? 0 : time, 0);
         if (this.video.duration) {
             time = Math.min(time, this.video.duration);
         }
-        if (this.video.currentTime < time) {
-            this.notice(`${this.tran('ff').replace('%s', (time - this.video.currentTime).toFixed(0))}`);
-        } else if (this.video.currentTime > time) {
-            this.notice(`${this.tran('rew').replace('%s', (this.video.currentTime - time).toFixed(0))}`);
+        if (this.video.currentTime < time && !silent) {
+            this.notice(`${this.tran('ff', (time - this.video.currentTime).toFixed(0))}`);
+        } else if (this.video.currentTime > time && !silent) {
+            this.notice(`${this.tran('rew', (this.video.currentTime - time).toFixed(0))}`);
         }
 
         this.video.currentTime = time;
@@ -290,8 +290,15 @@ class DPlayer {
     /**
      * attach event
      */
-    on(name, callback) {
-        this.events.on(name, callback);
+    on(name, callback, delayed) {
+        this.events.on(name, callback, delayed);
+    }
+
+    /**
+     * attach single-event
+     */
+    once(name, callback, delayed) {
+        this.events.once(name, callback, delayed);
     }
 
     /**
@@ -576,7 +583,7 @@ class DPlayer {
         this.video = videoEle;
         this.initVideo(this.video, this.quality.type || this.options.video.type);
         this.seek(this.prevVideo.currentTime);
-        this.notice(`${this.tran('switching-quality').replace('%q', this.quality.name)}`, { time: 3000, mode: `override` });
+        this.notice(`${this.tran('switching-quality', this.quality.name)}`, { time: 3000, mode: `override` });
         this.events.trigger('quality_start', this.quality);
 
         this.on('canplay', () => {
@@ -591,7 +598,7 @@ class DPlayer {
                     this.video.play();
                 }
                 this.prevVideo = null;
-                this.notice(`${this.tran('switched-quality').replace('%q', this.quality.name)}`);
+                this.notice(`${this.tran('switched-quality', this.quality.name)}`);
                 this.switchingQuality = false;
 
                 this.events.trigger('quality_end');
@@ -682,7 +689,7 @@ class DPlayer {
     }
 
     speed(rate) {
-        this.notice(this.tran('speed').replace('%s', `${rate * 100}%`));
+        this.notice(this.tran('speed', `${rate * 100}%`));
         this.video.playbackRate = rate;
     }
 

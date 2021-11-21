@@ -1,3 +1,4 @@
+//TODO :not(.dplayer-hide-controller){} and hide that things respectively
 .dplayer-notice-list{
     position: absolute;
     bottom: 60px;
@@ -21,6 +22,63 @@
         animation: removeNotice .3s ease 1 forwards !important;
     }
 }
+
+.dplayer-skip-window{
+    position: absolute;
+    top: 60px;
+    right: 40px;
+
+    border-radius: 2px;
+    background:var(--dplayer-notice-bk);
+    transition: all .3s ease-in-out;
+    overflow: hidden;
+    color:var(--dplayer-notice-text);
+    display: flex;
+    flex-direction: column;
+    aspect-ratio: 16/5;
+    //TODO FIX THE CSSSSSS
+    padding: 10px;
+    height: 10%;
+    justify-content: space-between;
+    align-items: flex-start;
+
+    .container-window{
+        flex-grow: 10;
+        width: 100%;
+        align-items: center;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-around;
+    }
+
+    .skip{
+        background-color: var(--dplayer-notice-bk);
+        border-color: var(--dplayer-span-border);
+        cursor: pointer;
+        border: none;
+        border-radius: 4px;
+        padding: 6px;
+        border: 1px solid var(--dplayer-theme-color);
+    }
+
+    .title{
+        font-size: 1em;
+        text-align: center;
+    }
+
+    .skip:hover{
+        opacity: 0.7;
+    }
+
+    .progress {
+        height: 10px;
+        width: 0%;
+        margin-top: 2px;
+        background-color: var(--dplayer-theme-color);
+    }
+
+}
+
 
 @keyframes showNotice {
     from {
@@ -54,3 +112,4 @@
         font-size: 0;
     }
 }
+

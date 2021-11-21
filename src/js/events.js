@@ -1,7 +1,7 @@
 class Events {
     constructor() {
         this.events = {};
-
+        this.currentUUID = 0;
         this.videoEvents = [
             'abort',
             'canplay',
@@ -59,7 +59,7 @@ class Events {
         ];
     }
 
-    on(name, callback) {
+    on(name, callback, delayed = false, once = false) {
         if (name === 'all' || name === '*') {
             name = [...this.playerEvents, ...this.videoEvents];
         }
@@ -70,9 +70,23 @@ class Events {
                 if (!this.events[name]) {
                     this.events[name] = [];
                 }
-                this.events[name].push(callback);
+                const UUID = this.currentUUID++;
+
+                if (typeof delayed === 'number') {
+                    const ID = setTimeout(() => {
+                        this.events[name].filter((item) => item.UUID === UUID)[0].delayed = false;
+                        clearTimeout(ID);
+                    }, delayed);
+                    this.events[name].push({ callback, delayed: true, once, UUID });
+                } else {
+                    this.events[name].push({ callback, delayed: !!delayed, once, UUID });
+                }
             }
         }
+    }
+
+    once(name, callback, delayed) {
+        this.on(name, callback, delayed, true);
     }
 
     off(name) {
@@ -83,9 +97,18 @@ class Events {
         }
     }
     trigger(name, info) {
-        if (this.events[name] && this.events[name].length) {
+        if (this.events[name] && this.events[name].length > 0) {
             for (let i = 0; i < this.events[name].length; i++) {
-                this.events[name][i](info);
+                if (!this.events[name][i].delayed) {
+                    this.events[name][i].callback(info);
+                }
+            }
+            for (let i = this.events[name].length - 1; i > 0; i--) {
+                if (this.events[name][i].delayed) {
+                    this.events[name][i].delayed = false;
+                } else if (this.events[name][i].once) {
+                    this.events[name].splice(i, 1);
+                }
             }
         }
     }

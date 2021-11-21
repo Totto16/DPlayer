@@ -8,6 +8,7 @@ export default (options, player) => {
         container: options.element || document.getElementsByClassName('dplayer')[0],
         live: false,
         autoplay: false,
+        once_delay: 100,
         themeName: 'standard',
         disableDarkMode: false,
         loop: false,
@@ -28,12 +29,12 @@ export default (options, player) => {
                 link: 'https://github.com/Totto16/DPlayer',
             },
         ],
-        enableWebFullScreen: false, // TODO implement these functions!
-        advanced: {
-            highlightSkipArray: ['Opening', 'Ending', 'OP', 'ED', 'Intro', 'Outro', 'Credits', 'Pause'],
-            highlightSkipMode: 'smoothPrompt', // avaiable "smoothPrompt", "immediately", "smoothCancelPrompt" , "loadingSkip"
-            highlightSkip: false,
-        },
+        fullScreenPolicy: 'OnlyNormal', // available "OnlyNormal","OnlyWeb","Both" or 0,1,2
+
+        highlightSkipArray: [/^Opening$/i, /^Ending$/i, /^OP$/i, /^ED$/i, /^Intro$/i, /^Outro$/i, /^Credits$/i, /^Pause$/i],
+        highlightSkipMode: 'smoothPrompt', // available "smoothPrompt", "immediately", "smoothCancelPrompt", "always" or 0,1,2,3
+        highlightSkip: false,
+        hardSkipHighlights: false, // if we go backwards and end in a Skip Highlight, we normally stay there, but with that mode, we skip hard, that means, we skip the skip chapters ALWAYS
         mutex: true,
         pluginOptions: { hls: {}, flv: {}, dash: {}, webtorrent: {}, ass: {} },
         balloon: false,
@@ -64,27 +65,6 @@ export default (options, player) => {
         options.video.defaultQuality = 0;
     }
     if (options.video.quality) {
-        if (options.video.quality === 'auto') {
-            // maybe require hsl for that, so that we have per example:
-            /*      #EXTM3U
-            #EXT-X-VERSION:6
-            #EXT-X-STREAM-INF:BANDWIDTH=3547276,RESOLUTION=1920x1080
-            1019.m3u8
-             */
-            // TODO get network speed and than decide, we have to get a) network speed
-            // b) bitrate of the avaiable options!
-            /*  var xhr = new XMLHttpRequest;
-        xhr.onreadystatechange = function () {
-        if (xhr.readyState != 4) {
-            return;
-        }
-        alert(xhr.status);
-        };
-        https://stackoverflow.com/questions/5529718/how-to-detect-internet-speed-in-javascript
-        xhr.open('GET', 'https://somesite.com/something.smt', true);
-        xhr.setRequestHeader('Range', 'bytes=100-200'); // the bytes (incl.) you request
-        xhr.send(null); */
-        }
         options.video.url = options.video.quality[options.video.defaultQuality].url;
     }
 
@@ -122,28 +102,56 @@ export default (options, player) => {
     if (options.highlights && options.highlights.marker && options.highlights.marker.length <= 0) {
         options.highlights = null;
     }
-    if (options.advanced && options.advanced.highlightSkip) {
-        switch (options.advanced.highlightSkipMode) {
-            case 'smoothPrompt':
+    if (options.highlightSkipMode) {
+        switch (options.highlightSkipMode.toString().toLowerCase()) {
+            case 'smoothprompt':
                 break;
             case 'immediately':
                 break;
-            case 'smoothCancelPrompt':
+            case 'smoothcancelprompt':
                 break;
-            case 'loadingSkip':
+            case 'always':
+                break;
+            case '0':
+                options.highlightSkipMode = 'smoothPrompt';
+                break;
+            case '1':
+                options.highlightSkipMode = 'immediately';
+                break;
+            case '2':
+                options.highlightSkipMode = 'smoothCancelPrompt';
+                break;
+            case '3':
+                options.highlightSkipMode = 'always';
                 break;
             default:
-                console.warn(`'${options.advanced.highlightSkipMode}' highlightSkipMode option not available, set to default!`);
-                options.advanced.highlightSkipMode = defaultOption.advanced.highlightSkipMode;
+                console.warn(`'${options.highlightSkipMode}' highlightSkipMode option not available, set to default!`);
+                options.highlightSkipMode = defaultOption.highlightSkipMode;
                 break;
         }
-        if (!options.advanced.highlightSkipArray) {
-            options.advanced.highlightSkipArray = defaultOption.advanced.highlightSkipMode;
+        if (!options.highlightSkipArray) {
+            options.highlightSkipArray = defaultOption.highlightSkipMode;
         }
-        options.advanced.highlightSkipArray.forEach((a) => {
+
+        const temp = options.highlightSkipArray;
+        options.highlightSkipArray = [];
+        temp.forEach((a) => {
             if (a === '*') {
-                options.advanced.highlightSkipArray.concat(defaultOption.advanced.highlightSkipArray);
+                options.highlightSkipArray.push(...defaultOption.highlightSkipArray);
+                return;
             }
+            if (!(a instanceof RegExp)) {
+                let temp;
+                try {
+                    temp = new RegExp(a, 'i');
+                    options.highlightSkipArray.push(temp);
+                    return;
+                } catch (e) {
+                    console.warn(`String converted to RegExp not Valid, skipped: '${a}'`);
+                    return;
+                }
+            }
+            options.highlightSkipArray.push(a);
         });
     }
 
@@ -154,6 +162,28 @@ export default (options, player) => {
         style.innerHTML = `.dplayer { --dplayer-theme-color:${options.theme} !important; };`;
         document.head.appendChild(style);
         options.theme = null;
+    }
+
+    switch (options.fullScreenPolicy.toString().toLowerCase()) {
+        case 'onlynormal':
+            break;
+        case 'onlyweb':
+            break;
+        case 'both':
+            break;
+        case '0':
+            options.fullScreenPolicy = 'OnlyNormal';
+            break;
+        case '1':
+            options.fullScreenPolicy = 'OnlyWeb';
+            break;
+        case '2':
+            options.fullScreenPolicy = 'Both';
+            break;
+        default:
+            console.warn(`'${options.fullScreenPolicy}' fullScreenPolicy option not available, set to default!`);
+            options.fullScreenPolicy = defaultOption.fullScreenPolicy;
+            break;
     }
 
     options.contextmenu = [
@@ -171,7 +201,7 @@ export default (options, player) => {
                     player.infoPanel.hide();
                     player.hotkeyPanel.triggle();
                 } else {
-                    player.notice(player.trans('hotkey_disabled'));
+                    player.notice(player.tran('hotkey_disabled'));
                 }
             },
         },

@@ -112,6 +112,7 @@ module.exports = {
         client: {
             logging: 'none',
         },
+        port: 9090,
         // quiet: false,
     },
 

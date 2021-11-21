@@ -11,17 +11,29 @@ function i18n(lang) {
     this.lang = lang;
     // in case someone says en-us, and en is present!
     this.fallbackLang = this.lang.includes('-') ? this.lang.split('-')[0] : this.lang;
-    this.tran = (key) => {
-        key = key.toLowerCase();
-        if (tranTxt[this.lang] && tranTxt[this.lang][key]) {
-            return tranTxt[this.lang][key];
-        } else if (tranTxt[this.fallbackLang] && tranTxt[this.fallbackLang][key]) {
-            return tranTxt[this.fallbackLang][key];
-        } else {
-            return standard[key];
+    this.tran = (key, replacement) => {
+        if (!key) {
+            console.error('key for translation not set!');
+            return;
         }
+        if (typeof key !== 'string') {
+            console.error(`key for translation is not a string, but a '${typeof key}'!`);
+            return;
+        }
+        key = key.toLowerCase();
+        let result = null;
+        if (tranTxt[this.lang] && tranTxt[this.lang][key]) {
+            result = tranTxt[this.lang][key];
+        } else if (tranTxt[this.fallbackLang] && tranTxt[this.fallbackLang][key]) {
+            result = tranTxt[this.fallbackLang][key];
+        } else {
+            result = standard[key];
+        }
+        if (model[key].length > 0 && replacement) {
+            result = result.replace(model[key][0].symbol, replacement);
+        }
+        return result;
     };
-    this.checkPresentTranslations = checkPresentTranslations;
     this.checkPresentTranslations = checkPresentTranslations;
 }
 
@@ -74,8 +86,9 @@ const model = {
     right: [],
     up: [],
     down: [],
-    cancelfullscreen: [],
+    cancelbothfullscreen: [],
     togglefullscreen: [],
+    togglewebfullscreen: [],
     mute: [],
     screenshot: [],
     nextchapter: [],
@@ -85,6 +98,10 @@ const model = {
     speeddown: [],
     speednormal: [],
     'hotkey-disabled': [],
+    skipped_chapter: [{ symbol: '%c', name: 'Chapter name', example: 'Opening' }],
+    skip: [],
+    skip_chapter: [{ symbol: '%c', name: 'Chapter name', example: 'Opening' }],
+    cancel: [],
 };
 
 // Standard english translations
@@ -137,8 +154,9 @@ const standard = {
     right: 'Go forward',
     up: 'Decrease Volume',
     down: 'Increase Volume',
-    cancelfullscreen: 'Exit the Fullscreen',
+    cancelbothfullscreen: 'Exit the Fullscreen',
     togglefullscreen: 'Enable or Disable Fullscreen',
+    togglewebfullscreen: 'Enable or Disable Web Fullscreen',
     mute: 'Mute or Unmute the audio',
     screenshot: 'Take a screenshot',
     nextchapter: 'Go to the next chapter (highlight)',
@@ -148,6 +166,11 @@ const standard = {
     speeddown: 'Decrease the playback speed',
     speednormal: 'Set the playback speed to normal (100%)',
     'hotkey-disabled': 'Hotkeys are disabled for this video!',
+
+    skipped_chapter: 'Skipped chapter %c',
+    skip: 'Skip',
+    cancel: 'Cancel',
+    skip_chapter: 'Skip chapter %c',
 };
 
 // add translation text here
@@ -202,8 +225,9 @@ const tranTxt = {
         right: 'Go forward',
         up: 'Decrease Volume',
         down: 'Increase Volume',
-        cancelfullscreen: 'Exit the Fullscreen',
+        cancelbothfullscreen: 'Exit the Fullscreen',
         togglefullscreen: 'Enable or Disable Fullscreen',
+        togglewebfullscreen: 'Enable or Disable Web Fullscreen',
         mute: 'Mute or Unmute the audio',
         screenshot: 'Take a screenshot',
         nextchapter: 'Go to the next chapter (highlight)',
@@ -212,6 +236,11 @@ const tranTxt = {
         speedup: 'Increase the playback speed',
         speeddown: 'Decrease the playback speed',
         speednormal: 'Set the playback speed to normal (100%)',
+        'hotkey-disabled': 'Hotkeys are disabled for this video!',
+        skipped_chapter: 'Skipped chapter %c',
+        skip: 'Skip',
+        cancel: 'Cancel',
+        skip_chapter: 'Skip chapter %c',
     },
     'zh-tw': {
         'danmaku-loading': '彈幕載入中',
@@ -262,8 +291,9 @@ const tranTxt = {
         right: 'Go forward',
         up: 'Decrease Volume',
         down: 'Increase Volume',
-        cancelfullscreen: 'Exit the Fullscreen',
+        cancelbothfullscreen: 'Exit the Fullscreen',
         togglefullscreen: 'Enable or Disable Fullscreen',
+        togglewebfullscreen: 'Enable or Disable Web Fullscreen',
         mute: 'Mute or Unmute the audio',
         screenshot: 'Take a screenshot',
         nextchapter: 'Go to the next chapter (highlight)',
@@ -272,6 +302,11 @@ const tranTxt = {
         speedup: 'Increase the playback speed',
         speeddown: 'Decrease the playback speed',
         speednormal: 'Set the playback speed to normal (100%)',
+        'hotkey-disabled': 'Hotkeys are disabled for this video!',
+        skipped_chapter: 'Skipped chapter %c',
+        skip: 'Skip',
+        cancel: 'Cancel',
+        skip_chapter: 'Skip chapter %c',
     },
     'ko-kr': {
         'danmaku-loading': 'Danmaku를 불러오는 중입니다.',
@@ -313,7 +348,7 @@ const tranTxt = {
         chromecast: 'ChromeCast',
         'show-subs': '자막 보이기',
         'hide-subs': '자막 숨기기',
-        Volume: '볼륨',
+        volume: '볼륨',
         live: '생방송',
         'video-info': '비디오 정보',
         on: 'On',
@@ -324,8 +359,9 @@ const tranTxt = {
         right: 'Go forward',
         up: 'Decrease Volume',
         down: 'Increase Volume',
-        cancelfullscreen: 'Exit the Fullscreen',
+        cancelbothfullscreen: 'Exit the Fullscreen',
         togglefullscreen: 'Enable or Disable Fullscreen',
+        togglewebfullscreen: 'Enable or Disable Web Fullscreen',
         mute: 'Mute or Unmute the audio',
         screenshot: 'Take a screenshot',
         nextchapter: 'Go to the next chapter (highlight)',
@@ -334,6 +370,11 @@ const tranTxt = {
         speedup: 'Increase the playback speed',
         speeddown: 'Decrease the playback speed',
         speednormal: 'Set the playback speed to normal (100%)',
+        'hotkey-disabled': 'Hotkeys are disabled for this video!',
+        skipped_chapter: 'Skipped chapter %c',
+        skip: 'Skip',
+        cancel: 'Cancel',
+        skip_chapter: 'Skip chapter %c',
     },
     de: {
         'danmaku-loading': 'Danmaku lädt...',
@@ -383,8 +424,9 @@ const tranTxt = {
         right: 'Vorwärtsspulen',
         up: 'Laustärke erhöhen',
         down: 'Laustärke senken',
-        cancelfullscreen: 'Vollbild verlassen',
+        cancelbothfullscreen: 'Vollbild verlassen',
         togglefullscreen: 'Vollbild ein oder ausschalten',
+        togglewebfullscreen: 'Web Vollbild ein oder ausschalten',
         mute: 'Stummschalten oder Stummschaltung aufheben',
         screenshot: 'Einen Screenshot machen',
         nextchapter: 'Zum nächsten Kapitel gehen',
@@ -394,11 +436,15 @@ const tranTxt = {
         speeddown: 'Wiedergabegeschwindigkeit  senken',
         speednormal: 'Wiedergabegeschwindigkeit auf normal setzen (100%)',
         'hotkey-disabled': 'Navigation mit der Tastatur ist für dieses Video Deaktiviert!',
+        skipped_chapter: 'Kapitel %c übersprungen',
+        skip: 'Überspringen',
+        cancel: 'Abbrechen',
+        skip_chapter: 'Kapitel %c überspringen',
     },
 };
 
-function checkPresentTranslations(singleLanguage) {
-    if (!singleLanguage) {
+function checkPresentTranslations(singleLanguage, debug) {
+    if (!singleLanguage || debug) {
         Object.keys(tranTxt).forEach((language) => {
             checkSingleLanguage(language);
         });

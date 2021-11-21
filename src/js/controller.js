@@ -83,7 +83,7 @@ class Controller {
                         }
                     }
 
-                    // TODO  only necessary if we change chapters on the fly
+                    // NOTICE  only necessary if we change chapters on the fly
                     // remove previous highlights
                     /* this.player.template.barHighlight.forEach((item) => {
                         this.player.template.playedBarWrap.removeChild(item);
@@ -179,6 +179,166 @@ class Controller {
             }
             this.player.events.trigger('progress'); // update loaded!
         });
+        this.player.on('chapter', (event) => {
+            this.checkSkipState.call(this, event);
+        });
+    }
+    checkSkipState(event) {
+        if (!this.player.options.highlightSkip) {
+            return;
+        }
+        switch (event.type) {
+            case 'simple':
+                break;
+            case 'next':
+                this.player.options.highlightSkipArray.some((a) => {
+                    if (event.current.text.match(a)) {
+                        this.skipHighlight.call(this, event.next, event.current.text);
+                        return true;
+                    }
+                    return false;
+                });
+                break;
+            case 'previous':
+                if (this.player.options.hardSkipHighlights) {
+                    this.player.options.highlightSkipArray.some((a) => {
+                        if (event.current.text.match(a)) {
+                            this.skipHighlight.call(this, event.previous, event.current.text);
+                        }
+                        return false;
+                    });
+                }
+                break;
+            default:
+                console.warn("This shouldn't be Called, we only have three types of chapter events!");
+        }
+    }
+    changeSkipHighlight(value) {
+        if (this.player.options.highlightSkip === value) {
+            return;
+        }
+        this.player.options.highlightSkip = value;
+        const { marker, mode, currentChapter } = this.chapters;
+        const previous = currentChapter >= 1 ? marker[currentChapter - 1] : null;
+        const current = currentChapter >= 0 && currentChapter < marker.length ? marker[currentChapter] : null;
+        const next = currentChapter < marker.length - 1 ? marker[currentChapter + 1] : null;
+        switch (mode) {
+            case 'normal':
+                // we never skip 'normal' mode chapters, so this is redundant!
+                // this.checkSkipState({ type: 'simple', direction: 'next', surpassed: next });
+                break;
+            case 'side':
+                break;
+            case 'top':
+                this.checkSkipState({ type: 'next', previous, current, next });
+                break;
+        }
+    }
+
+    skipHighlight(chapter, name) {
+        switch (this.player.options.highlightSkipMode.toString().toLowerCase()) {
+            case 'smoothprompt':
+                this.showSkipPrompt.call(this, false, 5000, name, () => {
+                    this.player.seek(chapter.time, true);
+                    this.player.notice(this.player.tran('skipped_chapter', name));
+                });
+                break;
+            case 'immediately':
+                this.player.seek(chapter.time, true);
+                this.player.notice(this.player.tran('skipped_chapter', name));
+                break;
+            case 'smoothcancelprompt':
+                this.showSkipPrompt.call(this, true, 5000, name, () => {
+                    this.player.seek(chapter.time, true);
+                    this.player.notice(this.player.tran('skipped_chapter', name));
+                });
+                break;
+            case 'always':
+                this.showSkipPrompt.call(this, false, -1, name, () => {
+                    this.player.seek(chapter.time, true);
+                    this.player.notice(this.player.tran('skipped_chapter', name));
+                });
+                break;
+            default:
+                console.warn(`'options.highlightSkipMode' not set correctly, this should not occur!`);
+                break;
+        }
+    }
+    showSkipPrompt(cancellable, timeShown, name, callback) {
+        const prompt = this.player.template.skipWindow;
+        const button = prompt.querySelector('.skip');
+        const text = prompt.querySelector('.title');
+        const progress = prompt.querySelector('.progress');
+        if (timeShown > 0) {
+            if (cancellable) {
+                button.innerText = this.player.tran('cancel');
+                text.innerText = this.player.tran('skip_chapter', name);
+
+                const timeoutID = setTimeout(() => {
+                    button.onclick = null;
+                    prompt.style.display = 'none';
+                    callback();
+                }, timeShown);
+                button.onclick = () => {
+                    button.onclick = null;
+                    prompt.style.display = 'none';
+                    clearTimeout(timeoutID);
+                };
+                this.player.once(
+                    'chapter',
+                    () => {
+                        button.onclick = null;
+                        prompt.style.display = 'none';
+                        clearTimeout(timeoutID);
+                    },
+                    this.player.options.once_delay
+                );
+            } else {
+                button.innerText = this.player.tran('skip');
+                text.innerText = this.player.tran('skip_chapter', name);
+                const timeoutID = setTimeout(() => {
+                    button.onclick = null;
+                    prompt.style.display = 'none';
+                }, timeShown);
+                button.onclick = () => {
+                    button.onclick = null;
+                    prompt.style.display = 'none';
+                    clearTimeout(timeoutID);
+                    callback();
+                };
+                this.player.once(
+                    'chapter',
+                    () => {
+                        button.onclick = null;
+                        prompt.style.display = 'none';
+                        clearTimeout(timeoutID);
+                    },
+                    this.player.options.once_delay
+                );
+            }
+            progress.style.display = 'unset';
+            progress.animate([{ width: '0%' }, { width: '100%' }], timeShown);
+        } else {
+            button.innerText = this.player.tran('skip');
+            text.innerText = this.player.tran('skip_chapter', name);
+            progress.style.display = 'none';
+            button.onclick = () => {
+                button.onclick = null;
+                // prompt.style.display = 'none';
+                callback();
+            };
+            this.player.once(
+                'chapter',
+                () => {
+                    button.onclick = null;
+                    prompt.style.display = 'none';
+                },
+                this.player.options.once_delay
+            );
+        }
+        prompt.style.display = 'flex';
+
+        // circle.animate([{ backgroundColor: 'var(--dplayer-simple-keyboard-keys-bk-available)' }, { backgroundColor: 'var(--dplayer-simple-keyboard-keys-bk-pressed)' }], 150);
     }
 
     initThumbnails() {
@@ -285,6 +445,21 @@ class Controller {
     }
 
     initFullButton() {
+        switch (this.player.options.fullScreenPolicy.toString().toLowerCase()) {
+            case 'onlynormal':
+                this.player.template.webFullButton.classList.add('only-normal-mode');
+                break;
+            case 'onlyweb':
+                this.player.template.browserFullButton.classList.add('only-web-mode');
+                break;
+            case 'both':
+                this.player.template.browserFullButton.classList.add('both-mode');
+                this.player.template.webFullButton.classList.add('both-mode');
+                break;
+            default:
+                console.warn(`'options.fullScreenPolicy' not set correctly, this should not occur!`);
+                break;
+        }
         this.player.template.browserFullButton.addEventListener('click', () => {
             this.player.fullScreen.toggle('browser');
         });
@@ -504,7 +679,7 @@ class Controller {
             this.show();
         }
     }
-    updateChapters(object, player) {
+    updateChapters(object = {}, player = this.player) {
         // percentage, or time + duration, or we can get that from the video   player.video.currentTime , player.video.duration
         let { percentage, time, duration } = object;
         if (percentage) {
@@ -527,12 +702,14 @@ class Controller {
             const previous = currentChapter >= 1 ? marker[currentChapter - 1] : null;
             const next = currentChapter < marker.length - 1 ? marker[currentChapter + 1] : null;
             const current = currentChapter >= 0 && currentChapter < marker.length ? marker[currentChapter] : null;
+            const previous_condition = current && current.time > time;
+            const next_condition = next && next.time <= time;
             switch (mode) {
                 case 'normal':
-                    if (current && current.time > time) {
+                    if (previous_condition) {
                         this.chapters.currentChapter--;
                         this.player.events.trigger('chapter', { type: 'simple', direction: 'previous', surpassed: current });
-                    } else if (next && next.time <= time) {
+                    } else if (next_condition) {
                         this.chapters.currentChapter++;
                         this.player.events.trigger('chapter', { type: 'simple', direction: 'next', surpassed: next });
                     }
@@ -540,10 +717,10 @@ class Controller {
                 case 'side':
                     break;
                 case 'top':
-                    if (current && current.time > time) {
+                    if (previous_condition) {
                         this.chapters.currentChapter--;
                         this.player.events.trigger('chapter', { type: 'previous', previous: currentChapter >= 2 ? marker[currentChapter - 2] : null, current: previous, next: current });
-                    } else if (next && next.time <= time) {
+                    } else if (next_condition) {
                         this.chapters.currentChapter++;
                         this.player.events.trigger('chapter', { type: 'next', previous: current, current: next, next: currentChapter < marker.length - 2 ? marker[currentChapter + 2] : null });
                     }
@@ -621,7 +798,7 @@ class Controller {
                 document.body.appendChild(link);
                 link.click();
                 this.player.events.trigger('screenshot', dataURL);
-                this.player.notice(this.player.tran('saved-screenshot').replace('%n', downloadName));
+                this.player.notice(this.player.tran('saved-screenshot', downloadName));
                 document.body.removeChild(link);
                 URL.revokeObjectURL(dataURL);
                 this.player.container.click();
