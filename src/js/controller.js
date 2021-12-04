@@ -115,14 +115,6 @@ class Controller {
                             }
                             this.player.bar.setMode('normal');
                             break;
-                        case 'side':
-                            if (marker[0].time !== 0) {
-                                console.warn('The mode "side" must have a chapter that starts at 0 / the beginning chapters beginning at the start, however its not required for the "normal" mode", consider using that mode!');
-                            } else {
-                                this.chapters = { marker, mode: 'side', currentChapter: 0 };
-                            }
-                            this.player.bar.setMode('side');
-                            break;
                         case 'top':
                             this.player.template.playedBarWrap.querySelectorAll('.dplayer-bar').forEach((item) => {
                                 this.player.template.playedBarWrap.removeChild(item);
@@ -349,9 +341,9 @@ class Controller {
                 url: this.player.options.video.thumbnails,
                 events: this.player.events,
             });
-
             this.player.on('loadedmetadata', () => {
-                this.thumbnails.resize(160, (this.player.video.videoHeight / this.player.video.videoWidth) * 160, this.player.template.barWrap.offsetWidth);
+                // TODO calculate rigth size!!! for moving!
+                this.thumbnails.resize(this.player.video.videoHeight / this.player.video.videoWidth, this.player.template.barWrap.offsetWidth);
             });
         }
     }

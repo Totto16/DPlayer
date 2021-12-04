@@ -43,4 +43,11 @@ export default {
                 options.error && options.error();
             });
     },
+    backend(options) {
+        // TODO request APi version, Avaiable endpouints and some config!!
+        // TODO define standard API beahivour!!
+        if (options.url) {
+            return 'test';
+        }
+    },
 };

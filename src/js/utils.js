@@ -1,4 +1,5 @@
 import axios from 'axios';
+import api from './api';
 
 const isMobile = /mobile/i.test(window.navigator.userAgent);
 const isChrome = /chrome/i.test(window.navigator.userAgent);
@@ -161,6 +162,10 @@ const utils = {
     },
     // parsing according to web standards (https://developer.mozilla.org/en-US/docs/Web/API/WebVTT_API)
     parseVtt(vtt_url, callback, startOrEnd = 0) {
+        if (vtt_url === 'API') {
+            // api, get the vtt!!!!/**Alias make vtt_utl to an reqzuest to the API!! */
+            vtt_url = api.backend({ url: 'test' });
+        }
         const marker = [];
         axios
             .get(vtt_url)

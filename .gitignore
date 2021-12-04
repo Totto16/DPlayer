@@ -14,3 +14,4 @@ demo/*.ass
 demo/*.mkv
 demo/*.vtt
 src/plugins/jsnew
+*.png

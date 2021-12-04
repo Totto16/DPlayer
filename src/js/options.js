@@ -30,7 +30,6 @@ export default (options, player) => {
             },
         ],
         fullScreenPolicy: 'OnlyNormal', // available "OnlyNormal","OnlyWeb","Both" or 0,1,2
-
         highlightSkipArray: [/^Opening$/i, /^Ending$/i, /^OP$/i, /^ED$/i, /^Intro$/i, /^Outro$/i, /^Credits$/i, /^Pause$/i],
         highlightSkipMode: 'smoothPrompt', // available "smoothPrompt", "immediately", "smoothCancelPrompt", "always" or 0,1,2,3
         highlightSkip: false,
@@ -83,7 +82,7 @@ export default (options, player) => {
     if (options.highlight) {
         options.highlights = {
             marker: options.highlight,
-            mode: 'auto',
+            mode: 'auto', // available 'auto', 'normal', 'top'
         };
         options.highlight = null;
     }
