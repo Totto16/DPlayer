@@ -8,7 +8,7 @@ class Template {
         this.options = options.options;
         this.player = options.player;
         this.index = options.index;
-        this.tran = options.tran;
+        this.translate = options.translate;
         this.init();
     }
 
@@ -16,7 +16,7 @@ class Template {
         this.container.innerHTML = tplPlayer({
             options: this.options,
             index: this.index,
-            tran: this.tran,
+            translate: this.translate,
             balloon: (a, b) => this.player.balloon.call(this.player, a, b),
             icons: Icons,
             mobile: utils.isMobile,

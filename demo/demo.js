@@ -60,17 +60,17 @@ function initPlayers() {
             pic: 'http://localhost:9090/amalgam-1029.png',
            // thumbnails: 'API',
         },
-        API_URL:'https://ddl.amalgam-fansubs.moe/API/Dplayer',
+        API_URL:'https://ddl.amalgam-fansubs.moe/DPlayer.php',
         theme:"red",
         hotkey: true,
-        highlights:{vtt:"API",mode:"auto"}, //TODO make all reasonable thinsga also able to request via API 
-        //TODo autoNext (enable defaulkt +1 counter and function to manually pass how to behave or API)
+        highlights:{vtt:"API",mode:"auto"}, //TODO make all reasonable things also able to request via API 
+        //TODO autoNext (enable default +1 counter and function to manually pass how to behave or API)
         airplay: "vendor",
         fullScreenPolicy: 0, // available "OnlyNormal","OnlyWeb","Both" or 0,1,2
         highlightSkip:true,
         highlightSkipMode: 0 ,// available "smoothPrompt", "immediately", "smoothCancelPrompt", "always" or 0,1,2,3
         hardSkipHighlights:false,
-        highlightSkipArray:['*',/.*Ending.*/i,/.*Opening.*/i],
+        highlightSkipArray:['*',/.*Ending.*/i,/.*Opening.*/i,/.*Pause.*/i],
         chromecast: "vendor"
     };
     //const dp = new DPlayer(dpOptions);

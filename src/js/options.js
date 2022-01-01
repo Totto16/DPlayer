@@ -30,7 +30,7 @@ export default (options, player) => {
             },
         ],
         fullScreenPolicy: 'OnlyNormal', // available "OnlyNormal","OnlyWeb","Both" or 0,1,2
-        highlightSkipArray: [/^Opening$/i, /^Ending$/i, /^OP$/i, /^ED$/i, /^Intro$/i, /^Outro$/i, /^Credits$/i, /^Pause$/i],
+        highlightSkipArray: [/^\sOpening\s$/i, /^\sEnding\s$/i, /^\sOP\s$/i, /^\sED\s$/i, /^\sIntro\s$/i, /^\sOutro\s$/i, /^\sCredits\s$/i, /^\sPause\s$/i],
         highlightSkipMode: 'smoothPrompt', // available "smoothPrompt", "immediately", "smoothCancelPrompt", "always" or 0,1,2,3
         highlightSkip: false,
         hardSkipHighlights: false, // if we go backwards and end in a Skip Highlight, we normally stay there, but with that mode, we skip hard, that means, we skip the skip chapters ALWAYS
@@ -88,10 +88,19 @@ export default (options, player) => {
     }
 
     if (options.highlights && options.highlights.vtt) {
-        options.highlights.marker = utils.parseVtt(options.highlights.vtt, (marker) => {
-            player.options.highlights.marker = marker;
-            player.events.trigger('highlight_change');
-        });
+        utils.parseVtt(
+            options.highlights.vtt,
+            (marker) => {
+                if (!player.options.highlights) {
+                    player.options.highlights = {};
+                    console.warn(`Something really weird is going on, there is a bug somewhere! Please report that!`);
+                }
+                player.options.highlights.marker = marker;
+                player.events.trigger('highlight_change');
+            },
+            0,
+            options.API_URL
+        );
     }
 
     if (options.highlights && !options.highlights.mode) {
@@ -200,7 +209,7 @@ export default (options, player) => {
                     player.infoPanel.hide();
                     player.hotkeyPanel.triggle();
                 } else {
-                    player.notice(player.tran('hotkey_disabled'));
+                    player.notice(player.translate('hotkey_disabled'));
                 }
             },
         },

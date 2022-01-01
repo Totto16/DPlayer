@@ -110,7 +110,7 @@ class Setting {
             this.loop = false;
         }
         this.hide();
-        this.player.notice(`${this.player.tran('loop')} ${this.player.tran(this.loop ? 'on' : 'off')}`);
+        this.player.notice(`${this.player.translate('loop')} ${this.player.translate(this.loop ? 'on' : 'off')}`);
     }
 
     EditSpeed(direction) {

@@ -76,7 +76,7 @@ class Comment {
 
         // text can't be empty
         if (!this.player.template.commentInput.value.replace(/^\s+|\s+$/g, '')) {
-            this.player.notice(this.player.tran('please-input-danmaku'));
+            this.player.notice(this.player.translate('please-input-danmaku'));
             return;
         }
 

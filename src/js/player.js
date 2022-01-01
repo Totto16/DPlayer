@@ -38,7 +38,7 @@ class DPlayer {
             this.quality = this.options.video.quality[this.options.video.defaultQuality];
         }
         this.languageFeatures = new i18n(this.options.lang);
-        this.tran = this.languageFeatures.tran;
+        this.translate = this.languageFeatures.translate;
         this.languageFeatures.checkPresentTranslations(this.options.lang, true);
         this.events = new Events();
         this.user = new User(this);
@@ -70,7 +70,7 @@ class DPlayer {
             player: this,
             options: this.options,
             index: index,
-            tran: this.tran,
+            translate: this.translate,
         });
 
         this.video = this.template.video;
@@ -116,7 +116,7 @@ class DPlayer {
                     speedRate: this.options.danmaku.speedRate,
                 },
                 events: this.events,
-                tran: (msg) => this.tran(msg),
+                translate: (msg) => this.translate(msg),
             });
 
             this.comment = new Comment(this);
@@ -164,9 +164,9 @@ class DPlayer {
             time = Math.min(time, this.video.duration);
         }
         if (this.video.currentTime < time && !silent) {
-            this.notice(`${this.tran('ff', (time - this.video.currentTime).toFixed(0))}`);
+            this.notice(`${this.translate('ff', (time - this.video.currentTime).toFixed(0))}`);
         } else if (this.video.currentTime > time && !silent) {
-            this.notice(`${this.tran('rew', (this.video.currentTime - time).toFixed(0))}`);
+            this.notice(`${this.translate('rew', (this.video.currentTime - time).toFixed(0))}`);
         }
 
         this.video.currentTime = time;
@@ -263,7 +263,7 @@ class DPlayer {
                 this.user.set('volume', percentage);
             }
             if (!nonotice) {
-                this.notice(`${this.tran('volume')} ${(percentage * 100).toFixed(0)}%`, { type: 'volume' });
+                this.notice(`${this.translate('volume')} ${(percentage * 100).toFixed(0)}%`, { type: 'volume' });
             }
 
             this.video.volume = percentage;
@@ -499,7 +499,7 @@ class DPlayer {
                 return;
             }
             // duplicate check because this error gets fired twice for some reason
-            this.tran && this.notice && this.type !== 'webtorrent' && this.notice(this.tran('video-failed'), { time: 3000, duplicate: 'check' });
+            this.translate && this.notice && this.type !== 'webtorrent' && this.notice(this.translate('video-failed'), { time: 3000, duplicate: 'check' });
         });
 
         // video end
@@ -583,7 +583,7 @@ class DPlayer {
         this.video = videoEle;
         this.initVideo(this.video, this.quality.type || this.options.video.type);
         this.seek(this.prevVideo.currentTime);
-        this.notice(`${this.tran('switching-quality', this.quality.name)}`, { time: 3000, mode: `override` });
+        this.notice(`${this.translate('switching-quality', this.quality.name)}`, { time: 3000, mode: `override` });
         this.events.trigger('quality_start', this.quality);
 
         this.on('canplay', () => {
@@ -598,7 +598,7 @@ class DPlayer {
                     this.video.play();
                 }
                 this.prevVideo = null;
-                this.notice(`${this.tran('switched-quality', this.quality.name)}`);
+                this.notice(`${this.translate('switched-quality', this.quality.name)}`);
                 this.switchingQuality = false;
 
                 this.events.trigger('quality_end');
@@ -689,13 +689,13 @@ class DPlayer {
     }
 
     speed(rate) {
-        this.notice(this.tran('speed', `${rate * 100}%`));
+        this.notice(this.translate('speed', `${rate * 100}%`));
         this.video.playbackRate = rate;
     }
 
     balloon(translate, mode) {
         if (this.options.balloon) {
-            return `aria-label="${this.tran(translate)}" data-balloon-pos="${mode}"`;
+            return `aria-label="${this.translate(translate)}" data-balloon-pos="${mode}"`;
         } else {
             return '';
         }

@@ -11,7 +11,7 @@ function i18n(lang) {
     this.lang = lang;
     // in case someone says en-us, and en is present!
     this.fallbackLang = this.lang.includes('-') ? this.lang.split('-')[0] : this.lang;
-    this.tran = (key, replacement) => {
+    this.translate = (key, replacement) => {
         if (!key) {
             console.error('key for translation not set!');
             return;
@@ -172,7 +172,7 @@ const standard = {
     cancel: 'Cancel',
     skip_chapter: 'Skip chapter %c',
 };
-
+// TODO read everything but standard and defintion from files, and add option to not have all of them! (reduces the size by a little bit) especially, if maybe there are many translations in the future
 // add translation text here
 const tranTxt = {
     en: standard,

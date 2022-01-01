@@ -70,7 +70,7 @@ class Danmaku {
                     }
                 },
                 error: (msg) => {
-                    this.options.error(msg || this.options.tran('danmaku-failed'));
+                    this.options.error(msg || this.options.translate('danmaku-failed'));
                     results[i] = [];
 
                     ++readCount;
@@ -97,7 +97,7 @@ class Danmaku {
             data: danmakuData,
             success: callback,
             error: (msg) => {
-                this.options.error(msg || this.options.tran('danmaku-failed'));
+                this.options.error(msg || this.options.translate('danmaku-failed'));
             },
         });
 

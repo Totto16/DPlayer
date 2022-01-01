@@ -63,10 +63,7 @@ class Controller {
     initHighlights() {
         this.player.on(['durationchange', 'highlight_change'], () => {
             if (this.player.video.duration && this.player.video.duration !== 1 && this.player.video.duration !== Infinity) {
-                if (this.player.options.highlights && this.player.options.highlights.marker) {
-                    if (this.player.options.highlights.marker === 'processing') {
-                        return;
-                    }
+                if (this.player.options.highlights && this.player.options.highlights.marker && Array.isArray(this.player.options.highlights.marker) && this.player.options.highlights.marker.length > 0) {
                     const marker = this.player.options.highlights.marker.map((mark) => {
                         const corrected = mark;
                         if (typeof mark.time !== 'number') {
@@ -232,23 +229,23 @@ class Controller {
             case 'smoothprompt':
                 this.showSkipPrompt.call(this, false, 5000, name, () => {
                     this.player.seek(chapter.time, true);
-                    this.player.notice(this.player.tran('skipped_chapter', name));
+                    this.player.notice(this.player.translate('skipped_chapter', name));
                 });
                 break;
             case 'immediately':
                 this.player.seek(chapter.time, true);
-                this.player.notice(this.player.tran('skipped_chapter', name));
+                this.player.notice(this.player.translate('skipped_chapter', name));
                 break;
             case 'smoothcancelprompt':
                 this.showSkipPrompt.call(this, true, 5000, name, () => {
                     this.player.seek(chapter.time, true);
-                    this.player.notice(this.player.tran('skipped_chapter', name));
+                    this.player.notice(this.player.translate('skipped_chapter', name));
                 });
                 break;
             case 'always':
                 this.showSkipPrompt.call(this, false, -1, name, () => {
                     this.player.seek(chapter.time, true);
-                    this.player.notice(this.player.tran('skipped_chapter', name));
+                    this.player.notice(this.player.translate('skipped_chapter', name));
                 });
                 break;
             default:
@@ -263,8 +260,8 @@ class Controller {
         const progress = prompt.querySelector('.progress');
         if (timeShown > 0) {
             if (cancellable) {
-                button.innerText = this.player.tran('cancel');
-                text.innerText = this.player.tran('skip_chapter', name);
+                button.innerText = this.player.translate('cancel');
+                text.innerText = this.player.translate('skip_chapter', name);
 
                 const timeoutID = setTimeout(() => {
                     button.onclick = null;
@@ -286,8 +283,8 @@ class Controller {
                     this.player.options.once_delay
                 );
             } else {
-                button.innerText = this.player.tran('skip');
-                text.innerText = this.player.tran('skip_chapter', name);
+                button.innerText = this.player.translate('skip');
+                text.innerText = this.player.translate('skip_chapter', name);
                 const timeoutID = setTimeout(() => {
                     button.onclick = null;
                     prompt.style.display = 'none';
@@ -311,8 +308,8 @@ class Controller {
             progress.style.display = 'unset';
             progress.animate([{ width: '0%' }, { width: '100%' }], timeShown);
         } else {
-            button.innerText = this.player.tran('skip');
-            text.innerText = this.player.tran('skip_chapter', name);
+            button.innerText = this.player.translate('skip');
+            text.innerText = this.player.translate('skip_chapter', name);
             progress.style.display = 'none';
             button.onclick = () => {
                 button.onclick = null;
@@ -624,12 +621,12 @@ class Controller {
     initSubtitleButton() {
         if (this.player.options.subtitle) {
             this.player.events.on('subtitle_show', () => {
-                this.player.template.subtitleButton.dataset.balloon = this.player.tran('hide-subs');
+                this.player.template.subtitleButton.dataset.balloon = this.player.translate('hide-subs');
                 this.player.template.subtitleButtonInner.style.opacity = '';
                 this.player.user.set('subtitle', 1);
             });
             this.player.events.on('subtitle_hide', () => {
-                this.player.template.subtitleButton.dataset.balloon = this.player.tran('show-subs');
+                this.player.template.subtitleButton.dataset.balloon = this.player.translate('show-subs');
                 this.player.template.subtitleButtonInner.style.opacity = '0.4';
                 this.player.user.set('subtitle', 0);
             });
@@ -790,7 +787,7 @@ class Controller {
                 document.body.appendChild(link);
                 link.click();
                 this.player.events.trigger('screenshot', dataURL);
-                this.player.notice(this.player.tran('saved-screenshot', downloadName));
+                this.player.notice(this.player.translate('saved-screenshot', downloadName));
                 document.body.removeChild(link);
                 URL.revokeObjectURL(dataURL);
                 this.player.container.click();

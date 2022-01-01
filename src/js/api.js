@@ -43,11 +43,27 @@ export default {
                 options.error && options.error();
             });
     },
-    backend(options) {
-        // TODO request APi version, Avaiable endpouints and some config!!
-        // TODO define standard API beahivour!!
-        if (options.url) {
-            return 'test';
-        }
+
+    async backend(options) {
+        return new Promise((resolve, reject) => {
+            // TODO request APi version, Available endpoints and some config!!
+            // TODO define standard API behavior!!
+            options = options || {};
+            options.json = options.json || true;
+            options.query = options.query || [];
+            options.method = options.method || 'GET';
+            if (options.url) {
+                axios
+                    .get(options.url, {})
+                    .then((response) => {
+                        // check if status is ok, if response is valid json, and if version match, then control the API specs, like
+                        // version etc..., then get the data en resolve that!
+                        resolve(response.data);
+                    })
+                    .catch(reject);
+            } else {
+                reject('No URL provided');
+            }
+        });
     },
 };

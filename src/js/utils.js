@@ -161,10 +161,29 @@ const utils = {
         }
     },
     // parsing according to web standards (https://developer.mozilla.org/en-US/docs/Web/API/WebVTT_API)
-    parseVtt(vtt_url, callback, startOrEnd = 0) {
-        if (vtt_url === 'API') {
-            // api, get the vtt!!!!/**Alias make vtt_utl to an reqzuest to the API!! */
-            vtt_url = api.backend({ url: 'test' });
+    parseVtt(vtt_url, callback, startOrEnd = 0, API_URL = null) {
+        if (vtt_url === 'API' && API_URL !== null) {
+            // TODO here are some specs!
+            // TODO version, 1 at the moment, get either reference or nothing/everything else means ra data!, type, vtt, or chapter, or thubnails or etc TODO
+            api.backend({
+                url: API_URL,
+                query: [
+                    ['version', '1'],
+                    ['get', 'reference'],
+                    ['type', 'vtt'],
+                ],
+            })
+                .then((data) => {
+                    this.parseVtt(data, callback, startOrEnd);
+                })
+                .catch((error) => {
+                    console.error(`Error in API request for the Vtt Url!`, error);
+                    return null;
+                });
+            return 'processing API request';
+        } else if (API_URL === null) {
+            console.warn(`Tried to pass 'API' as vtt_url, but didn't specify 'API_URL'!`);
+            return;
         }
         const marker = [];
         axios
@@ -205,8 +224,8 @@ const utils = {
                     }
                 });
             })
-            .catch((e) => {
-                console.error(`Couldn't parse Vtt Url! Fetching Error!`, e);
+            .catch((error) => {
+                console.error(`Couldn't parse Vtt Url! Fetching Error!`, error);
                 return null;
             })
             .finally(() => {
