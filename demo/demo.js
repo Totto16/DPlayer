@@ -70,6 +70,7 @@ function initPlayers() {
         highlightSkip:true,
         highlightSkipMode: 0 ,// available "smoothPrompt", "immediately", "smoothCancelPrompt", "always" or 0,1,2,3
         hardSkipHighlights:false,
+        skipDelay:5555,
         highlightSkipArray:['*',/.*Ending.*/i,/.*Opening.*/i,/.*Pause.*/i],
         chromecast: "vendor"
     };

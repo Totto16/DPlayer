@@ -12,7 +12,7 @@ if (window.DPLAYER_AUTO) {
     }
     window[window.DPLAYER_AUTO.name] = new DPlayer(window.DPLAYER_AUTO.options);
 
-    console.debug(`used 'window.DPLAYER_AUTO' to load DPLAYER automatically, you can find it's instance at 'window[${window.DPLAYER_AUTO.name}]'`);
+    console.debug(`used 'window.DPLAYER_AUTO' to load DPLAYER automatically, you can find it's instance at 'window['${window.DPLAYER_AUTO.name}']'`);
 }
 
 export default DPlayer;

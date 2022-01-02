@@ -8,7 +8,6 @@ export default (options, player) => {
         container: options.element || document.getElementsByClassName('dplayer')[0],
         live: false,
         autoplay: false,
-        once_delay: 100,
         themeName: 'standard',
         disableDarkMode: false,
         loop: false,
@@ -33,6 +32,7 @@ export default (options, player) => {
         highlightSkipArray: [/^\sOpening\s$/i, /^\sEnding\s$/i, /^\sOP\s$/i, /^\sED\s$/i, /^\sIntro\s$/i, /^\sOutro\s$/i, /^\sCredits\s$/i, /^\sPause\s$/i],
         highlightSkipMode: 'smoothPrompt', // available "smoothPrompt", "immediately", "smoothCancelPrompt", "always" or 0,1,2,3
         highlightSkip: false,
+        skipDelay: 5000,
         hardSkipHighlights: false, // if we go backwards and end in a Skip Highlight, we normally stay there, but with that mode, we skip hard, that means, we skip the skip chapters ALWAYS
         mutex: true,
         pluginOptions: { hls: {}, flv: {}, dash: {}, webtorrent: {}, ass: {} },
@@ -99,7 +99,8 @@ export default (options, player) => {
                 player.events.trigger('highlight_change');
             },
             0,
-            options.API_URL
+            options.API_URL,
+            options.video.url
         );
     }
 
@@ -110,7 +111,7 @@ export default (options, player) => {
     if (options.highlights && options.highlights.marker && options.highlights.marker.length <= 0) {
         options.highlights = null;
     }
-    if (options.highlightSkipMode) {
+    if (typeof options.highlightSkipMode !== 'undefined') {
         switch (options.highlightSkipMode.toString().toLowerCase()) {
             case 'smoothprompt':
                 break;

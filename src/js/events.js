@@ -71,10 +71,17 @@ class Events {
                     this.events[name] = [];
                 }
                 const UUID = this.currentUUID++;
-
+                // TODO remove delayed option!!!
+                // NEVER USE THAT, it is a race condition between user and CPU, and the time is variable!!!!!!!!!!!! if user is faster then that its a weird buggy behavior!!
                 if (typeof delayed === 'number') {
                     const ID = setTimeout(() => {
-                        this.events[name].filter((item) => item.UUID === UUID)[0].delayed = false;
+                        const temp = this.events[name].filter((item) => item.UUID === UUID);
+                        if (temp.length > 0) {
+                            temp[0].delayed = false;
+                        } else {
+                            console.error(`CRITICAL, this is a critical BUG in the once method, if the delay is to big, or somthing other weird happens with the timing, you get really weird errors, please don't use this!!!!!`);
+                            console.log(`%cCRITICAL`, 'color: white; background: red; padding:5px 0; font-size: 100px;');
+                        }
                         clearTimeout(ID);
                     }, delayed);
                     this.events[name].push({ callback, delayed: true, once, UUID });

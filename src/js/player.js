@@ -239,7 +239,8 @@ class DPlayer {
     }
 
     switchVolumeIcon() {
-        if (this.volume() >= 0.95) {
+        // 75 % is better, in my opinion
+        if (this.volume() >= 0.75) {
             this.template.volumeIcon.innerHTML = Icons.volumeUp;
         } else if (this.volume() > 0) {
             this.template.volumeIcon.innerHTML = Icons.volumeDown;

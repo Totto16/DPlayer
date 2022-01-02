@@ -61,6 +61,7 @@ class Controller {
     }
 
     initHighlights() {
+        // TODO add buttons for previous and next chapters!!!!!
         this.player.on(['durationchange', 'highlight_change'], () => {
             if (this.player.video.duration && this.player.video.duration !== 1 && this.player.video.duration !== Infinity) {
                 if (this.player.options.highlights && this.player.options.highlights.marker && Array.isArray(this.player.options.highlights.marker) && this.player.options.highlights.marker.length > 0) {
@@ -227,7 +228,7 @@ class Controller {
     skipHighlight(chapter, name) {
         switch (this.player.options.highlightSkipMode.toString().toLowerCase()) {
             case 'smoothprompt':
-                this.showSkipPrompt.call(this, false, 5000, name, () => {
+                this.showSkipPrompt.call(this, false, this.player.options.skipDelay, name, () => {
                     this.player.seek(chapter.time, true);
                     this.player.notice(this.player.translate('skipped_chapter', name));
                 });
@@ -237,7 +238,7 @@ class Controller {
                 this.player.notice(this.player.translate('skipped_chapter', name));
                 break;
             case 'smoothcancelprompt':
-                this.showSkipPrompt.call(this, true, 5000, name, () => {
+                this.showSkipPrompt.call(this, true, this.player.options.skipDelay, name, () => {
                     this.player.seek(chapter.time, true);
                     this.player.notice(this.player.translate('skipped_chapter', name));
                 });
@@ -280,7 +281,7 @@ class Controller {
                         prompt.style.display = 'none';
                         clearTimeout(timeoutID);
                     },
-                    this.player.options.once_delay
+                    true
                 );
             } else {
                 button.innerText = this.player.translate('skip');
@@ -302,7 +303,7 @@ class Controller {
                         prompt.style.display = 'none';
                         clearTimeout(timeoutID);
                     },
-                    this.player.options.once_delay
+                    true
                 );
             }
             progress.style.display = 'unset';
@@ -337,6 +338,7 @@ class Controller {
                 barWidth: this.player.template.barWrap.offsetWidth,
                 url: this.player.options.video.thumbnails,
                 events: this.player.events,
+                // TODO API
             });
             this.player.on('loadedmetadata', () => {
                 // TODO calculate rigth size!!! for moving!
@@ -726,10 +728,12 @@ class Controller {
         const actualTime = this.player.video.currentTime;
         let goToChapter = currentChapter + number;
         let togo;
+        // Threshold is made for backtracing, that means, if you press Previous Chapter and you are only Threshold seconds in, you don't go back Threshold seconds, but to the previous chapter!
+        const Threshold = 1.5;
         switch (mode) {
             case 'top':
                 togo = goToChapter >= 0 && goToChapter < marker.length ? marker[goToChapter] : goToChapter === marker.length ? { time: this.player.video.duration } : null;
-                if (number === 0 && Math.abs(togo.time - actualTime) <= 1) {
+                if (number === 0 && Math.abs(togo.time - actualTime) <= Threshold) {
                     goToChapter--;
                     togo = goToChapter >= 0 && goToChapter < marker.length ? marker[goToChapter] : goToChapter === marker.length ? { time: this.player.video.duration } : null;
                 }
@@ -741,7 +745,7 @@ class Controller {
                 break;
             case 'normal':
                 togo = goToChapter >= 0 && goToChapter < marker.length ? marker[goToChapter] : goToChapter === marker.length ? { time: this.player.video.duration } : goToChapter === -1 ? { time: 0 } : null;
-                if (number === 0 && Math.abs(togo.time - actualTime) <= 1) {
+                if (number === 0 && Math.abs(togo.time - actualTime) <= Threshold) {
                     goToChapter--;
                     togo = goToChapter >= 0 && goToChapter < marker.length ? marker[goToChapter] : goToChapter === marker.length ? { time: this.player.video.duration } : goToChapter === -1 ? { time: 0 } : null;
                 }

@@ -161,17 +161,19 @@ const utils = {
         }
     },
     // parsing according to web standards (https://developer.mozilla.org/en-US/docs/Web/API/WebVTT_API)
-    parseVtt(vtt_url, callback, startOrEnd = 0, API_URL = null) {
+    parseVtt(vtt_url, callback, startOrEnd = 0, API_URL = null, url = null) {
         if (vtt_url === 'API' && API_URL !== null) {
             // TODO here are some specs!
             // TODO version, 1 at the moment, get either reference or nothing/everything else means ra data!, type, vtt, or chapter, or thubnails or etc TODO
             api.backend({
                 url: API_URL,
-                query: [
-                    ['version', '1'],
-                    ['get', 'reference'],
-                    ['type', 'vtt'],
-                ],
+                query: {
+                    version: '1',
+                    get: 'reference',
+                    type: 'vtt',
+                    parameter: url.substring(url.lastIndexOf('/') + 1),
+                    mode: 'regex',
+                },
             })
                 .then((data) => {
                     this.parseVtt(data, callback, startOrEnd);
@@ -181,7 +183,7 @@ const utils = {
                     return null;
                 });
             return 'processing API request';
-        } else if (API_URL === null) {
+        } else if (vtt_url === 'API' && API_URL === null) {
             console.warn(`Tried to pass 'API' as vtt_url, but didn't specify 'API_URL'!`);
             return;
         }
