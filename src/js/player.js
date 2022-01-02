@@ -164,9 +164,9 @@ class DPlayer {
             time = Math.min(time, this.video.duration);
         }
         if (this.video.currentTime < time && !silent) {
-            this.notice(`${this.translate('ff', (time - this.video.currentTime).toFixed(0))}`);
+            this.notice(`${this.translate('ff', this.formatTime(time - this.video.currentTime))}`);
         } else if (this.video.currentTime > time && !silent) {
-            this.notice(`${this.translate('rew', (this.video.currentTime - time).toFixed(0))}`);
+            this.notice(`${this.translate('rew', this.formatTime(this.video.currentTime - time))}`);
         }
 
         this.video.currentTime = time;
@@ -177,6 +177,21 @@ class DPlayer {
         this.bar.set('played', time / this.video.duration);
         this.controller.updateChapters({ time, duration: this.video.duration }, this);
         this.template.ptime.innerHTML = utils.secondToTime(time);
+    }
+
+    formatTime(time) {
+        if (time < 60) {
+            return this.translate('seconds', time.toFixed(0));
+        } else if (time < 60 * 60) {
+            return `${this.translate('minutes', Math.floor(time / 60).toFixed(0))} ${this.translate('seconds', (time % 60).toFixed(0))}`;
+        } else if (time < 60 * 60 * 24) {
+            return `${this.translate('hours', Math.floor(time / (60 * 60)).toFixed(0))} ${this.translate('minutes', Math.floor((time % (60 * 60)) / 60).toFixed(0))} ${this.translate('seconds', (time % 60).toFixed(0))}`;
+        } else {
+            return `${Math.floor(time / (60 * 60 * 24)).toFixed(0)} d ${this.translate('hours', Math.floor((time % (60 * 60 * 24)) / (60 * 60)).toFixed(0))} ${this.translate(
+                'minutes',
+                Math.floor((time % (60 * 60)) / 60).toFixed(0)
+            )} ${this.translate('seconds', (time % 60).toFixed(0))}`;
+        }
     }
 
     /**
