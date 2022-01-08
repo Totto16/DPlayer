@@ -29,7 +29,7 @@ export default (options, player) => {
             },
         ],
         fullScreenPolicy: 'OnlyNormal', // available "OnlyNormal","OnlyWeb","Both" or 0,1,2
-        highlightSkipArray: [/^\sOpening\s$/i, /^\sEnding\s$/i, /^\sOP\s$/i, /^\sED\s$/i, /^\sIntro\s$/i, /^\sOutro\s$/i, /^\sCredits\s$/i, /^\sPause\s$/i],
+        highlightSkipArray: [/^\s*Opening\s*\d*$/i, /^\s*Ending\s*\d*$/i, /^\s*OP\s*\d*$/i, /^\s*ED\s*\d*$/i, /^\s*Intro\s*$/i, /^\s*Outro\s*$/i, /^\s*Credits\s*$/i, /^\s*Pause\s*$/i],
         highlightSkipMode: 'smoothPrompt', // available "smoothPrompt", "immediately", "smoothCancelPrompt", "always" or 0,1,2,3
         highlightSkip: false,
         skipDelay: 5000,

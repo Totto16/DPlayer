@@ -63,7 +63,7 @@ try {
                 if($mode_param != "exact"){
                     //custom matching function, made for the chapter naming conventions of me/us
                     $regex_pattern =  "/" . preg_quote($paramter_param) . "/" ;
-                    preg_match("/(\[?\w+\]?)([a-zA-ZüäößÜÖÄ]*)[\s\-_]*(\d+)[^\[]*(\[?[\w\d-]+\]?).*\.(.*)/", $paramter_param, $matches);
+                    preg_match("/(\[?\w+\]?)([a-zA-ZüäößÜÖÄ]*)[\s\-_]*(\d+)[^\[]*(\[?[\w\d-]+\]?).*\.*(.*)/", $paramter_param, $matches);
                     if($matches != null){
                         $regex_pattern = "/" . preg_quote($matches[1]) . ".*" .preg_quote($matches[2]) . ".*" . preg_quote($matches[3]) . ".*" . preg_quote(".vtt") . "/";
                     }
