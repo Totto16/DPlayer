@@ -44,38 +44,36 @@ export default {
             });
     },
 
-    async backend(options) {
-        return new Promise((resolve, reject) => {
-            options = options || {};
-            options.json = options.json || true;
-            options.query = options.query || {};
-            options.method = options.method || 'GET';
-            if (options.url) {
-                axios({
-                    method: options.method.toLowerCase(),
-                    url: options.url,
-                    params: options.query,
-                })
-                    .then((response) => {
-                        if (!response.data) {
-                            throw new Error('No data in the Response!');
-                        }
+    async backend(options, callback) {
+        options = options || {};
+        options.json = options.json || true;
+        options.query = options.query || {};
+        options.method = options.method || 'GET';
+        if (options.url) {
+            axios({
+                method: options.method.toLowerCase(),
+                url: options.url,
+                params: options.query,
+            })
+                .then((response) => {
+                    if (!response.data) {
+                        throw new Error('No data in the Response!');
+                    }
 
-                        if (response.data.error === false) {
-                            if (response.data.type === 'reference') {
-                                resolve(response.data.data);
-                            } else {
-                                // TODO handle raw data!
-                                throw new Error("Couldn't handle raw data at the moment!");
-                            }
+                    if (response.data.error === false) {
+                        if (response.data.type === 'reference') {
+                            callback(null, response.data.data);
                         } else {
-                            throw new Error(`Error message from API: ${response.data['error-message']}`);
+                            // TODO handle raw data!
+                            throw new Error("Couldn't handle raw data at the moment!");
                         }
-                    })
-                    .catch(reject);
-            } else {
-                reject('No URL provided');
-            }
-        });
+                    } else {
+                        throw new Error(`Error message from API: ${response.data['error-message']}`);
+                    }
+                })
+                .catch((err) => callback(err, null));
+        } else {
+            callback('No URL provided', null);
+        }
     },
 };
