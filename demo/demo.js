@@ -79,7 +79,7 @@ function initPlayers() {
     if(typeof DPlayer !== "undefined"){
         window.dp = new DPlayer(dpOptions);
     }else{
-        window.DPLAYER_AUTO = {name:"dp",options:dpOptions}
+        window.DPLAYER_AUTO = {name:"dp",options:dpOptions,callback:(instance)=>{console.log("TEST callback")}}
     }
 
 }

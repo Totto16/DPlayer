@@ -52,6 +52,18 @@ module.exports = {
                         options: {
                             cacheDirectory: true,
                             presets: ['@babel/preset-env'],
+                            plugins: [
+                                [
+                                    '@babel/plugin-transform-runtime',
+                                    {
+                                        absoluteRuntime: false,
+                                        corejs: false,
+                                        helpers: false,
+                                        regenerator: true,
+                                        version: '^7.0.0',
+                                    },
+                                ],
+                            ],
                         },
                     },
                 ],
@@ -99,6 +111,8 @@ module.exports = {
         new webpack.DefinePlugin({
             DPLAYER_VERSION: `"${require('../package.json').version}"`,
             GIT_TIME: JSON.stringify(gitRevisionPlugin.lastcommitdatetime()),
+            GIT_HASH: JSON.stringify(gitRevisionPlugin.version()),
+            BUILD_TIME: `"${new Date().toISOString()}"`,
         }),
     ],
 

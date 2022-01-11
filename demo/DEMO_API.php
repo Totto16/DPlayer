@@ -11,7 +11,7 @@ try {
         //DPlayer.php
         $startTime = microtime(true);
         //TODO insert path here
-        $path_to_vtts = "/INSERT_PATH_HERE/config/subs/";
+        $path_to_vtts = "/INSERT/PATH/HERE/with/trailing/";
         $server = "https://" . $_SERVER['HTTP_HOST'] . "/config/subs/";
 
         $global_version_number = 1;
@@ -21,7 +21,7 @@ try {
         $version = intval($query_array['version'] ?? '-1');
         $get_param = $query_array['get'] ?? 'default';
         $type_param = $query_array['type'] ?? 'default';
-        $paramter_param = $query_array['parameter'] ?? 'default';
+        $paramter_param = urldecode($query_array['parameter'] ?? 'default');
         $mode_param = $query_array['mode'] ?? 'exact';
         
         $response = array();

@@ -31,128 +31,141 @@ class DPlayer {
      * @constructor
      */
     constructor(options) {
-        this.options = handleOption({ preload: options && options.video && options.video.type === 'webtorrent' ? 'none' : 'metadata', ...options }, this);
+        try {
+            this.state = { code: 1, message: 'running', data: 'constructor' };
+            this.options = handleOption({ preload: options && options.video && options.video.type === 'webtorrent' ? 'none' : 'metadata', ...options }, this);
 
-        if (this.options.video.quality) {
-            this.qualityIndex = this.options.video.defaultQuality;
-            this.quality = this.options.video.quality[this.options.video.defaultQuality];
-        }
-        this.languageFeatures = new i18n(this.options.lang);
-        this.translate = this.languageFeatures.translate;
-        this.languageFeatures.checkPresentTranslations(this.options.lang, true);
-        this.events = new Events();
-        this.user = new User(this);
-        this.container = this.options.container;
+            if (this.options.video.quality) {
+                this.qualityIndex = this.options.video.defaultQuality;
+                this.quality = this.options.video.quality[this.options.video.defaultQuality];
+            }
+            this.languageFeatures = new i18n(this.options.lang);
+            this.translate = this.languageFeatures.translate;
+            this.languageFeatures.checkPresentTranslations(this.options.lang, true);
+            this.events = new Events();
+            this.user = new User(this);
+            this.container = this.options.container;
 
-        this.container.classList.add('dplayer');
-        this.container.classList.add(this.options.themeName);
-        if (this.options.disableDarkMode) {
-            this.container.classList.add('nodark');
-        }
-        if (!this.options.danmaku) {
-            this.container.classList.add('dplayer-no-danmaku');
-        }
-        if (this.options.live) {
-            this.container.classList.add('dplayer-live');
-        } else {
-            this.container.classList.remove('dplayer-live');
-        }
-        if (utils.isMobile) {
-            this.container.classList.add('dplayer-mobile');
-        }
-        this.arrow = this.container.offsetWidth <= 500;
-        if (this.arrow) {
-            this.container.classList.add('dplayer-arrow');
-        }
+            this.container.classList.add('dplayer');
+            this.container.classList.add(this.options.themeName);
+            if (this.options.disableDarkMode) {
+                this.container.classList.add('nodark');
+            }
+            if (!this.options.danmaku) {
+                this.container.classList.add('dplayer-no-danmaku');
+            }
+            if (this.options.live) {
+                this.container.classList.add('dplayer-live');
+            } else {
+                this.container.classList.remove('dplayer-live');
+            }
+            if (utils.isMobile) {
+                this.container.classList.add('dplayer-mobile');
+            }
+            this.arrow = this.container.offsetWidth <= 500;
+            if (this.arrow) {
+                this.container.classList.add('dplayer-arrow');
+            }
 
-        this.template = new Template({
-            container: this.container,
-            player: this,
-            options: this.options,
-            index: index,
-            translate: this.translate,
-        });
-
-        this.video = this.template.video;
-
-        this.bar = new Bar(this.template, this);
-
-        this.bezel = new Bezel(this.template.bezel);
-
-        this.fullScreen = new FullScreen(this);
-
-        this.controller = new Controller(this);
-
-        if (this.options.danmaku) {
-            this.danmaku = new Danmaku({
+            this.template = new Template({
+                container: this.container,
                 player: this,
-                container: this.template.danmaku,
-                opacity: this.user.get('opacity'),
-                callback: () => {
-                    setTimeout(() => {
-                        this.template.danmakuLoading.style.display = 'none';
-
-                        // autoplay
-                        if (this.options.autoplay) {
-                            this.play();
-                        }
-                    }, 0);
-                },
-                error: (msg) => {
-                    this.notice(msg);
-                },
-                apiBackend: this.options.apiBackend,
-                borderColor: 'var(--dplayer-theme-color)',
-                height: this.arrow ? 24 : 30,
-                time: () => this.video.currentTime,
-                unlimited: this.user.get('unlimited'),
-                api: {
-                    id: this.options.danmaku.id,
-                    address: this.options.danmaku.api,
-                    token: this.options.danmaku.token,
-                    maximum: this.options.danmaku.maximum,
-                    addition: this.options.danmaku.addition,
-                    user: this.options.danmaku.user,
-                    speedRate: this.options.danmaku.speedRate,
-                },
-                events: this.events,
-                translate: (msg) => this.translate(msg),
+                options: this.options,
+                index: index,
+                translate: this.translate,
             });
 
-            this.comment = new Comment(this);
+            this.video = this.template.video;
+
+            this.bar = new Bar(this.template, this);
+
+            this.bezel = new Bezel(this.template.bezel);
+
+            this.fullScreen = new FullScreen(this);
+
+            this.controller = new Controller(this);
+
+            if (this.options.danmaku) {
+                this.danmaku = new Danmaku({
+                    player: this,
+                    container: this.template.danmaku,
+                    opacity: this.user.get('opacity'),
+                    callback: () => {
+                        setTimeout(() => {
+                            this.template.danmakuLoading.style.display = 'none';
+
+                            // autoplay
+                            if (this.options.autoplay) {
+                                this.play();
+                            }
+                        }, 0);
+                    },
+                    error: (msg) => {
+                        this.notice(msg);
+                    },
+                    apiBackend: this.options.apiBackend,
+                    borderColor: 'var(--dplayer-theme-color)',
+                    height: this.arrow ? 24 : 30,
+                    time: () => this.video.currentTime,
+                    unlimited: this.user.get('unlimited'),
+                    api: {
+                        id: this.options.danmaku.id,
+                        address: this.options.danmaku.api,
+                        token: this.options.danmaku.token,
+                        maximum: this.options.danmaku.maximum,
+                        addition: this.options.danmaku.addition,
+                        user: this.options.danmaku.user,
+                        speedRate: this.options.danmaku.speedRate,
+                    },
+                    events: this.events,
+                    translate: (msg) => this.translate(msg),
+                });
+
+                this.comment = new Comment(this);
+            }
+
+            this.setting = new Setting(this);
+            this.plugins = {};
+            this.docClickFun = () => {
+                this.focus = false;
+            };
+            this.containerClickFun = () => {
+                this.focus = true;
+            };
+            document.addEventListener('click', this.docClickFun, true);
+            this.container.addEventListener('click', this.containerClickFun, true);
+
+            this.paused = true;
+
+            this.timer = new Timer(this);
+
+            this.hotkey = new HotKey(this);
+
+            this.infoPanel = new InfoPanel(this);
+
+            this.hotkeyPanel = new HotkeyPanel(this);
+
+            this.contextmenu = new ContextMenu(this);
+
+            this.initVideo(this.video, (this.quality && this.quality.type) || this.options.video.type);
+
+            if (!this.danmaku && this.options.autoplay) {
+                this.play();
+            }
+
+            index++;
+            window.DPLAYER_INSTANCES.push(this);
+            this.state = { code: 0, message: 'ok' }; // TODO implement the right state indicators where they need to be added!
+            /*
+            {code : 0, message:'ok'};
+            {code : 1, message:'warn', data:warning};
+            {code : 2, message:'running', data:stage};
+            {code : 3, message:'error', data:error};
+            */
+        } catch (error) {
+            this.state = { code: 3, message: 'error', data: error };
+            console.error('DPLAYER initialization failed with:', error);
         }
-
-        this.setting = new Setting(this);
-        this.plugins = {};
-        this.docClickFun = () => {
-            this.focus = false;
-        };
-        this.containerClickFun = () => {
-            this.focus = true;
-        };
-        document.addEventListener('click', this.docClickFun, true);
-        this.container.addEventListener('click', this.containerClickFun, true);
-
-        this.paused = true;
-
-        this.timer = new Timer(this);
-
-        this.hotkey = new HotKey(this);
-
-        this.infoPanel = new InfoPanel(this);
-
-        this.hotkeyPanel = new HotkeyPanel(this);
-
-        this.contextmenu = new ContextMenu(this);
-
-        this.initVideo(this.video, (this.quality && this.quality.type) || this.options.video.type);
-
-        if (!this.danmaku && this.options.autoplay) {
-            this.play();
-        }
-
-        index++;
-        window.DPLAYER_INSTANCES.push(this);
     }
 
     /**
@@ -179,6 +192,7 @@ class DPlayer {
         this.template.ptime.innerHTML = utils.secondToTime(time);
     }
 
+    // TODO implement with in utils.secondToTime
     formatTime(time) {
         if (time < 60) {
             return this.translate('seconds', time.toFixed(0));
@@ -207,7 +221,7 @@ class DPlayer {
         this.template.mobilePlayButton.innerHTML = Icons.pause;
 
         if (!fromNative) {
-            const playedPromise = Promise.resolve(this.video.play());
+            const playedPromise = Promise.resolve(this.video.play()); // TODO see if promise is right here and works!
             playedPromise
                 .catch(() => {
                     this.pause();
