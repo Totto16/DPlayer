@@ -21,7 +21,7 @@ try {
         $version = intval($query_array['version'] ?? '-1');
         $get_param = $query_array['get'] ?? 'default';
         $type_param = $query_array['type'] ?? 'default';
-        $paramter_param = urldecode($query_array['parameter'] ?? 'default');
+        $paramter_param = rawurldecode($query_array['parameter'] ?? 'default');
         $mode_param = $query_array['mode'] ?? 'exact';
         
         $response = array();
@@ -103,7 +103,7 @@ try {
                     http_response_code(200);
                     header('Content-Type: application/json; charset=UTF-8');
                     $response["error"] = false;
-                    $response["data"] = $server . urlencode($result_file);
+                    $response["data"] = $server . rawurlencode($result_file);
                     $response["type"] = "reference";
                     print(json_encode($response));
                     exit();

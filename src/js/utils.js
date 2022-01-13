@@ -164,7 +164,7 @@ const utils = {
     parseVtt(vtt_url, callback, startOrEnd = 0, API_URL = null, url = null) {
         if (vtt_url === 'API' && API_URL !== null) {
             // TODO here are some specs!
-            // TODO version, 1 at the moment, get either reference or nothing/everything else means ra data!, type, vtt, or chapter, or thubnails or etc TODO
+            // TODO version, 1 at the moment, get either reference or nothing/everything else means raw data!, type, vtt, or chapter, or thumbnails or etc TODO
             api.backend({
                 url: API_URL,
                 query: {

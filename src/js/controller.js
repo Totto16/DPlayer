@@ -91,6 +91,8 @@ class Controller {
                     /* this.player.template.barHighlightTop.forEach((item) => {
                         this.player.template.playedBarWrap.removeChild(item);
                     }); */
+
+                    // TODO check if this also works if loaded after the first chapter is passed, maybe the API call from getVtts is slow, or the chapters are small, or the user gets the time to skip manually to another chapter, event based things can happen before or after the user does something, so there migh t be a bug!!
                     const inbetween = 1;
                     switch (this.player.options.highlights.mode) {
                         case 'normal':
@@ -112,6 +114,7 @@ class Controller {
                                 }
                             }
                             this.player.bar.setMode('normal');
+                            // TODO If implemented trigger checkSkipState with actual chapter!!!!
                             break;
                         case 'top':
                             this.player.template.playedBarWrap.querySelectorAll('.dplayer-bar').forEach((item) => {
@@ -161,6 +164,10 @@ class Controller {
                                 }
                             }
                             this.player.bar.setMode('top');
+
+                            // TODO trigger checkSkipState with actual chapter, not the first!!!!! Maybe that is already correct, check if it works!
+                            this.updateChapters({}, this.player, true);
+
                             break;
                         default:
                             console.warn(`No valid mode for highlights defined: ${this.player.options.highlights.mode}`);
@@ -175,6 +182,7 @@ class Controller {
     }
     checkSkipState(event) {
         if (!this.player.options.highlightSkip) {
+            this.player.events.trigger('cancelskip');
             return;
         }
         switch (event.type) {
@@ -274,12 +282,15 @@ class Controller {
                     prompt.style.display = 'none';
                     clearTimeout(timeoutID);
                 };
-                this.player.once(
-                    'chapter',
-                    () => {
+                const UUIDs = this.player.once(
+                    ['chapter', 'cancelskip'],
+                    (_, { UUID }) => {
                         button.onclick = null;
                         prompt.style.display = 'none';
                         clearTimeout(timeoutID);
+                        const remainingUUIDs = UUIDs.filter((u) => u !== UUID);
+                        // if wwe remove the uuid from itself, its dangerous!!
+                        this.player.events.removeByUUID(remainingUUIDs);
                     },
                     true
                 );
@@ -296,15 +307,21 @@ class Controller {
                     clearTimeout(timeoutID);
                     callback();
                 };
-                this.player.once(
-                    'chapter',
-                    () => {
+
+                const UUIDs = this.player.once(
+                    ['chapter', 'cancelskip'],
+                    (_, { UUID }) => {
+                        console.log('fired with', _);
                         button.onclick = null;
                         prompt.style.display = 'none';
                         clearTimeout(timeoutID);
+                        const remainingUUIDs = UUIDs.filter((u) => u !== UUID);
+                        // if wwe remove the uuid from itself, its dangerous!!
+                        this.player.events.removeByUUID(remainingUUIDs);
                     },
                     true
                 );
+                console.log(UUIDs);
             }
             progress.style.display = 'unset';
             progress.animate([{ width: '0%' }, { width: '100%' }], timeShown);
@@ -317,13 +334,17 @@ class Controller {
                 // prompt.style.display = 'none';
                 callback();
             };
-            this.player.once(
-                'chapter',
-                () => {
+
+            const UUIDs = this.player.once(
+                ['chapter', 'cancelskip'],
+                (_, { UUID }) => {
                     button.onclick = null;
                     prompt.style.display = 'none';
+                    const remainingUUIDs = UUIDs.filter((u) => u !== UUID);
+                    // if wwe remove the uuid from itself, its dangerous!!
+                    this.player.events.removeByUUID(remainingUUIDs);
                 },
-                this.player.options.once_delay
+                true
             );
         }
         prompt.style.display = 'flex';
@@ -670,7 +691,7 @@ class Controller {
             this.show();
         }
     }
-    updateChapters(object = {}, player = this.player) {
+    updateChapters(object = {}, player = this.player, start = false) {
         // percentage, or time + duration, or we can get that from the video   player.video.currentTime , player.video.duration
         let { percentage, time, duration } = object;
         if (percentage) {
@@ -714,6 +735,8 @@ class Controller {
                     } else if (next_condition) {
                         this.chapters.currentChapter++;
                         this.player.events.trigger('chapter', { type: 'next', previous: current, current: next, next: currentChapter < marker.length - 2 ? marker[currentChapter + 2] : null });
+                    } else if (start === true) {
+                        this.player.events.trigger('chapter', { type: 'next', previous, current, next });
                     }
                     break;
             }

@@ -50,6 +50,13 @@ function initPlayers() {
 
       ];
 
+      const qualities1 =
+        [ {
+            "name": "Kindaichi",
+            "url": "https://ddl.amalgam-fansubs.moe/content/Kindaichi/%5BAmalgam%5DKindaichi%20088%20%5BGerman-Sub%5D.mp4",
+            "type": "normal"
+        }];
+
     const dpOptions = {
         container: document.getElementById("video-wrapper"),
         screenshot: true,
@@ -74,12 +81,38 @@ function initPlayers() {
         highlightSkipArray:['*',/.*Ending.*/i,/.*Opening.*/i,/.*Pause.*/i],
         chromecast: "vendor"
     };
+
+    const dpOptions1 = {
+        container: document.getElementById("video-wrapper"),
+        screenshot: true,
+        lang: "de",
+        video: {
+            quality: qualities1,
+            defaultQuality: 0
+           // thumbnails: 'API',
+        },
+        API_URL:'https://ddl.amalgam-fansubs.moe/DPlayer.php',
+        theme:"red",
+        hotkey: true,
+        highlights:{vtt:"API",mode:"auto"}, //TODO make all reasonable things also able to request via API 
+        //TODO autoNext (enable default +1 counter and function to manually pass how to behave or API)
+        airplay: "vendor",
+        fullScreenPolicy: 0, // available "OnlyNormal","OnlyWeb","Both" or 0,1,2
+        highlightSkip:true,
+        highlightSkipMode: 0 ,// available "smoothPrompt", "immediately", "smoothCancelPrompt", "always" or 0,1,2,3
+        hardSkipHighlights:false,
+        skipDelay:5555,
+        highlightSkipArray:['*',/.*Ending.*/i,/.*Opening.*/i,/.*Pause.*/i],
+        chromecast: "vendor"
+    };
+
+
     //const dp = new DPlayer(dpOptions);
 
     if(typeof DPlayer !== "undefined"){
         window.dp = new DPlayer(dpOptions);
     }else{
-        window.DPLAYER_AUTO = {name:"dp",options:dpOptions,callback:(instance)=>{console.log("TEST callback")}}
+        window.DPLAYER_AUTO = {name:"dp",options:dpOptions1}
     }
 
 }

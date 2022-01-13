@@ -320,15 +320,15 @@ class DPlayer {
     /**
      * attach event
      */
-    on(name, callback, delayed) {
-        this.events.on(name, callback, delayed);
+    on(name, callback, once = false, delayed = false) {
+        return this.events.on(name, callback, once, delayed);
     }
 
     /**
      * attach single-event
      */
-    once(name, callback, delayed) {
-        this.events.once(name, callback, delayed);
+    once(name, callback, delayed = false) {
+        return this.events.once(name, callback, delayed);
     }
 
     /**
