@@ -47,7 +47,7 @@ export default (options, player) => {
         options.video.type = 'auto';
     }
     if (typeof options.danmaku === 'object' && options.danmaku) {
-        !options.danmaku.user && (options.danmaku.user = 'DIYgod');
+        options.danmaku.user =  options.danmaku.user || 'DIYgod';
     }
     if (options.subtitle) {
         if (!options.subtitle.type) {
@@ -56,9 +56,9 @@ export default (options, player) => {
                 options.subtitle.type = 'ass';
             }
         }
-        !options.subtitle.fontSize && (options.subtitle.fontSize = '20px');
-        !options.subtitle.bottom && (options.subtitle.bottom = '40px');
-        !options.subtitle.color && (options.subtitle.color = '#fff');
+        options.subtitle.fontSize = options.subtitle.fontSize || '20px';
+        options.subtitle.bottom = options.subtitle.bottom || '40px';
+        options.subtitle.color = options.subtitle.color || '#fff';
     }
     if (options.video && !options.video.defaultQuality) {
         options.video.defaultQuality = 0;
@@ -72,11 +72,11 @@ export default (options, player) => {
     }
 
     if (options.airplay) {
-        options.airplay = typeof options.airplay === 'string' && options.airplay === 'vendor' ? utils.supportsAirplay() : options.airplay;
+        options.airplay = typeof options.airplay === 'string' ? (options.airplay === 'vendor' ? utils.supportsAirplay() : false): options.airplay;
     }
 
     if (options.chromecast) {
-        options.chromecast = typeof options.chromecast === 'string' && options.chromecast === 'vendor' ? utils.supportsChromeCast() : options.chromecast;
+        options.chromecast = typeof options.chromecast === 'string' ? ( options.chromecast === 'vendor' ? utils.supportsChromeCast() : false): options.chromecast;
     }
 
     if (options.highlight) {
