@@ -1,5 +1,5 @@
 import utils from './utils';
-import handleOption from './options';
+import handleOption, { DPlayerOptions } from './options';
 import i18n from './i18n';
 import Template from './template';
 import Icons from './icons';
@@ -24,13 +24,16 @@ let index = 0;
 window.DPLAYER_INSTANCES = [];
 
 class DPlayer {
+    state: DPlayerState;
+    options: DPlayerOptions; //TODO without critical :?, s enforce default value!
+
     /**
      * DPlayer constructor function
      *
      * @param {Object} options - See README
      * @constructor
      */
-    constructor(options) {
+    constructor(options?: DPlayerOptions) {
         try {
             this.state = { code: 1, message: 'running', data: 'constructor' };
             this.options = handleOption({ preload: options && options.video && options.video.type === 'webtorrent' ? 'none' : 'metadata', ...options }, this);
@@ -71,7 +74,7 @@ class DPlayer {
                 container: this.container,
                 player: this,
                 options: this.options,
-                index,
+                index: index,
                 translate: this.translate,
             });
 
@@ -769,3 +772,9 @@ class DPlayer {
 }
 
 export default DPlayer;
+
+export interface DPlayerState {
+    code: 0 | 1 | 2 | 3;
+    message: 'ok' | 'warn' | 'running' | 'error';
+    data?: string;
+}

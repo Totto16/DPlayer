@@ -11,7 +11,7 @@
  */
 
 .hg-theme-default {
-    background-color:var(--dplayer-simple-keyboard-bk);
+    background-color: var(--dplayer-simple-keyboard-bk);
     border-radius: 5px;
     box-sizing: border-box;
     font-family: HelveticaNeue-Light, Helvetica Neue Light, Helvetica Neue, Helvetica, Arial, Lucida Grande, sans-serif;
@@ -23,10 +23,10 @@
     -ms-user-select: none;
     user-select: none;
     width: 100%;
-    
+
     .hg-button span {
         pointer-events: none;
-        color:var(--dplayer-simple-keyboard-span-text);
+        color: var(--dplayer-simple-keyboard-span-text);
     }
 
     button.hg-button {
@@ -67,7 +67,7 @@
     .hg-button {
         -webkit-tap-highlight-color: rgba(0, 0, 0, 0); //we don't use vars for that
         align-items: center;
-        background:var(--dplayer-simple-keyboard-button-bk);
+        background: var(--dplayer-simple-keyboard-button-bk);
         border-bottom: 1px solid var(--dplayer-simple-keyboard-button-border);
         border-radius: 5px;
         box-shadow: 0 0 3px -1px var(--dplayer-simple-keyboard-button-box-sh);
@@ -82,12 +82,12 @@
         width: 20px;
     }
 
-    .shortcuts-enabled{
-        background-color:var(--dplayer-simple-keyboard-keys-bk-enabled);
+    .shortcuts-enabled {
+        background-color: var(--dplayer-simple-keyboard-keys-bk-enabled);
         cursor: help; // if using balloon-css (for this too) delete this!
     }
-    .shortcuts-disabled{
-        background-color:var(--dplayer-simple-keyboard-keys-bk-disabled);
+    .shortcuts-disabled {
+        background-color: var(--dplayer-simple-keyboard-keys-bk-disabled);
         cursor: help; // if using balloon-css (for this too) delete this!
     }
     &.hg-layout-numeric .hg-button {
@@ -117,7 +117,7 @@
 
     .hg-button.hg-selectedButton {
         background: var(--dplayer-simple-keyboard-button-selected-default);
-        color:var(--dplayer-simple-keyboard-button-selected-default-color);
+        color: var(--dplayer-simple-keyboard-button-selected-default-color);
     }
 
     .hg-button.hg-standardBtn[data-skbtn='.com'] {
@@ -127,64 +127,62 @@
     .hg-button.hg-standardBtn[data-skbtn='@'] {
         max-width: 60px;
     }
-    
-    .hg-button{
-        flex-grow:1;
+
+    .hg-button {
+        flex-grow: 1;
     }
 
-    .hg-button-space{
-        flex-grow:20;
+    .hg-button-space {
+        flex-grow: 20;
         font-size: 50px;
-        span{
+        span {
             position: relative;
             top: -50%;
         }
     }
-    .hg-button-border{
-        width:1px;
+    .hg-button-border {
+        width: 1px;
         flex-grow: unset;
     }
 
-    .constant-width{
-        width:6%;
+    .constant-width {
+        width: 6%;
         flex-grow: unset;
     }
 
-    .hg-button-tab{
-        flex-grow:3;
+    .hg-button-tab {
+        flex-grow: 3;
         font-size: 28px;
     }
 
-    .hg-button-shiftleft{
+    .hg-button-shiftleft {
         font-size: 28px;
-        flex-grow:1;
-    } 
-    
-    .hg-button-shift{
-        flex-grow:3;
-        font-size: 28px
+        flex-grow: 1;
+    }
+
+    .hg-button-shift {
+        flex-grow: 3;
+        font-size: 28px;
     }
 
     .hg-button-lock {
-        flex-grow:2;
-        font-size: 28px
-    }
-
-    .hg-button-bksp {
-        flex-grow:5;
+        flex-grow: 2;
         font-size: 28px;
     }
 
-    .hg-button-enter2{
-        flex-grow:2;
+    .hg-button-bksp {
+        flex-grow: 5;
+        font-size: 28px;
     }
 
-    .hg-button-enter{
-        flex-grow:5;
-        font-size: 20px
-
+    .hg-button-enter2 {
+        flex-grow: 2;
     }
 
+    .hg-button-enter {
+        flex-grow: 5;
+        font-size: 20px;
+    }
 }
 
 .hg-candidate-box {
@@ -219,7 +217,7 @@ li.hg-candidate-box-list-item {
 }
 
 li.hg-candidate-box-list-item:hover {
-    background:var(--dplayer-simple-keyboard-candidate-box-hover);
+    background: var(--dplayer-simple-keyboard-candidate-box-hover);
 }
 
 li.hg-candidate-box-list-item:active {
@@ -237,8 +235,8 @@ li.hg-candidate-box-list-item:active {
 .hg-candidate-box-next,
 .hg-candidate-box-prev {
     align-items: center;
-    background:var(--dplayer-simple-keyboard-candidate-box-prev-bk);
-    color:var(--dplayer-simple-keyboard-candidate-box-prev-color);
+    background: var(--dplayer-simple-keyboard-candidate-box-prev-bk);
+    color: var(--dplayer-simple-keyboard-candidate-box-prev-color);
     display: flex;
     padding: 0 10px;
 }
@@ -254,5 +252,5 @@ li.hg-candidate-box-list-item:active {
 }
 
 .hg-candidate-box-btn-active {
-    color:var(--dplayer-simple-keyboard-candidate-btn);
+    color: var(--dplayer-simple-keyboard-candidate-btn);
 }

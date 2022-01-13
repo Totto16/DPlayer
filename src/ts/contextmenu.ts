@@ -1,5 +1,11 @@
+import DPlayer from '.';
+
 class ContextMenu {
-    constructor(player) {
+    player: DPlayer;
+    shown: boolean;
+    destroyed?: boolean;
+
+    constructor(player: DPlayer) {
         this.player = player;
         this.shown = false;
 
@@ -32,22 +38,23 @@ class ContextMenu {
         this.player.container.addEventListener('contextmenu', this.contextmenuHandler);
     }
 
-    show(x, y) {
+    show(x: number, y: number): void {
+        //TODO investigate
         this.player.template.menu.classList.add('dplayer-menu-show');
 
         const clientRect = this.player.container.getBoundingClientRect();
         if (x + this.player.template.menu.offsetWidth >= clientRect.width) {
-            this.player.template.menu.style.right = `${clientRect.width - x}px`;
+            this.player.template.menu.style.right = clientRect.width - x + 'px';
             this.player.template.menu.style.left = 'initial';
         } else {
-            this.player.template.menu.style.left = `${x}px`;
+            this.player.template.menu.style.left = x + 'px';
             this.player.template.menu.style.right = 'initial';
         }
         if (y + this.player.template.menu.offsetHeight >= clientRect.height) {
-            this.player.template.menu.style.bottom = `${clientRect.height - y}px`;
+            this.player.template.menu.style.bottom = clientRect.height - y + 'px';
             this.player.template.menu.style.top = 'initial';
         } else {
-            this.player.template.menu.style.top = `${y}px`;
+            this.player.template.menu.style.top = y + 'px';
             this.player.template.menu.style.bottom = 'initial';
         }
 
@@ -57,7 +64,7 @@ class ContextMenu {
         this.player.events.trigger('contextmenu_show');
     }
 
-    hide() {
+    hide(): void {
         this.player.template.mask.classList.remove('dplayer-mask-show');
         this.player.template.menu.classList.remove('dplayer-menu-show');
 
@@ -65,7 +72,7 @@ class ContextMenu {
         this.player.events.trigger('contextmenu_hide');
     }
 
-    destroy() {
+    destroy(): void {
         this.player.container.removeEventListener('contextmenu', this.contextmenuHandler);
         this.destroyed = true;
     }

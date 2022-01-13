@@ -19,9 +19,7 @@ class Bar {
      * @param {Number} percentage
      */
     set(type, Obj) {
-        let percentage;
-        let ranges;
-        let force;
+        let percentage, ranges, force;
         if (typeof Obj === 'number') {
             percentage = Obj;
             force = Obj.force ? true : false;
@@ -126,7 +124,7 @@ class Bar {
                         }
                     });
                 } else {
-                    this.elements[type].style.width = `${percentage * 100}%`;
+                    this.elements[type].style.width = percentage * 100 + '%';
                 }
                 if (this.RangesChanged && ranges && ranges.length > 0) {
                     this.elements.loaded = this.player.container.querySelectorAll('.dplayer-loaded');
@@ -189,10 +187,10 @@ class Bar {
                 if (type === 'loaded') {
                     this.loaded = LPercentage;
                 }
-                this.elements[type].style.width = `${percentage * 100}%`;
+                this.elements[type].style.width = percentage * 100 + '%';
                 if (this.RangesChanged && ranges && ranges.length > 0) {
                     type = 'loaded';
-                    this.elements[type].style.width = `${LPercentage * 100}%`;
+                    this.elements[type].style.width = LPercentage * 100 + '%';
                     // this means some ranges are now together example: 1-20 and 40 -60, you load 20-40 and now you have only one range!
                     if (ranges.length < previousRanges.length) {
                         Array.from(this.elements[type].children).forEach((a) => this.elements[type].removeChild(a));

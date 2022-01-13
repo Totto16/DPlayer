@@ -2,9 +2,9 @@
     position: absolute;
     top: 10px;
     left: 10px;
-    width: #{"clamp(200px, 80%, 800px)"};
+    width: #{'clamp(200px, 80%, 800px)'};
     overflow: hidden;
-    background:var(--dplayer-panel-bk);
+    background: var(--dplayer-panel-bk);
     padding: 10px;
     color: var(--dplayer-text-color);
     font-size: 12px;
@@ -37,12 +37,12 @@
         text-align: right;
         margin-right: 10px;
     }
-    
+
     .dplayer-info-panel-item-data {
-        width: #{"clamp(10px, calc(80% - 50px), 800px)"};
+        width: #{'clamp(10px, calc(80% - 50px), 800px)'};
     }
 
-    .dplayer-info-panel-item{
+    .dplayer-info-panel-item {
         white-space: nowrap;
     }
 }

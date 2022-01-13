@@ -10,12 +10,15 @@
         "dev": "cross-env NODE_ENV=development webpack-dev-server --config webpack/dev.config.js --color",
         "test": "eslint src webpack",
         "format": "eslint \"**/*.js\" --fix && prettier \"**/*.{js,json,md}\" --write",
-        "format:staged": "eslint \"**/*.js\" --fix && pretty-quick --staged --verbose --pattern \"**/*.{js,json,md}\"  --ignore-path \"./.eslintignore\" ",
+        "format:staged":"",    
+        "format:staged_todo": "eslint \"**/*.js\" --fix && pretty-quick --staged --verbose --pattern \"**/*.{js,json,md}\"  --ignore-path \"./.eslintignore\" ",
         "format:check": "eslint \"**/*.js\" && prettier-check \"**/*.{js,json,md}\"",
         "docs:dev": "vuepress dev docs",
         "docs:build": "vuepress build docs",
         "check:update": "npm-check -u --skip-unused",
-        "______comment": "npm-check needs to be installed globally: `npm i -g npm-check`"
+        "______comment": "npm-check needs to be installed globally: `npm i -g npm-check`",
+        "prettier:debug": "npx prettier --check .",
+        "prettier": "npx prettier --write ."
     },
     "files": [
         "dist"
@@ -31,9 +34,12 @@
         "html5"
     ],
     "gitHooks": {
-        "pre-commit": "npm run format:staged"
+        "pre-commit": "npm run format:staged && npm run prettier"
     },
-    "author": "DIYgod",
+    "authors": [
+        "DIYgod",
+        "Totto"
+    ],
     "license": "MIT",
     "bugs": {
         "url": "https://github.com/DIYgod/DPlayer/issues"
@@ -42,6 +48,9 @@
     "devDependencies": {
         "@babel/core": "^7.16.0",
         "@babel/preset-env": "^7.16.4",
+        "@types/node": "<17.0.0",
+        "@types/webpack": "^5.28.0",
+        "@typescript-eslint/eslint-plugin": "^5.9.1",
         "@vuepress/plugin-back-to-top": "^1.8.2",
         "@vuepress/plugin-google-analytics": "^1.8.2",
         "@vuepress/plugin-pwa": "^1.8.2",
@@ -59,7 +68,15 @@
         "cssnano": "^5.0.11",
         "eslint": "^8.3.0",
         "eslint-config-prettier": "^8.3.0",
+        "eslint-plugin-boundaries": "^2.8.0",
+        "eslint-plugin-github": "^4.3.5",
+        "eslint-plugin-import": "^2.25.4",
+        "eslint-plugin-no-secrets": "^0.8.9",
+        "eslint-plugin-node": "^11.1.0",
+        "eslint-plugin-optimize-regex": "^1.2.1",
         "eslint-plugin-prettier": "^4.0.0",
+        "eslint-plugin-regexp": "^1.5.1",
+        "eslint-plugin-security": "^1.4.0",
         "file-loader": "^6.0.0",
         "fontkit": "^1.8.1",
         "git-revision-webpack-plugin": "^5.0.0",
@@ -75,6 +92,8 @@
         "style-loader": "^3.3.1",
         "svg-inline-loader": "0.8.2",
         "template-string-optimize-loader": "^3.0.0",
+        "ts-loader": "^9.2.6",
+        "typescript": "^4.5.4",
         "url-loader": "^4.1.1",
         "vuepress": "^1.8.2",
         "webpack": "^5.64.2",
@@ -82,6 +101,9 @@
         "webpack-cli": "^4.9.1",
         "webpack-dev-server": "^4.5.0",
         "yorkie": "^2.0.0"
+    },
+    "engines": {
+        "node": "v16.13.1"
     },
     "dependencies": {
         "axios": "^0.24.0",

@@ -1,13 +1,12 @@
 @import './modified-simple-keyboard';
 
-
 .dplayer-hotkey-panel {
     position: absolute;
     top: 10px;
     left: 10px;
-    width: #{"clamp(200px, 80%, 800px)"};
+    width: #{'clamp(200px, 80%, 800px)'};
     overflow: hidden;
-    background:var(--dplayer-panel-bk);
+    background: var(--dplayer-panel-bk);
     padding: 10px;
     color: var(--dplayer-text-color);
     font-size: 12px;
@@ -25,30 +24,25 @@
     }
 
     .dplayer-hotkey-panel-item {
-            display: inline-block;
-            vertical-align: middle;
-            line-height: 15px;
-            white-space: nowrap;
-            text-overflow: ellipsis;
-            overflow: hidden;
-
+        display: inline-block;
+        vertical-align: middle;
+        line-height: 15px;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
     }
     .simple-keyboard {
-        color:var(--dplayer-black-simple-keyboard-keys);
+        color: var(--dplayer-black-simple-keyboard-keys);
         width: unset;
         margin: 20px;
     }
-
 }
-
-
 
 @keyframes keyPressed {
     from {
         background-color: var(--dplayer-simple-keyboard-keys-bk-available);
     }
     to {
-        background-color:var(--dplayer-simple-keyboard-keys-bk-pressed);
+        background-color: var(--dplayer-simple-keyboard-keys-bk-pressed);
     }
 }
-

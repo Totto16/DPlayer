@@ -31,13 +31,13 @@ const ass = async (options, player, onReady, callback) => {
     // only to import them, you shouldn't do that, but its better then hardcoding it into webpack config
     // eslint-disable-next-line no-unused-vars
     const worker = require('!!file-loader?name=ass/[name].[ext]!./js/subtitles-octopus-worker.js');
-    // eslint-disable-next-line no-unused-vars
+
     //  const data = require('!!file-loader?name=ass/[name].[ext]!./js/subtitles-octopus-worker.data');
     // eslint-disable-next-line no-unused-vars
     const wasm = require('!!file-loader?name=ass/[name].[ext]!./js/subtitles-octopus-worker.wasm');
-    // eslint-disable-next-line no-unused-vars
+
     //  const worker_l = require('!!file-loader?name=ass/[name].[ext]!./js/subtitles-octopus-worker-legacy.js');
-    // eslint-disable-next-line no-unused-vars
+
     //  const data_l = require('!!file-loader?name=ass/[name].[ext]!./js/subtitles-octopus-worker-legacy.data');
     options = { ...default_options, ...options };
     player.options.pluginOptions.ass = options;

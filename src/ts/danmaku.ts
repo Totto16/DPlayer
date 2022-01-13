@@ -93,7 +93,7 @@ class Danmaku {
             type: dan.type,
         };
         this.options.apiBackend.send({
-            url: `${this.options.api.address}v3/`,
+            url: this.options.api.address + 'v3/',
             data: danmakuData,
             success: callback,
             error: (msg) => {
@@ -169,7 +169,7 @@ class Danmaku {
                 const tmp = danWidth / danSpeed(width);
 
                 for (let i = 0; this.unlimited || i < itemY; i++) {
-                    const item = this.danTunnel[type][`${i}`];
+                    const item = this.danTunnel[type][i + ''];
                     if (item && item.length) {
                         if (type !== 'right') {
                             continue;
@@ -180,17 +180,17 @@ class Danmaku {
                                 break;
                             }
                             if (j === item.length - 1) {
-                                this.danTunnel[type][`${i}`].push(ele);
+                                this.danTunnel[type][i + ''].push(ele);
                                 ele.addEventListener('animationend', () => {
-                                    this.danTunnel[type][`${i}`].splice(0, 1);
+                                    this.danTunnel[type][i + ''].splice(0, 1);
                                 });
                                 return i % itemY;
                             }
                         }
                     } else {
-                        this.danTunnel[type][`${i}`] = [ele];
+                        this.danTunnel[type][i + ''] = [ele];
                         ele.addEventListener('animationend', () => {
-                            this.danTunnel[type][`${i}`].splice(0, 1);
+                            this.danTunnel[type][i + ''].splice(0, 1);
                         });
                         return i % itemY;
                     }
@@ -231,21 +231,21 @@ class Danmaku {
                     case 'right':
                         tunnel = getTunnel(item, dan[i].type, itemWidth);
                         if (tunnel >= 0) {
-                            item.style.width = `${itemWidth + 1}px`;
-                            item.style.top = `${itemHeight * tunnel}px`;
+                            item.style.width = itemWidth + 1 + 'px';
+                            item.style.top = itemHeight * tunnel + 'px';
                             item.style.transform = `translateX(-${danWidth}px)`;
                         }
                         break;
                     case 'top':
                         tunnel = getTunnel(item, dan[i].type);
                         if (tunnel >= 0) {
-                            item.style.top = `${itemHeight * tunnel}px`;
+                            item.style.top = itemHeight * tunnel + 'px';
                         }
                         break;
                     case 'bottom':
                         tunnel = getTunnel(item, dan[i].type);
                         if (tunnel >= 0) {
-                            item.style.bottom = `${itemHeight * tunnel}px`;
+                            item.style.bottom = itemHeight * tunnel + 'px';
                         }
                         break;
                     default:

@@ -12,7 +12,7 @@ module.exports = {
     devtool: 'eval',
 
     entry: {
-        DPlayer: './src/js/index.js',
+        DPlayer: './src/js/index.ts',
         ass: './src/plugins/ass.js',
     },
 
@@ -34,13 +34,18 @@ module.exports = {
 
     resolve: {
         modules: ['node_modules'],
-        extensions: ['.js', '.scss'],
+        extensions: ['.js', '.scss', 'ts'],
         preferRelative: true,
     },
 
     module: {
         strictExportPresence: true,
         rules: [
+            {
+                test: /\.ts$/,
+                exclude: /node_module/,
+                use: 'ts-loader',
+            },
             {
                 test: /\.js$/,
                 use: [
@@ -103,7 +108,6 @@ module.exports = {
             },
         ],
     },
-
     watchOptions: {
         ignored: /node_modules/,
     },

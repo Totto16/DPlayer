@@ -1,17 +1,17 @@
 /* global DPLAYER_VERSION */
-import defaultApiBackend from './api.js';
+import DPlayer from './player.js';
 import utils from './utils.js';
 
-export default (options, player) => {
+export default (options: DPlayerOptions, player: DPlayer) => {
     // default options
-    const defaultOption = {
+    const defaultOption: DPlayerOptions = {
         container: options.element || document.getElementsByClassName('dplayer')[0],
         live: false,
         autoplay: false,
         themeName: 'standard',
         disableDarkMode: false,
         loop: false,
-        lang: (navigator.language || navigator.browserLanguage).toLowerCase(),
+        lang: navigator.language.toLowerCase(), // navigator.browserLanguage isn't supported by anything nowadays!
         screenshot: true,
         airplay: 'vendor',
         chromecast: 'vendor',
@@ -20,7 +20,6 @@ export default (options, player) => {
         preload: 'metadata',
         volume: 0.7,
         playbackSpeed: [0.5, 0.75, 1, 1.25, 1.5, 2],
-        apiBackend: defaultApiBackend,
         video: {},
         contextmenu: [
             {
@@ -29,7 +28,7 @@ export default (options, player) => {
             },
         ],
         fullScreenPolicy: 'OnlyNormal', // available "OnlyNormal","OnlyWeb","Both" or 0,1,2
-        highlightSkipArray: [/^\s*opening\s*\d*$/i, /^\s*ending\s*\d*$/i, /^\s*op\s*\d*$/i, /^\s*ed\s*\d*$/i, /^\s*intro\s*$/i, /^\s*outro\s*$/i, /^\s*credits\s*$/i, /^\s*pause\s*$/i],
+        highlightSkipArray: [/^\s*Opening\s*\d*$/i, /^\s*Ending\s*\d*$/i, /^\s*OP\s*\d*$/i, /^\s*ED\s*\d*$/i, /^\s*Intro\s*$/i, /^\s*Outro\s*$/i, /^\s*Credits\s*$/i, /^\s*Pause\s*$/i],
         highlightSkipMode: 'smoothPrompt', // available "smoothPrompt", "immediately", "smoothCancelPrompt", "always" or 0,1,2,3
         highlightSkip: false,
         skipDelay: 5000,
@@ -198,14 +197,14 @@ export default (options, player) => {
     options.contextmenu = [
         {
             key: 'video-info',
-            click: (player) => {
+            click: (player: DPlayer) => {
                 player.hotkeyPanel.hide();
                 player.infoPanel.triggle();
             },
         },
         {
             key: 'hotkey-info',
-            click: (player) => {
+            click: (player: DPlayer) => {
                 if (player.options.hotkey) {
                     player.infoPanel.hide();
                     player.hotkeyPanel.triggle();
@@ -218,3 +217,57 @@ export default (options, player) => {
 
     return options;
 };
+
+export interface IndexableObject {
+    [index: string]: unknown;
+}
+
+export interface DPlayerOptions extends IndexableObject {
+    element?: Element; // @deprecated
+    container?: Element;
+    live?: boolean;
+    autoplay?: boolean;
+    themeName?: string;
+    disableDarkMode?: boolean;
+    loop?: boolean;
+    lang?: string;
+    screenshot?: boolean;
+    airplay?: boolean | 'vendor';
+    chromecast?: boolean | 'vendor';
+    hotkey?: boolean;
+    advancedHotkeys?: boolean;
+    preload?: 'metadata' | 'TODO'; // TODO add according to Web standards;
+    volume?: number;
+    playbackSpeed?: [number, number, number, number, number, number];
+    apiBackend?: string;
+    video?: DplayerVideoOptions;
+    contextmenu?: DplayerContextMenuOptions[];
+    fullScreenPolicy?: 'OnlyNormal' | 'OnlyWeb' | 'Both' | 0 | 1 | 2;
+    highlightSkipArray?: (RegExp | string)[];
+    highlightSkipMode?: 'smoothPrompt' | 'immediately' | 'smoothCancelPrompt' | 'always' | 0 | 1 | 2 | 3;
+    highlightSkip?: boolean;
+    skipDelay?: number;
+    hardSkipHighlights?: boolean;
+    mutex?: boolean;
+    pluginOptions?: DPlayerPluginOptions;
+    balloon?: boolean;
+}
+
+export interface DplayerVideoOptions extends IndexableObject {}
+
+export interface DplayerContextMenuOptions {
+    // TODO add missing
+    text: string;
+    link?: string;
+    key?: string; // TODO keyof translation available keys!
+    click?: (player: DPlayer) => void;
+    //Missing?
+}
+
+export interface DPlayerPluginOptions {
+    hls: {};
+    flv: {};
+    dash: {};
+    webtorrent: {};
+    ass: {};
+}

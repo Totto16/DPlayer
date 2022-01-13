@@ -3,3 +3,12 @@ demo
 src/plugins/ass
 src/plugins/js
 src/plugins/jsnew
+*.md
+package-lock.json
+docs/
+*.yml
+*.vue
+package.json
+.eslintrc
+.prettierrc
+.*ignore

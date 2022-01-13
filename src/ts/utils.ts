@@ -1,5 +1,5 @@
 import axios from 'axios';
-import api from './api';
+import defaultApiBackend from './api.js';
 
 const isMobile = /mobile/i.test(window.navigator.userAgent);
 const isChrome = /chrome/i.test(window.navigator.userAgent);
@@ -7,6 +7,8 @@ const isSafari = /safari/i.test(window.navigator.userAgent);
 const isFirefox = /firefox/i.test(window.navigator.userAgent);
 
 const utils = {
+    apiBackend: defaultApiBackend,
+
     /**
      * Parse second to time string
      *
@@ -18,7 +20,7 @@ const utils = {
         if (second === 0 || second === Infinity || second.toString() === 'NaN') {
             return `00${delimiter}00`;
         }
-        const add0 = (num) => (num < 10 ? `0${num}` : `${num}`);
+        const add0 = (num) => (num < 10 ? '0' + num : '' + num);
         const hour = Math.floor(second / 3600);
         const min = Math.floor((second - hour * 3600) / 60);
         const sec = Math.floor(second - hour * 3600 - min * 60);
@@ -93,13 +95,13 @@ const utils = {
         }
     },
 
-    isMobile,
+    isMobile: isMobile,
 
-    isFirefox,
+    isFirefox: isFirefox,
 
-    isChrome,
+    isChrome: isChrome,
 
-    isSafari,
+    isSafari: isSafari,
 
     storage: {
         set: (key, value) => {
@@ -146,7 +148,7 @@ const utils = {
         return (parseInt(color, 16) + 0x000000) & 0xffffff;
     },
 
-    number2Color: (number) => `#${`00000${number.toString(16)}`.slice(-6)}`,
+    number2Color: (number) => '#' + ('00000' + number.toString(16)).slice(-6),
 
     number2Type: (number) => {
         switch (number) {
@@ -165,16 +167,17 @@ const utils = {
         if (vtt_url === 'API' && API_URL !== null) {
             // TODO here are some specs!
             // TODO version, 1 at the moment, get either reference or nothing/everything else means raw data!, type, vtt, or chapter, or thumbnails or etc TODO
-            api.backend({
-                url: API_URL,
-                query: {
-                    version: '1',
-                    get: 'reference',
-                    type: 'vtt',
-                    parameter: url.substring(url.lastIndexOf('/') + 1),
-                    mode: 'regex',
-                },
-            })
+            this.apiBackend
+                .backend({
+                    url: API_URL,
+                    query: {
+                        version: '1',
+                        get: 'reference',
+                        type: 'vtt',
+                        parameter: url.substring(url.lastIndexOf('/') + 1),
+                        mode: 'regex',
+                    },
+                })
                 .then((data) => {
                     this.parseVtt(data, callback, startOrEnd);
                 })
