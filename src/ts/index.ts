@@ -6,6 +6,9 @@ console.log(`${'\n'} %c DPlayer v${DPLAYER_VERSION} ${BUILD_TIME} %c http://dpla
 
 /* New Format of starting Dplayer, it will start automatically, after its loaded, for available options see future ReadME //TODO add readme !!!!*/
 
+// TODOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO VERY IMPORTANT BEFORE RELEASING THIS
+//TODO find an elegant way to handle unkwon data, meaning down compiled js can have any types, the user can input any types!!!!
+
 if (window.DPLAYER_AUTO) {
     if (!window.DPLAYER_AUTO.name) {
         window.DPLAYER_AUTO.name = 'DPLAYER_AUTO_INSTANCE';

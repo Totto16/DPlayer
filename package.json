@@ -10,7 +10,7 @@
         "dev": "cross-env NODE_ENV=development webpack-dev-server --config webpack/dev.config.js --color",
         "test": "eslint src webpack",
         "format": "eslint \"**/*.js\" --fix && prettier \"**/*.{js,json,md}\" --write",
-        "format:staged":"",    
+        "format:staged": "",
         "format:staged_todo": "eslint \"**/*.js\" --fix && pretty-quick --staged --verbose --pattern \"**/*.{js,json,md}\"  --ignore-path \"./.eslintignore\" ",
         "format:check": "eslint \"**/*.js\" && prettier-check \"**/*.{js,json,md}\"",
         "docs:dev": "vuepress dev docs",
@@ -48,6 +48,7 @@
     "devDependencies": {
         "@babel/core": "^7.16.0",
         "@babel/preset-env": "^7.16.4",
+        "@types/axios": "^0.14.0",
         "@types/node": "<17.0.0",
         "@types/webpack": "^5.28.0",
         "@typescript-eslint/eslint-plugin": "^5.9.1",

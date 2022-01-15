@@ -13,7 +13,7 @@ module.exports = {
     devtool: 'source-map',
 
     entry: {
-        DPlayer: './src/js/index.js',
+        DPlayer: './src/ts/index.ts',
         ass: './src/plugins/ass.js',
     },
 
@@ -43,6 +43,11 @@ module.exports = {
     module: {
         strictExportPresence: true,
         rules: [
+            {
+                test: /\.ts$/,
+                exclude: /node_module/,
+                use: 'ts-loader',
+            },
             {
                 test: /\.js$/,
                 use: [

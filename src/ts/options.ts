@@ -218,6 +218,8 @@ export default (options: DPlayerOptions, player: DPlayer) => {
     return options;
 };
 
+// TODO remove generic indexable Type!!
+//ATTENTION use with cause, since we can't use every string to to that!
 export interface IndexableObject {
     [index: string]: unknown;
 }
@@ -271,3 +273,11 @@ export interface DPlayerPluginOptions {
     webtorrent: {};
     ass: {};
 }
+
+//TODO use this types: https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/dplayer/index.d.ts
+
+export type DPlayerPreload = 'none' | 'metadata' | 'auto';
+export type DPlayerVideoType = 'auto' | 'hls' | 'flv' | 'dash' | 'webtorrent' | 'normal';
+export type DPlayerSubTitleType = 'webvtt' | 'ass';
+export type DPlayerDirectionType = 'top' | 'right' | 'bottom';
+export type DPlayerFullScreenType = 'web' | 'browser';

@@ -12,7 +12,7 @@ module.exports = {
     devtool: 'eval',
 
     entry: {
-        DPlayer: './src/js/index.ts',
+        DPlayer: './src/ts/index.ts',
         ass: './src/plugins/ass.js',
     },
 
