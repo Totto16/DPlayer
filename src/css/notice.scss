@@ -1,38 +1,38 @@
 //TODO :not(.dplayer-hide-controller){} and hide that things respectively
-.dplayer-notice-list{
+.dplayer-notice-list {
     position: absolute;
     bottom: 60px;
     left: 20px;
 
     .dplayer-notice {
         border-radius: 2px;
-        background:var(--dplayer-notice-bk);
-        transition: all .3s ease-in-out;
+        background: var(--dplayer-notice-bk);
+        transition: all 0.3s ease-in-out;
         overflow: hidden;
-        color:var(--dplayer-notice-text);
+        color: var(--dplayer-notice-text);
         display: table;
         pointer-events: none;
-        animation: showNotice .3s ease 1 forwards;
-        &.dont_animate{
+        animation: showNotice 0.3s ease 1 forwards;
+        &.dont_animate {
             animation: showNotice 0s ease 1 forwards;
         }
     }
 
-    .remove-notice{
-        animation: removeNotice .3s ease 1 forwards !important;
+    .remove-notice {
+        animation: removeNotice 0.3s ease 1 forwards !important;
     }
 }
 
-.dplayer-skip-window{
+.dplayer-skip-window {
     position: absolute;
     top: 60px;
     right: 40px;
 
     border-radius: 2px;
-    background:var(--dplayer-notice-bk);
-    transition: all .3s ease-in-out;
+    background: var(--dplayer-notice-bk);
+    transition: all 0.3s ease-in-out;
     overflow: hidden;
-    color:var(--dplayer-notice-text);
+    color: var(--dplayer-notice-text);
     display: flex;
     flex-direction: column;
     aspect-ratio: 16/5;
@@ -42,7 +42,7 @@
     justify-content: space-between;
     align-items: flex-start;
 
-    .container-window{
+    .container-window {
         flex-grow: 10;
         width: 100%;
         align-items: center;
@@ -51,7 +51,7 @@
         justify-content: space-around;
     }
 
-    .skip{
+    .skip {
         background-color: var(--dplayer-notice-bk);
         border-color: var(--dplayer-span-border);
         cursor: pointer;
@@ -61,12 +61,12 @@
         border: 1px solid var(--dplayer-theme-color);
     }
 
-    .title{
+    .title {
         font-size: 1em;
         text-align: center;
     }
 
-    .skip:hover{
+    .skip:hover {
         opacity: 0.7;
     }
 
@@ -76,9 +76,7 @@
         margin-top: 2px;
         background-color: var(--dplayer-theme-color);
     }
-
 }
-
 
 @keyframes showNotice {
     from {
@@ -94,22 +92,21 @@
 }
 
 @keyframes removeNotice {
-    0%{
+    0% {
         padding: 7px 20px;
         font-size: 14px;
         margin-top: 5px;
     }
-    20%{
+    20% {
         font-size: 12px;
     }
-    21%{
+    21% {
         font-size: 0;
         padding: 7px 10px;
     }
-    100%{
+    100% {
         padding: 0;
         margin-top: 0;
         font-size: 0;
     }
 }
-
