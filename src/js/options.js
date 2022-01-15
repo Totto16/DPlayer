@@ -99,8 +99,7 @@ export default (options, player) => {
                 player.events.trigger('highlight_change');
             },
             0,
-            options.API_URL,
-            options.video.url
+            options
         );
     }
 

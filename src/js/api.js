@@ -69,7 +69,20 @@ export default {
                                 throw new Error("Couldn't handle raw data at the moment!");
                             }
                         } else {
-                            throw new Error(`Error message from API: ${response.data['error-message']}`);
+                            switch (response.data["error-type"]) {
+                                case "notice":
+                                    resolve(); // resolve with undefined
+                                    break;
+                                case "warning":
+                                    resolve();// resolve with undefined
+                                    break;
+                                case "error":
+                                    throw new Error(`[ERROR] Error message from API: ${response.data['error-message']}`);
+                                case "severe":
+                                    throw new Error(`[SEVERE] Error message from API: ${response.data['error-message']}`);
+                                default:
+                                    throw new Error(`Unknown Error message from API: ${response.data['error-message']}`);
+                            }
                         }
                     })
                     .catch(reject);

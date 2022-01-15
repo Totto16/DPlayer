@@ -161,29 +161,36 @@ const utils = {
         }
     },
     // parsing according to web standards (https://developer.mozilla.org/en-US/docs/Web/API/WebVTT_API)
-    parseVtt(vtt_url, callback, startOrEnd = 0, API_URL = null, url = null) {
-        if (vtt_url === 'API' && API_URL !== null) {
+    parseVtt(vtt_url, callback, startOrEnd = 0, options = null) {
+        if (vtt_url === 'API' && options !== null) {
+            const video_url = new URL(options.video.url);
+            // TODO this has to be customizable, to match it between naming conventions and file names!!!
+            const parameter = options.video.type === 'hls' ?  video_url.pathname.substring(0, video_url.pathname.lastIndexOf('/')).split("/").filter((str) => str !== "").join("-") : video_url.pathname.substring(video_url.pathname.lastIndexOf('/') + 1);
             // TODO here are some specs!
             // TODO version, 1 at the moment, get either reference or nothing/everything else means raw data!, type, vtt, or chapter, or thumbnails or etc TODO
             api.backend({
-                url: API_URL,
+                url: options.API_URL,
                 query: {
                     version: '1',
                     get: 'reference',
                     type: 'vtt',
-                    parameter: url.substring(url.lastIndexOf('/') + 1),
+                    parameter,
                     mode: 'regex',
                 },
             })
                 .then((data) => {
-                    this.parseVtt(data, callback, startOrEnd);
+                    if (data !== undefined || data !== null) {
+                        this.parseVtt(data, callback, startOrEnd);
+                    } else {
+                        // we don't need to print an error, the server reported, that there are no vtts available, nothing severe happened
+                    }
                 })
                 .catch((error) => {
                     console.error(`Error in API request for the Vtt Url!`, error);
                     return null;
                 });
             return 'processing API request';
-        } else if (vtt_url === 'API' && API_URL === null) {
+        } else if (vtt_url === 'API' && options.API_URL === null) {
             console.warn(`Tried to pass 'API' as vtt_url, but didn't specify 'API_URL'!`);
             return;
         }
