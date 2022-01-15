@@ -20,8 +20,7 @@
         "node", 
         "boundaries", 
         "regexp", 
-        "optimize-regex", 
-        "no-secrets", 
+        "optimize-regex",
         "security", 
         "github"
     ],
@@ -112,11 +111,14 @@
         "no-var": "error",
         "eqeqeq": "error",
         "optimize-regex/optimize-regex": "warn",
-        "no-secrets/no-secrets": "error",
         "sort-imports": "off",
         "i18n-text/no-en": "off",
         "camelcase": "warn",
         "github/array-foreach": "warn",
-        "no-console": "warn"
+        "no-console": "off",
+        "no-undef":"warn",
+        "github/no-then":"warn",
+        "eslint-comments/no-use":"off",
+        "filenames/match-regex": [2, "^[a-z]+\\.?(?:config)?\\.?.*$", true]
     }
 }

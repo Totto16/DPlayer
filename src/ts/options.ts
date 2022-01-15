@@ -1,4 +1,4 @@
-/* global DPLAYER_VERSION */
+import { DPlayerSupportedLanguage } from './i18n.js';
 import DPlayer from './player.js';
 import utils from './utils.js';
 
@@ -218,36 +218,40 @@ export default (options: DPlayerOptions, player: DPlayer) => {
     return options;
 };
 
-// TODO remove generic indexable Type!!
-//ATTENTION use with cause, since we can't use every string to to that!
-export interface IndexableObject {
+// TODO remove
+export interface StringIndexableObject {
     [index: string]: unknown;
 }
 
-export interface DPlayerOptions extends IndexableObject {
-    element?: Element; // @deprecated
-    container?: Element;
+export interface DPlayerOptions extends StringIndexableObject {
+    element?: HTMLElement; // @deprecated
+    container?: HTMLElement;
     live?: boolean;
     autoplay?: boolean;
+    theme?: string; // @Deprecated
     themeName?: string;
     disableDarkMode?: boolean;
     loop?: boolean;
-    lang?: string;
+    lang?: DPlayerSupportedLanguage | string;
     screenshot?: boolean;
     airplay?: boolean | 'vendor';
     chromecast?: boolean | 'vendor';
     hotkey?: boolean;
     advancedHotkeys?: boolean;
-    preload?: 'metadata' | 'TODO'; // TODO add according to Web standards;
+    preload?: DPlayerPreloadOption;
+    logo?: string; // TODO See where implemented
     volume?: number;
     playbackSpeed?: [number, number, number, number, number, number];
-    apiBackend?: string;
+    apiBackend?: DPlayerAPIBackendOption;
     video?: DplayerVideoOptions;
-    contextmenu?: DplayerContextMenuOptions[];
-    fullScreenPolicy?: 'OnlyNormal' | 'OnlyWeb' | 'Both' | 0 | 1 | 2;
+    subtitle?: DPlayerSubTitleOption;
+    danmaku?: DPlayerDanmakuOption;
+    contextmenu?: DplayerContextMenuOption[];
+    fullScreenPolicy?: DPlayerFullScreenOption;
     highlightSkipArray?: (RegExp | string)[];
-    highlightSkipMode?: 'smoothPrompt' | 'immediately' | 'smoothCancelPrompt' | 'always' | 0 | 1 | 2 | 3;
+    highlightSkipMode?: DPlayerSkipModeOption;
     highlightSkip?: boolean;
+    highlight?: DPlayerHighLightItemOption[];
     skipDelay?: number;
     hardSkipHighlights?: boolean;
     mutex?: boolean;
@@ -255,15 +259,63 @@ export interface DPlayerOptions extends IndexableObject {
     balloon?: boolean;
 }
 
-export interface DplayerVideoOptions extends IndexableObject {}
+export type DPlayerPreloadOption = 'none' | 'metadata' | 'auto';
 
-export interface DplayerContextMenuOptions {
+export type DPlayerAvailableVideoTypes = 'auto' | 'hls' | 'flv' | 'dash' | 'webtorrent' | 'normal';
+
+export type DPlayerFullScreenOption = 'OnlyNormal' | 'OnlyWeb' | 'Both' | 0 | 1 | 2;
+
+export type DPlayerSkipModeOption = 'smoothPrompt' | 'immediately' | 'smoothCancelPrompt' | 'always' | 0 | 1 | 2 | 3;
+
+export type DPlayerSubTitleTypes = 'webvtt' | 'ass';
+
+export interface DPlayerHighLightItem {
+    text: string;
+    time: number;
+}
+
+export interface DPlayerVideoQuality {
+    name: string;
+    url: string;
+    type?: string | undefined;
+}
+
+export interface DplayerVideoOptions {
+    url: string;
+    pic?: string;
+    thumbnails?: string;
+    type?: DPlayerAvailableVideoTypes | string;
+    customType?: unknown;
+    quality?: DPlayerVideoQuality[];
+    defaultQuality?: number;
+}
+
+export interface DPlayerSubTitle {
+    url: string;
+    type?: DPlayerSubTitleTypes;
+    fontSize?: string;
+    bottom?: string;
+    color?: string;
+}
+
+export interface DPlayerDanmakuOption {
+    id: string;
+    api: string;
+    token?: string;
+    maximum?: string;
+    addition?: string[];
+    user?: string;
+    bottom?: string;
+    unlimited?: boolean;
+}
+
+export interface DplayerContextMenuOption {
     // TODO add missing
     text: string;
     link?: string;
     key?: string; // TODO keyof translation available keys!
     click?: (player: DPlayer) => void;
-    //Missing?
+    // Missing?
 }
 
 export interface DPlayerPluginOptions {
@@ -274,10 +326,8 @@ export interface DPlayerPluginOptions {
     ass: {};
 }
 
-//TODO use this types: https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/dplayer/index.d.ts
+/* function isDPlayerOptions(opt: DPlayerOptions | unknown): opt is DPlayerOptions {
+    return (opt as DPlayerOptions).swim !== undefined;
 
-export type DPlayerPreload = 'none' | 'metadata' | 'auto';
-export type DPlayerVideoType = 'auto' | 'hls' | 'flv' | 'dash' | 'webtorrent' | 'normal';
-export type DPlayerSubTitleType = 'webvtt' | 'ass';
-export type DPlayerDirectionType = 'top' | 'right' | 'bottom';
-export type DPlayerFullScreenType = 'web' | 'browser';
+    // use, or try to use instanceof!!
+} */

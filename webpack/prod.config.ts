@@ -1,11 +1,12 @@
-const path = require('path');
-const webpack = require('webpack');
-const { GitRevisionPlugin } = require('git-revision-webpack-plugin');
+import path from 'path';
+import webpack from 'webpack';
+import { GitRevisionPlugin } from 'git-revision-webpack-plugin';
+import autoprefixer from 'autoprefixer';
+import cssnano from 'cssnano';
+import packageConfig from '../package.json';
 const gitRevisionPlugin = new GitRevisionPlugin();
-const autoprefixer = require('autoprefixer');
-const cssnano = require('cssnano');
 
-module.exports = {
+const config: webpack.Configuration = {
     mode: 'production',
 
     bail: true,
@@ -36,7 +37,7 @@ module.exports = {
 
     resolve: {
         modules: ['node_modules'],
-        extensions: ['.js', '.scss'],
+        extensions: ['.js', '.scss', '.ts', '.art'],
         preferRelative: true,
     },
 
@@ -114,7 +115,7 @@ module.exports = {
 
     plugins: [
         new webpack.DefinePlugin({
-            DPLAYER_VERSION: `"${require('../package.json').version}"`,
+            DPLAYER_VERSION: `"${packageConfig.version}"`,
             GIT_TIME: JSON.stringify(gitRevisionPlugin.lastcommitdatetime()),
             GIT_HASH: JSON.stringify(gitRevisionPlugin.version()),
             BUILD_TIME: `"${new Date().toISOString()}"`,
@@ -130,3 +131,5 @@ module.exports = {
         mangleWasmImports: false,
     },
 };
+
+export default config;

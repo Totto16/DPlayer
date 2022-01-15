@@ -1,6 +1,6 @@
 import utils from './utils';
 import handleOption, { DPlayerOptions } from './options';
-import i18n from './i18n';
+import i18n, { DPlayerReplacementTypes, DPlayerTranslateKey, DPlayerTranslatedString } from './i18n';
 import Template from './template';
 import Icons from './icons';
 import Danmaku from './danmaku';
@@ -26,13 +26,14 @@ window.DPLAYER_INSTANCES = [];
 class DPlayer {
     state: DPlayerState;
     options: DPlayerOptions; //TODO without critical :?, s enforce default value!
+    events: Events;
+    qualityIndex: number;
+    languageFeatures: i18n;
+    translate: (key?: DPlayerTranslateKey, replacement?: DPlayerReplacementTypes) => null | DPlayerTranslatedString;
+    container: HTMLElement;
+    arrow: boolean;
+    template: Template;
 
-    /**
-     * DPlayer constructor function
-     *
-     * @param {Object} options - See README
-     * @constructor
-     */
     constructor(options?: DPlayerOptions) {
         try {
             this.state = { code: 1, message: 'running', data: 'constructor' };
@@ -682,7 +683,7 @@ class DPlayer {
         if (options.type !== 'normal') {
             DontAnimate = Array.from(this.template.noticeList.children).filter((a) => a.getAttribute('type') === options.type).length > 0;
         }
-        const notice = Template.NewNotice({ text, opacity: options.opacity, mode: options.mode, type: options.type, DontAnimate });
+        const notice: HTMLDivElement = Template.NewNotice({ text, opacity: options.opacity, mode: options.mode, type: options.type, DontAnimate });
         Array.from(this.template.noticeList.children).forEach((child) => {
             const mode = child.getAttribute('mode');
             if (mode === 'override') {
@@ -779,139 +780,4 @@ export interface DPlayerState {
     data?: string;
 }
 
-/* 
-...
-
-
-
-export interface DPlayerOptions {
-    [key: string]: any;
-  
-    container: HTMLElement | null;
-    live?: boolean | undefined;
-    autoplay?: boolean | undefined;
-    theme?: string | undefined;
-    loop?: boolean | undefined;
-    lang?: Lang | string | undefined;
-    screenshot?: boolean | undefined;
-    hotkey?: boolean | undefined;
-    preload?: Preload | undefined;
-    logo?: string | undefined;
-    volume?: number | undefined;
-    mutex?: boolean | undefined;
-    video?: DPlayerVideo | undefined;
-    subtitle?: DPlayerSubTitle | undefined;
-    danmaku?: DPlayerDanmaku | undefined;
-    contextmenu?: DPlayerContextMenuItem[] | undefined;
-    highlight?: DPlayerHighLightItem[] | undefined;
-    apiBackend?: DPlayerAPIBackend | undefined;
-  }
-  
-  export interface DPlayerDanmakuItem {
-    text: string;
-    color: string;
-    type: DirectionType;
-  }
-  
-  export interface DPlayerContextMenuItem {
-    text: string;
-    link?: string | undefined;
-    click?: (() => void) | undefined;
-  }
-  
-  export interface DPlayerHighLightItem {
-    text: string;
-    time: number;
-  }
-  
-  export interface DPlayerVideoQuality {
-    name: string;
-    url: string;
-    type?: string | undefined;
-  }
-  
-  export interface DPlayerVideo {
-    url: string;
-    pic?: string | undefined;
-    thumbnails?: string | undefined;
-    type?: VideoType | string | undefined;
-    customType?: any;
-    quality?: DPlayerVideoQuality[] | undefined;
-    defaultQuality?: number | undefined;
-  }
-  
-  export interface DPlayerSubTitle {
-    url: string;
-    type?: SubTitleType | undefined;
-    fontSize?: string | undefined;
-    bottom?: string | undefined;
-    color?: string | undefined;
-  }
-  
-  export interface DPlayerDanmaku {
-    id: string;
-    api: string;
-    token?: string | undefined;
-    maximum?: string | undefined;
-    addition?: string[] | undefined;
-    user?: string | undefined;
-    bottom?: string | undefined;
-    unlimited?: boolean | undefined;
-  }
-  
-  export interface DPlayerAPIBackend {
-    read(endpoint: any, callback: () => void): void;
-  
-    send(endpoint: any, danmakuData: DPlayerDanmakuItem, callback: () => void): void;
-  }
-  
-  export interface Danmaku {
-    send(danmaku: DPlayerDanmakuItem, callback: () => void): void;
-  
-    draw(danmaku: DPlayerDanmakuItem): void;
-  
-    opacity(percentage: number): void;
-  
-    clear(): void;
-  
-    hide(): void;
-  
-    show(): void;
-  }
-  
-  export interface FullScreen {
-    request(type: FullScreenType): void;
-  
-    cancel(type: FullScreenType): void;
-  }
-  
-  export default class DPlayer {
-    events: any;
-    video: HTMLVideoElement;
-    danmaku: Danmaku;
-    fullScreen: FullScreen;
-  
-    constructor(options: DPlayerOptions);
-  
-    play(): void;
-  
-    pause(): void;
-  
-    seek(time: number): void;
-  
-    toggle(): void;
-  
-    on(event: DPlayerEvents, handler: () => void): void;
-  
-    switchVideo(video: DPlayerVideo, danmaku: DPlayerDanmaku): void;
-  
-    notice(text: string, time: number, opacity: number): void;
-  
-    switchQuality(index: number): void;
-  
-    destroy(): void;
-  
-    speed(rate: number): void;
-  
-    volume(percentage: number, nostorage: boolean, nonotice: boolean): void;
-  } */
+// used some of this types: https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/dplayer/index.d.ts, but for inner functions its not that helpful

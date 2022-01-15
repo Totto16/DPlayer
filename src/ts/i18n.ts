@@ -7,45 +7,128 @@ W3C def language codes is :
 NOTE: use lower
 Use this as shown below..... */
 
-// TODO make a class
+// abstract model for recognizing if valid translations are present
+const GLOB_MODEL: DPlayerLanguageModel = {
+    'danmaku-loading': [],
+    top: [],
+    bottom: [],
+    rolling: [],
+    'input-danmaku-enter': [],
+    'about-author': [],
+    'dplayer-feedback': [],
+    'about-dplayer': [],
+    'hotkey-info': [],
+    loop: [],
+    'speed-raw': [],
+    speed: [{ symbol: '%s', name: 'Speed', example: '125%' }],
+    'opacity-danmaku': [],
+    normal: [],
+    'please-input-danmaku': [],
+    'set-danmaku-color': [],
+    'set-danmaku-type': [],
+    'show-danmaku': [],
+    'video-failed': [],
+    'danmaku-failed': [],
+    'danmaku-send-failed': [],
+    'switching-quality': [{ symbol: '%q', name: 'Quality', example: '720p' }],
+    'switched-quality': [{ symbol: '%q', name: 'Quality', example: '720p' }],
+    ff: [{ symbol: '%t', name: 'Time', example: '5 %m 10 %s' }],
+    rew: [{ symbol: '%t', name: 'Time', example: '5 %m 10 %s' }],
+    seconds: [{ symbol: '%s', name: 'Seconds', example: '15' }],
+    minutes: [{ symbol: '%m', name: 'Minutes', example: '3' }],
+    hours: [{ symbol: '%h', name: 'Hours', example: '4' }],
+    'unlimited-danmaku': [],
+    'send-danmaku': [],
+    setting: [],
+    fullscreen: [],
+    'web-fullscreen': [],
+    send: [],
+    'saved-screenshot': [{ symbol: '%n', name: 'Screenshot name', example: 'Awesome_Video_24_04.png' }],
+    'screenshot-raw': [],
+    airplay: [],
+    chromecast: [],
+    'show-subs': [],
+    'hide-subs': [],
+    volume: [],
+    live: [],
+    'video-info': [],
+    on: [],
+    off: [],
+    toggleplayer: [],
+    left: [],
+    right: [],
+    up: [],
+    down: [],
+    cancelbothfullscreen: [],
+    togglefullscreen: [],
+    togglewebfullscreen: [],
+    mute: [],
+    screenshot: [],
+    nextchapter: [],
+    previouschapter: [],
+    changeloop: [],
+    speedup: [],
+    speeddown: [],
+    speednormal: [],
+    'hotkey-disabled': [],
+    skipped_chapter: [{ symbol: '%c', name: 'Chapter name', example: 'Opening' }],
+    skip: [],
+    skip_chapter: [{ symbol: '%c', name: 'Chapter name', example: 'Opening' }],
+    cancel: [],
+};
+
+// Standard english translations
+const GLOB_standard: DPlayerTranslationObject = require('../translations/en.json') as DPlayerTranslationObject; // TODO read from json in tsscript
+// add translation first to the folder and then here!
+const GLOB_tranTxt: DPlayerAvaiableTranslationObject = {
+    en: standard,
+    'zh-cn': require('../translations/zh-cn.json'),
+    'zh-tw': require('../translations/zh-tw.json'),
+    'ko-kr': require('../translations/ko-kr.json'),
+    de: require('../translations/de.json'),
+};
 
 class i18n {
-    lang: DPlayerSupportedLangauge;
-    fallbackLang: DPlayerLangauge;
+    lang: DPlayerSupportedLanguage;
+    fallbackLang: DPlayerLanguage;
+    model: DPlayerLanguageModel;
 
-    constructor(lang: DPlayerSupportedLangauge) {
+    constructor(lang: DPlayerSupportedLanguage) {
         this.lang = lang;
         // in case someone says en-us, and en is present!
         this.fallbackLang = this.lang.includes('-') ? this.lang.split('-')[0] : this.lang;
+
+        this.model = GLOB_MODEL;
     }
 
-    translate(key: DPlayerTranslateKey, replacement: DPlayerReplacementTypes) {
-        if (!key) {
+    translate(key?: DPlayerTranslateKey, replacement?: DPlayerReplacementTypes): null | DPlayerTranslatedString {
+        if (typeof key === 'undefined') {
             console.error('key for translation not set!');
-            return;
+            return null;
         }
         if (typeof key !== 'string') {
             console.error(`key for translation is not a string, but a '${typeof key}'!`);
-            return;
+            return null;
         }
-        key = key.toLowerCase();
+        // TODO check if DPlayerTranslateKey
+        const finalKey: DPlayerTranslateKey = key.toLowerCase() as DPlayerTranslateKey;
         let result = null;
-        if (tranTxt[this.lang] && tranTxt[this.lang][key]) {
-            result = tranTxt[this.lang][key];
-        } else if (tranTxt[this.fallbackLang] && tranTxt[this.fallbackLang][key]) {
-            result = tranTxt[this.fallbackLang][key];
+        if (this.tranTxt[this.lang] && this.tranTxt[this.lang][finalKey]) {
+            result = this.tranTxt[this.lang][finalKey];
+        } else if (this.tranTxt[this.fallbackLang] && this.tranTxt[this.fallbackLang][finalKey]) {
+            result = this.tranTxt[this.fallbackLang][finalKey];
         } else {
-            result = standard[key];
+            result = this.standard[finalKey];
         }
-        if (model[key].length > 0 && replacement) {
-            result = result.replace(model[key][0].symbol, replacement);
+        if (this.model[key].length > 0 && replacement) {
+            result = result.replace(this.model[finalKey][0].symbol, replacement);
         }
         return result;
     }
 
-    checkPresentTranslations(singleLanguage, debug) {
-        if (!singleLanguage || debug) {
-            Object.keys(tranTxt).forEach((language) => {
+    checkPresentTranslations(singleLanguage?: DPlayerSupportedLanguage, debug: boolean) {
+        if (typeof singleLanguage === 'undefined' || debug) {
+            Object.keys(this.tranTxt).forEach((language) => {
                 checkSingleLanguage(language);
             });
         } else {
@@ -67,91 +150,103 @@ class i18n {
             }
         });
     }
-    // abstract model for recognizing if valid translations are present
-    model: {
-        'danmaku-loading': [];
-        top: [];
-        bottom: [];
-        rolling: [];
-        'input-danmaku-enter': [];
-        'about-author': [];
-        'dplayer-feedback': [];
-        'about-dplayer': [];
-        'hotkey-info': [];
-        loop: [];
-        'speed-raw': [];
-        speed: [{ symbol: '%s'; name: 'Speed'; example: '125%' }];
-        'opacity-danmaku': [];
-        normal: [];
-        'please-input-danmaku': [];
-        'set-danmaku-color': [];
-        'set-danmaku-type': [];
-        'show-danmaku': [];
-        'video-failed': [];
-        'danmaku-failed': [];
-        'danmaku-send-failed': [];
-        'switching-quality': [{ symbol: '%q'; name: 'Quality'; example: '720p' }];
-        'switched-quality': [{ symbol: '%q'; name: 'Quality'; example: '720p' }];
-        ff: [{ symbol: '%t'; name: 'Time'; example: '5 %m 10 %s' }];
-        rew: [{ symbol: '%t'; name: 'Time'; example: '5 %m 10 %s' }];
-        seconds: [{ symbol: '%s'; name: 'Seconds'; example: '15' }];
-        minutes: [{ symbol: '%m'; name: 'Minutes'; example: '3' }];
-        hours: [{ symbol: '%h'; name: 'Hours'; example: '4' }];
-        'unlimited-danmaku': [];
-        'send-danmaku': [];
-        setting: [];
-        fullscreen: [];
-        'web-fullscreen': [];
-        send: [];
-        'saved-screenshot': [{ symbol: '%n'; name: 'Screenshot name'; example: 'Awesome_Video_24_04.png' }];
-        'screenshot-raw': [];
-        airplay: [];
-        chromecast: [];
-        'show-subs': [];
-        'hide-subs': [];
-        volume: [];
-        live: [];
-        'video-info': [];
-        on: [];
-        off: [];
-        toggleplayer: [];
-        left: [];
-        right: [];
-        up: [];
-        down: [];
-        cancelbothfullscreen: [];
-        togglefullscreen: [];
-        togglewebfullscreen: [];
-        mute: [];
-        screenshot: [];
-        nextchapter: [];
-        previouschapter: [];
-        changeloop: [];
-        speedup: [];
-        speeddown: [];
-        speednormal: [];
-        'hotkey-disabled': [];
-        skipped_chapter: [{ symbol: '%c'; name: 'Chapter name'; example: 'Opening' }];
-        skip: [];
-        skip_chapter: [{ symbol: '%c'; name: 'Chapter name'; example: 'Opening' }];
-        cancel: [];
-    };
-
-    // Standard english translations
-    standard = require('../translations/en.json');
-    // add translation first to the folder and then here!
-    tranTxt = {
-        en: standard,
-        'zh-cn': require('../translations/zh-cn.json'),
-        'zh-tw': require('../translations/zh-tw.json'),
-        'ko-kr': require('../translations/ko-kr.json'),
-        de: require('../translations/de.json'),
-    };
 }
 
 export default i18n;
 
-export type DPlayerSupportedLangauge = 'de' | 'en' | 'ko-kr' | 'zh-cn' | 'zh-tw';
+export type DPlayerSupportedLanguage = 'de' | 'en' | 'ko-kr' | 'zh-cn' | 'zh-tw';
+
+export type DPlayerLanguage = string;
+
+export type DPlayerTranslateKey =
+    | 'danmaku-loading'
+    | 'top'
+    | 'bottom'
+    | 'rolling'
+    | 'input-danmaku-enter'
+    | 'about-author'
+    | 'dplayer-feedback'
+    | 'about-dplayer'
+    | 'hotkey-info'
+    | 'loop'
+    | 'speed-raw'
+    | 'speed'
+    | 'opacity-danmaku'
+    | 'normal'
+    | 'please-input-danmaku'
+    | 'set-danmaku-color'
+    | 'set-danmaku-type'
+    | 'show-danmaku'
+    | 'video-failed'
+    | 'danmaku-failed'
+    | 'danmaku-send-failed'
+    | 'switching-quality'
+    | 'switched-quality'
+    | 'ff'
+    | 'rew'
+    | 'seconds'
+    | 'minutes'
+    | 'hours'
+    | 'unlimited-danmaku'
+    | 'send-danmaku'
+    | 'setting'
+    | 'fullscreen'
+    | 'web-fullscreen'
+    | 'send'
+    | 'saved-screenshot'
+    | 'screenshot-raw'
+    | 'airplay'
+    | 'chromecast'
+    | 'show-subs'
+    | 'hide-subs'
+    | 'volume'
+    | 'live'
+    | 'video-info'
+    | 'on'
+    | 'off'
+    | 'toggleplayer'
+    | 'left'
+    | 'right'
+    | 'up'
+    | 'down'
+    | 'cancelbothfullscreen'
+    | 'togglefullscreen'
+    | 'togglewebfullscreen'
+    | 'mute'
+    | 'screenshot'
+    | 'nextchapter'
+    | 'previouschapter'
+    | 'changeloop'
+    | 'speedup'
+    | 'speeddown'
+    | 'speednormal'
+    | 'hotkey-disabled'
+    | 'skipped_chapter'
+    | 'skip'
+    | 'skip_chapter'
+    | 'cancel';
+
+export type DPlayerTranslatedString = string;
+
+export type DPlayerReplacementTypes = string | number; // TODO check on key by looking it uup in the model!!!!
+
+export type DPlayerLanguageModel = {
+    [index in DPlayerTranslateKey]?: DPlayerLanguageModelDescription[];
+};
+
+export interface DPlayerLanguageModelDescription {
+    symbol: string;
+    name: string;
+    example: string; // TODO get from symbol or name!!!
+}
+
+export type DPlayerTranslationObject = {
+    [index in DPlayerTranslateKey]?: string[];
+};
+
+export type DPlayerAvaiableTranslationObject = {
+    [language in DPlayerSupportedLanguage]?: DPlayerTranslationObject;
+};
 
 // Quick and dirty export function
 

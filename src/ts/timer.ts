@@ -1,8 +1,17 @@
-class Timer {
-    constructor(player) {
+import DPlayer from '.';
+
+class Timer implements DPlayerTimerProperties2, DPlayerTimerProperties2, DPlayerTimerProperties3 {
+    // TODO define that for every class, to see if they implement destroy() :  extends DestroyableInstance
+    player: DPlayer;
+    types: DPlayerTimerType[];
+    fpsStart?: number; // could solve this with the above trick, but there are only these two
+    fpsIndex?: number;
+
+    constructor(player: DPlayer) {
         this.player = player;
 
-        window.requestAnimationFrame = (() =>
+        // nowadays this is supported by everything, at least nearly
+        /* window.requestAnimationFrame =
             window.requestAnimationFrame ||
             window.webkitRequestAnimationFrame ||
             window.mozRequestAnimationFrame ||
@@ -10,14 +19,14 @@ class Timer {
             window.msRequestAnimationFrame ||
             function (callback) {
                 window.setTimeout(callback, 1000 / 60);
-            })();
+            }; */
 
         this.types = ['loading', 'info', 'fps'];
 
         this.init();
     }
 
-    init() {
+    init(): void {
         this.types.map((item) => {
             if (item !== 'fps') {
                 this[`init${item}Checker`]();
@@ -26,7 +35,7 @@ class Timer {
         });
     }
 
-    initloadingChecker() {
+    initloadingChecker(): void {
         let lastPlayPos = 0;
         let currentPlayPos = 0;
         let bufferingDetected = false;
@@ -47,19 +56,19 @@ class Timer {
         }, 100);
     }
 
-    initfpsChecker() {
+    initfpsChecker(): void {
         window.requestAnimationFrame(() => {
-            if (this.enablefpsChecker) {
+            if (this.enablefpsChecker === true) {
                 this.initfpsChecker();
-                if (!this.fpsStart) {
-                    this.fpsStart = new Date();
+                if (typeof this.fpsStart === 'undefined') {
+                    this.fpsStart = new Date().getTime();
                     this.fpsIndex = 0;
                 } else {
-                    this.fpsIndex++;
-                    const fpsCurrent = new Date();
+                    this.fpsIndex = typeof this.fpsIndex === 'undefined' ? 0 : this.fpsIndex + 1;
+                    const fpsCurrent = new Date().getTime();
                     if (fpsCurrent - this.fpsStart > 1000) {
                         this.player.infoPanel.fps((this.fpsIndex / (fpsCurrent - this.fpsStart)) * 1000);
-                        this.fpsStart = new Date();
+                        this.fpsStart = new Date().getTime();
                         this.fpsIndex = 0;
                     }
                 }
@@ -70,7 +79,7 @@ class Timer {
         });
     }
 
-    initinfoChecker() {
+    initinfoChecker(): void {
         this.infoChecker = setInterval(() => {
             if (this.enableinfoChecker) {
                 this.player.infoPanel.update();
@@ -78,7 +87,7 @@ class Timer {
         }, 1000);
     }
 
-    enable(type) {
+    enable(type: DPlayerTimerType) {
         this[`enable${type}Checker`] = true;
 
         if (type === 'fps') {
@@ -86,11 +95,11 @@ class Timer {
         }
     }
 
-    disable(type) {
+    disable(type: DPlayerTimerType) {
         this[`enable${type}Checker`] = false;
     }
 
-    destroy() {
+    destroy(): void {
         this.types.map((item) => {
             this[`enable${item}Checker`] = false;
             this[`${item}Checker`] && clearInterval(this[`${item}Checker`]);
@@ -100,3 +109,32 @@ class Timer {
 }
 
 export default Timer;
+
+export type DPlayerTimerType = 'loading' | 'info' | 'fps';
+
+export type DPlayerAvailableTimerProperties = DPlayerAvailableTimerFunctions | DPlayerAvailableTimerBooleans | DPlayerAvailableTimerTimeouts;
+
+export type DPlayerAvailableTimerFunctions = `init${DPlayerTimerType}Checker`;
+
+export type DPlayerAvailableTimerTimeouts = `${DPlayerTimerType}Checker`;
+
+export type DPlayerAvailableTimerBooleans = `enable${DPlayerTimerType}Checker`;
+
+export type DPlayerTimerProperties1 = {
+    [type in DPlayerAvailableTimerFunctions]: () => void;
+};
+
+export type DPlayerTimerProperties2 = {
+    [timeout in DPlayerAvailableTimerTimeouts]?: NodeJS.Timer;
+};
+
+export type DPlayerTimerProperties3 = {
+    [bool in DPlayerAvailableTimerBooleans]?: boolean;
+};
+
+export type DPlayerTimerProperties = DPlayerTimerProperties1 & DPlayerTimerProperties2 & DPlayerTimerProperties3;
+/* export type DPlayerTimerProperties = {
+    [type in DPlayerAvailableTimerFunctions] : ()=>void;
+    [timeout in DPlayerAvailableTimerTimeouts] : NodeJS.Timer;
+    [bool in DPlayerAvailableTimerBooleans] : boolean;
+} */

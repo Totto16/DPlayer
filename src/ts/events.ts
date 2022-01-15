@@ -1,5 +1,3 @@
-import { accessSync } from 'fs';
-
 class Events {
     events: DPlayerEventStorage;
     currentUUID: number;
@@ -84,7 +82,7 @@ class Events {
         } else {
             if (this.type(name) && typeof callback === 'function') {
                 if (typeof this.events[name] === 'undefined') {
-                    this.events[name] = new Array();
+                    this.events[name] = [];
                 }
                 const UUID = this.currentUUID++;
                 (this.events[name] as DPlayerEventStorageItem[]).push({ callback, once, delayed, UUID });
@@ -101,7 +99,7 @@ class Events {
     off(name: DPlayerEvent): boolean {
         if (this.type(name)) {
             if (this.events[name]) {
-                this.events[name] = new Array();
+                this.events[name] = [];
                 return true;
             }
         }
@@ -132,7 +130,7 @@ class Events {
         return false;
     }
 
-    trigger(name: DPlayerEvent, info: DPlayerEventInfo): boolean {
+    trigger(name: DPlayerEvent, info?: DPlayerEventInfo): boolean {
         if (typeof this.events[name] !== 'undefined' && (this.events[name] as DPlayerEventStorageItem[]).length > 0) {
             for (let i = 0; i < (this.events[name] as DPlayerEventStorageItem[]).length; i++) {
                 if (!(this.events[name] as DPlayerEventStorageItem[])[i].delayed) {
@@ -151,8 +149,8 @@ class Events {
         return false;
     }
     // TODOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO VERY IMPORTANT BEFORE RELEASING THIS
-    //TODO find an elegant way to handle unkwon data, meaning down compiled js can have any types, the user can input any types!!!!
-    type(name: DPlayerEvent) {
+    // TODO find an elegant way to handle unkwon data, meaning down compiled js can have any types, the user can input any types!!!!
+    type(name: DPlayerEvent): DPlayerEventType | null {
         if (this.playerEvents.indexOf(name as DPlayerPlayerEvent) !== -1) {
             return 'player';
         } else if (this.videoEvents.indexOf(name as DPlayerVideoEvent) !== -1) {
@@ -163,7 +161,7 @@ class Events {
         return null;
     }
 
-    destroy() {
+    destroy(): void {
         const allEvents: DPlayerEvent[] = [...this.videoEvents, ...this.playerEvents];
         for (let i = 0; i < allEvents.length; i++) {
             this.off(allEvents[i]);
@@ -172,6 +170,8 @@ class Events {
 }
 
 export default Events;
+
+export type DPlayerEventType = 'player' | 'video';
 
 export type DPlayerEvent = DPlayerVideoEvent | DPlayerPlayerEvent;
 
@@ -249,7 +249,7 @@ export type DPlayerEventInfo = unknown; //  for the moment // TODO add better in
 
 export type DPlayerEventCallback = (info: DPlayerEventInfo, properties: DPlayerEventProperties) => void;
 
-//TODO use these + add new ones!
+/* //TODO use these + add new ones!
 export enum DPlayerEvents {
     abort = 'abort',
     canplay = 'canplay',
@@ -297,3 +297,4 @@ export enum DPlayerEvents {
     subtitle_hide = 'subtitle_hide',
     subtitle_change = 'subtitle_change',
 }
+ */

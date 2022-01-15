@@ -2,8 +2,8 @@
     "include": ["src/ts/**/*"],
     "exclude": ["node_modules", "src/js/*"],
     "compilerOptions": {
-        "target": "es2020",
-        "module": "es2020",
+        "target": "es2021",
+        "module": "es2022",
         "moduleResolution": "node",
         "lib": ["es2021", "dom"],
         "allowJs": true,

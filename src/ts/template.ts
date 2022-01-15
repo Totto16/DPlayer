@@ -1,9 +1,16 @@
 import Icons from './icons';
 import tplPlayer from '../template/player.art';
 import utils from './utils';
+import DPlayer, { DPlayerDestroyable } from '.';
+import { DPlayerOptions } from './options';
 
-class Template {
-    constructor(options) {
+class Template implements DPlayerTemplateElements, DPlayerDestroyable {
+    // TODO see if that DPlayerDestroyable is useful
+    player: DPlayer;
+    container: HTMLElement;
+    options: DPlayerOptions;
+
+    constructor(options: DPlayerTemplateOptions) {
         this.container = options.container;
         this.options = options.options;
         this.player = options.player;
@@ -12,7 +19,7 @@ class Template {
         this.init();
     }
 
-    init() {
+    init(): void {
         this.container.innerHTML = tplPlayer({
             options: this.options,
             index: this.index,
@@ -111,7 +118,7 @@ class Template {
         this.infoDanmakuAmount = this.container.querySelector('.dplayer-info-panel-item-danmaku-amount .dplayer-info-panel-item-data');
         // TODO add buttons for previous and next chapters!!!!! ( in inithighlight)
     }
-    static NewNotice(options) {
+    static NewNotice(options: DPlayerNoticeOptions): HTMLDivElement {
         const { text, opacity, mode, type, DontAnimate } = options;
         const notice = document.createElement('div');
         notice.classList.add('dplayer-notice');
@@ -124,6 +131,111 @@ class Template {
         notice.setAttribute('type', type);
         return notice;
     }
+
+    destroy(): void {
+        // TODO maybe do something, maybe not!
+    }
 }
 
 export default Template;
+
+export type DPlayerNoticeModes = 'override' | 'normal';
+
+export type DPlayerNoticeTypes = 'normal' | string; // for the moment, since this can vary!
+
+export interface DPlayerNoticeOptions {
+    text: string;
+    opacity: number;
+    mode: DPlayerNoticeModes;
+    type: DPlayerNoticeTypes;
+    DontAnimate: boolean;
+}
+
+export type DPlayerTemplateElements = {
+    [elementName in DPlayerTemplateElementNames]: HTMLElement;
+};
+
+export type DPlayerTemplateElementNames =
+    | 'volumeBar'
+    | 'volumeBarWrap'
+    | 'volumeBarWrapWrap'
+    | 'volumeButton'
+    | 'volumeButtonIcon'
+    | 'volumeIcon'
+    | 'playedBar'
+    | 'loadedBar'
+    | 'playedBarWrap'
+    | 'barHighlight'
+    | 'barHighlightTop'
+    | 'playedBarTime'
+    | 'topChapterDiv'
+    | 'barInfoDiv'
+    | 'danmaku'
+    | 'danmakuLoading'
+    | 'video'
+    | 'bezel'
+    | 'playButton'
+    | 'mobilePlayButton'
+    | 'videoWrap'
+    | 'controllerMask'
+    | 'ptime'
+    | 'settingButton'
+    | 'settingBox'
+    | 'mask'
+    | 'loop'
+    | 'loopToggle'
+    | 'showDanmaku'
+    | 'showDanmakuToggle'
+    | 'unlimitDanmaku'
+    | 'unlimitDanmakuToggle'
+    | 'speed'
+    | 'speedItem'
+    | 'danmakuOpacityBar'
+    | 'danmakuOpacityBarWrap'
+    | 'danmakuOpacityBarWrapWrap'
+    | 'danmakuOpacityBox'
+    | 'dtime'
+    | 'controller'
+    | 'commentInput'
+    | 'commentButton'
+    | 'commentSettingBox'
+    | 'commentSettingButton'
+    | 'commentSettingFill'
+    | 'commentSendButton'
+    | 'commentSendFill'
+    | 'commentColorSettingBox'
+    | 'browserFullButton'
+    | 'webFullButton'
+    | 'menu'
+    | 'menuItem'
+    | 'qualityList'
+    | 'cameraButton'
+    | 'airplayButton'
+    | 'chromecastButton'
+    | 'subtitleButton'
+    | 'subtitleButtonInner'
+    | 'subtitle'
+    | 'qualityButton'
+    | 'barPreview'
+    | 'barWrap'
+    | 'noticeList'
+    | 'skipWindow'
+    | 'infoPanel'
+    | 'infoPanelClose'
+    | 'hotkeyPanel'
+    | 'hotkeyPanelClose'
+    | 'infoVersion'
+    | 'infoFPS'
+    | 'infoType'
+    | 'infoUrl'
+    | 'infoResolution'
+    | 'infoDuration'
+    | 'infoDanmakuId'
+    | 'infoDanmakuApi'
+    | 'infoDanmakuAmount';
+
+export interface DPlayerTemplateOptions {
+    player: DPlayer;
+    container: HTMLElement;
+    options: DPlayerOptions;
+}

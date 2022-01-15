@@ -1,24 +1,28 @@
-import axios from 'axios';
+import axios, { AxiosResponse, Method } from 'axios';
 
-export default {
-    send: (options) => {
+const API: DPlayerAPI = {
+    send: (options: DPlayerDanmakuOptions): void => {
         axios
             .post(options.url, options.data)
-            .then((response) => {
+            .then((response: AxiosResponse<StringIndexableObject, string>) => {
                 const data = response.data;
-                if (!data || data.code !== 0) {
-                    options.error && options.error(data && data.msg);
+                if (data.code !== 0) {
+                    if (typeof options.error === 'function') {
+                        options.error(new Error(typeof data.msg === 'string' ? data.msg : 'ERROR, no Error Message Present!!'));
+                    }
                     return;
                 }
-                options.success && options.success(data);
+                if (typeof options.success === 'function') {
+                    options.success(data);
+                }
             })
             .catch((e) => {
                 console.error(e);
-                options.error && options.error();
+                options.error && options.error(e);
             });
     },
 
-    read: (options) => {
+    read: (options: DPlayerDanmakuOptions): void => {
         axios
             .get(options.url)
             .then((response) => {
@@ -44,38 +48,93 @@ export default {
             });
     },
 
-    async backend(options) {
+    async backend(options?: DPlayerBackendOptions): Promise<DPlayerBackendResponse | null> {
         return new Promise((resolve, reject) => {
             options = options || {};
-            options.json = options.json || true;
+            options.json = options.json ?? true;
             options.query = options.query || {};
             options.method = options.method || 'GET';
-            if (options.url) {
+            if (options.url !== undefined) {
                 axios({
-                    method: options.method.toLowerCase(),
+                    method: options.method,
                     url: options.url,
                     params: options.query,
                 })
-                    .then((response) => {
-                        if (!response.data) {
+                    .then((response: AxiosResponse<StringIndexableObject, string>) => {
+                        if (typeof response.data === 'undefined') {
                             throw new Error('No data in the Response!');
                         }
 
                         if (response.data.error === false) {
                             if (response.data.type === 'reference') {
-                                resolve(response.data.data);
+                                // TODO 'as' is dangerous, check that manually!
+                                resolve(typeof response.data.data !== 'undefined' ? (response.data.data as DPlayerBackendResponse) : null);
                             } else {
                                 // TODO handle raw data!
                                 throw new Error("Couldn't handle raw data at the moment!");
                             }
                         } else {
-                            throw new Error(`Error message from API: ${response.data['error-message']}`);
+                            const errorMsg: string =
+                                typeof response.data['error-message'] !== 'undefined' ? (response.data['error-message'] === 'string' ? response.data['error-message'] : 'Error in parsinf Error Message') : 'Error in parsinf Error Message';
+
+                            switch (response.data['error-type']) {
+                                case 'notice':
+                                    resolve(null); // resolve with null
+                                    break;
+                                case 'warning':
+                                    resolve(null); // resolve with null
+                                    break;
+                                case 'error':
+                                    throw new Error(`[ERROR] Error message from API: ${errorMsg}`);
+                                case 'severe':
+                                    throw new Error(`[SEVERE] Error message from API: ${errorMsg}`);
+                                default:
+                                    throw new Error(`Unknown Error message from API: ${errorMsg}`);
+                            }
                         }
                     })
-                    .catch(reject);
+                    .catch((err: Error) => reject(err));
             } else {
-                reject('No URL provided');
+                reject(new Error('No URL provided'));
             }
         });
     },
 };
+
+export default API;
+
+export interface DPlayerDanmakuOptions {
+    url: string;
+    data: StringIndexableObject;
+    success?: (response: DPlayerDanmakuResponse) => void;
+    error?: (error: Error) => void;
+}
+
+export interface DPlayerBackendOptions {
+    json?: boolean;
+    method?: Method;
+    url?: string;
+    query?: StringIndexableObject;
+}
+
+export type DPlayerBackendResponse = string; // for the moment!
+
+export type DPlayerDanmakuResponse = {
+    time: string;
+    type: string;
+    color: string;
+    author: string;
+    text: string;
+};
+
+// TODO remove generic indexable Type!!
+// ATTENTION use with cause, since we can't use every string to to that!
+export interface StringIndexableObject {
+    [index: string]: unknown;
+}
+
+export interface DPlayerAPI {
+    send: (options: DPlayerDanmakuOptions) => void;
+    read: (options: DPlayerDanmakuOptions) => void;
+    backend: (options?: DPlayerBackendOptions) => Promise<DPlayerBackendResponse | null>;
+}

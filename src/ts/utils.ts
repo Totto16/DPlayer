@@ -1,37 +1,30 @@
 import axios from 'axios';
-import defaultApiBackend from './api.js';
+import api from './api.js';
+import apiBackend, { DPlayerAPI, DPlayerBackendResponse } from './api.js';
+import { Highlight } from './controller.js';
+import { DPlayerOptions } from './options.js';
 
 const isMobile = /mobile/i.test(window.navigator.userAgent);
 const isChrome = /chrome/i.test(window.navigator.userAgent);
 const isSafari = /safari/i.test(window.navigator.userAgent);
 const isFirefox = /firefox/i.test(window.navigator.userAgent);
 
-const utils = {
-    apiBackend: defaultApiBackend,
+const utils: DPlayerUtils = {
+    apiBackend,
 
-    /**
-     * Parse second to time string
-     *
-     * @param {Number} second
-     * @return {String} 00:00 or 00:00:00
-     */
-    secondToTime: (second, delimiter = ':') => {
+    secondToTime: (second: number, delimiter = ':'): string => {
         second = second || 0;
         if (second === 0 || second === Infinity || second.toString() === 'NaN') {
             return `00${delimiter}00`;
         }
-        const add0 = (num) => (num < 10 ? '0' + num : '' + num);
+        const add0 = (num: number) => (num < 10 ? `0${num.toString()}` : num.toString());
         const hour = Math.floor(second / 3600);
         const min = Math.floor((second - hour * 3600) / 60);
         const sec = Math.floor(second - hour * 3600 - min * 60);
         return (hour > 0 ? [hour, min, sec] : [min, sec]).map(add0).join(delimiter);
     },
 
-    /**
-     * control play progress
-     */
-    // get element's view position
-    getElementViewLeft: (element) => {
+    getElementViewLeft: (element: HTMLElement): number => {
         let actualLeft = element.offsetLeft;
         let current = element.offsetParent;
         const elementScrollLeft = document.body.scrollLeft + document.documentElement.scrollLeft;
@@ -57,7 +50,7 @@ const utils = {
     * getBoundingClientRect 在 Firefox 11 及以下返回的值会把 transform 的值也包含进去
     * getBoundingClientRect 在 Opera 10.5 及以下返回的值缺失 width、height 值
     */
-    getBoundingClientRectViewLeft(element) {
+    getBoundingClientRectViewLeft(element: HTMLElement) {
         const scrollTop = window.scrollY || window.pageYOffset || document.body.scrollTop + ((document.documentElement && document.documentElement.scrollTop) || 0);
 
         if (element.getBoundingClientRect) {
@@ -79,14 +72,14 @@ const utils = {
         }
     },
 
-    getScrollPosition() {
+    getScrollPosition(): DPlayerUtilsScrollPosition {
         return {
             left: window.pageXOffset || document.documentElement.scrollLeft || document.body.scrollLeft || 0,
             top: window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0,
         };
     },
 
-    setScrollPosition({ left = 0, top = 0 }) {
+    setScrollPosition({ left = 0, top = 0 }: DPlayerUtilsScrollPosition): void {
         if (this.isFirefox) {
             document.documentElement.scrollLeft = left;
             document.documentElement.scrollTop = top;
@@ -95,13 +88,13 @@ const utils = {
         }
     },
 
-    isMobile: isMobile,
+    isMobile,
 
-    isFirefox: isFirefox,
+    isFirefox,
 
-    isChrome: isChrome,
+    isChrome,
 
-    isSafari: isSafari,
+    isSafari,
 
     storage: {
         set: (key, value) => {
@@ -111,7 +104,7 @@ const utils = {
         get: (key) => localStorage.getItem(key),
     },
 
-    encodeValueAsObject(val) {
+    encodeValueAsObject(val: any): DPlayerEncodedValue {
         return { value: val.toString(), type: typeof val };
     },
 
@@ -128,9 +121,9 @@ const utils = {
         }
     },
 
-    supportsAirplay: () => isSafari && !isChrome && !isFirefox,
+    supportsAirplay: (): boolean => isSafari && !isChrome && !isFirefox,
 
-    supportsChromeCast: () => isChrome && !isSafari && !isFirefox,
+    supportsChromeCast: (): boolean => isChrome && !isSafari && !isFirefox,
 
     nameMap: {
         dragStart: isMobile ? 'touchstart' : 'mousedown',
@@ -138,7 +131,7 @@ const utils = {
         dragEnd: isMobile ? 'touchend' : 'mouseup',
     },
 
-    color2Number: (color) => {
+    color2Number: (color: string): number => {
         if (color[0] === '#') {
             color = color.substr(1);
         }
@@ -148,9 +141,9 @@ const utils = {
         return (parseInt(color, 16) + 0x000000) & 0xffffff;
     },
 
-    number2Color: (number) => '#' + ('00000' + number.toString(16)).slice(-6),
+    number2Color: (number: number): string => `#${`00000${number.toString(16)}`.slice(-6)}`,
 
-    number2Type: (number) => {
+    number2Type: (number: number): DPlayerUtilsTypes => {
         switch (number) {
             case 0:
                 return 'right';
@@ -163,25 +156,38 @@ const utils = {
         }
     },
     // parsing according to web standards (https://developer.mozilla.org/en-US/docs/Web/API/WebVTT_API)
-    parseVtt(vtt_url, callback, startOrEnd = 0, API_URL = null, url = null) {
+    parseVtt(vtt_url: string, callback: DPlayerParseVttCallback, startOrEnd = 0, options: DPlayerOptions | null = null): string {
         if (vtt_url === 'API' && API_URL !== null) {
+            const video_url = new URL(options.video.url);
+            // TODO this has to be customizable, to match it between naming conventions and file names!!!
+            const parameter =
+                options.video.type === 'hls'
+                    ? video_url.pathname
+                          .substring(0, video_url.pathname.lastIndexOf('/'))
+                          .split('/')
+                          .filter((str) => str !== '')
+                          .join('-')
+                    : video_url.pathname.substring(video_url.pathname.lastIndexOf('/') + 1);
             // TODO here are some specs!
             // TODO version, 1 at the moment, get either reference or nothing/everything else means raw data!, type, vtt, or chapter, or thumbnails or etc TODO
-            this.apiBackend
-                .backend({
-                    url: API_URL,
-                    query: {
-                        version: '1',
-                        get: 'reference',
-                        type: 'vtt',
-                        parameter: url.substring(url.lastIndexOf('/') + 1),
-                        mode: 'regex',
-                    },
+            api.backend({
+                url: options.API_URL,
+                query: {
+                    version: '1',
+                    get: 'reference',
+                    type: 'vtt',
+                    parameter,
+                    mode: 'regex',
+                },
+            })
+                .then((data: DPlayerBackendResponse | null) => {
+                    if (data !== null) {
+                        this.parseVtt(data, callback, startOrEnd);
+                    } else {
+                        // we don't need to print an error, the server reported, that there are no vtts available, nothing severe happened
+                    }
                 })
-                .then((data) => {
-                    this.parseVtt(data, callback, startOrEnd);
-                })
-                .catch((error) => {
+                .catch((error: Error) => {
                     console.error(`Error in API request for the Vtt Url!`, error);
                     return null;
                 });
@@ -190,7 +196,7 @@ const utils = {
             console.warn(`Tried to pass 'API' as vtt_url, but didn't specify 'API_URL'!`);
             return;
         }
-        const marker = [];
+        const marker: Highlight[] = [];
         axios
             .get(vtt_url)
             .then((response) => {
@@ -241,3 +247,37 @@ const utils = {
 };
 
 export default utils;
+
+export interface DPlayerUtils {
+    apiBackend: DPlayerAPI;
+    secondToTime: (second: number, delimiter: string) => string;
+    getElementViewLeft: (element: HTMLElement) => number;
+    getScrollPosition: () => DPlayerUtilsScrollPosition;
+    setScrollPosition: (position: DPlayerUtilsScrollPosition) => void;
+    isMobile: boolean;
+    isFirefox: boolean;
+    isChrome: boolean;
+    isSafari: boolean;
+    supportsAirplay: () => boolean;
+    supportsChromeCast: () => boolean;
+    color2Number: (color: string) => number;
+    number2Color: (number: number) => string;
+    number2Type: (number: number) => DPlayerUtilsTypes;
+    parseVtt: (vtt_url: string, callback: DPlayerParseVttCallback, startOrEnd: number, options: DPlayerOptions | null) => string;
+}
+
+export type DPlayerParseVttCallback = (marker: Highlight[]) => void;
+
+export type DPlayerUtilsTypes = 'right' | 'top' | 'bottom';
+
+export interface DPlayerUtilsScrollPosition {
+    left: number;
+    top: number;
+}
+
+export type TypesOfValues = 'undefined' | 'number' | 'string' | 'boolean' | 'bigint' | 'symbol' | 'object' | 'function';
+
+export type DPlayerEncodedValue = {
+    value: string;
+    type: TypesOfValues;
+};

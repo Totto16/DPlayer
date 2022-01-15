@@ -1,7 +1,13 @@
-/* global DPLAYER_VERSION BUILD_TIME*/
+import DPlayer from '.';
+import { DPLAYER_VERSION, BUILD_TIME } from './global'; // same problem as in index.ts
+import Template from './template';
 
 class InfoPanel {
-    constructor(player) {
+    container: HTMLElement;
+    template: Template;
+    player: DPlayer;
+
+    constructor(player: DPlayer) {
         this.container = player.template.infoPanel;
         this.template = player.template;
         this.video = player.video;
@@ -12,7 +18,7 @@ class InfoPanel {
         });
     }
 
-    show() {
+    show(): void {
         this.beginTime = Date.now();
         this.update();
         this.player.timer.enable('info');
@@ -20,13 +26,13 @@ class InfoPanel {
         this.container.classList.remove('dplayer-info-panel-hide');
     }
 
-    hide() {
+    hide(): void {
         this.player.timer.disable('info');
         this.player.timer.disable('fps');
         this.container.classList.add('dplayer-info-panel-hide');
     }
 
-    triggle() {
+    triggle(): void {
         if (this.container.classList.contains('dplayer-info-panel-hide')) {
             this.show();
         } else {
@@ -34,7 +40,7 @@ class InfoPanel {
         }
     }
 
-    update() {
+    update(): void {
         this.template.infoVersion.innerHTML = `v${DPLAYER_VERSION} ${BUILD_TIME}`;
         this.template.infoType.innerHTML = this.player.type;
         this.template.infoUrl.innerHTML = this.player.options.video.url;
@@ -47,7 +53,7 @@ class InfoPanel {
         }
     }
 
-    fps(value) {
+    fps(value: number): void {
         this.template.infoFPS.innerHTML = `${value.toFixed(1)}`;
     }
 }
