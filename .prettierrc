@@ -1,7 +1,12 @@
 {
-    "printWidth": 233,
+    "printWidth": 256,
     "tabWidth": 4,
     "singleQuote": true,
+    "arrowParens": "always",
+    "semi": true,
     "trailingComma": "es5",
-    "arrowParens": "always"
+    "useTabs": false,
+    "quoteProps": "as-needed",
+    "bracketSpacing": true,
+    "endOfLine": "lf"
 }

@@ -1,6 +1,6 @@
 {
     "name": "dplayer",
-    "version": "1.28.10-dev",
+    "version": "1.28.0-dev",
     "description": "Wow, such a lovely HTML5 danmaku video player",
     "main": "dist/DPlayer.min.js",
     "scripts": {
@@ -10,12 +10,15 @@
         "dev": "cross-env NODE_ENV=development webpack-dev-server --config webpack/dev.config.js --color",
         "test": "eslint src webpack",
         "format": "eslint \"**/*.js\" --fix && prettier \"**/*.{js,json,md}\" --write",
-        "format:staged": "eslint \"**/*.js\" --fix && pretty-quick --staged --verbose --pattern \"**/*.{js,json,md}\"  --ignore-path \"./.eslintignore\" ",
+        "format:staged": "",
+        "format:staged_todo": "eslint \"**/*.js\" --fix && pretty-quick --staged --verbose --pattern \"**/*.{js,json,md}\"  --ignore-path \"./.eslintignore\" ",
         "format:check": "eslint \"**/*.js\" && prettier-check \"**/*.{js,json,md}\"",
         "docs:dev": "vuepress dev docs",
         "docs:build": "vuepress build docs",
         "check:update": "npm-check -u --skip-unused",
-        "______comment": "npm-check needs to be installed globally: `npm i -g npm-check`"
+        "______comment": "npm-check needs to be installed globally: `npm i -g npm-check`",
+        "prettier:debug": "npx prettier --check .",
+        "prettier": "npx prettier --write ."
     },
     "files": [
         "dist"
