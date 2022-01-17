@@ -1,6 +1,5 @@
 import '../css/index.scss';
-import { StringIndexableObject } from './api';
-import { DPLAYER_VERSION, BUILD_TIME } from './global'; // produces error when try to compile it
+import './index.d.ts';
 import { DPlayerOptions } from './options';
 import DPlayer from './player';
 
@@ -23,15 +22,6 @@ if (window.DPLAYER_AUTO) {
     }
     console.debug(`used 'window.DPLAYER_AUTO' to load DPLAYER automatically, you can find it's instance at 'window['${window.DPLAYER_AUTO.name}']'`);
 }
-export const isOfType = <T>(check: any): check is T => {
-    const keys = Object.keys(check as T);
-    for (let i = 0; i < keys.length; i++) {
-        if (typeof (check as T)[keys[i]] === 'undefined') {
-            return false;
-        }
-    }
-    return true;
-};
 
 export default DPlayer;
 
@@ -48,4 +38,48 @@ export interface DPlayerDestroyable {
     destroy(): void;
 }
 
-// actual progress: 1507 remaining errors
+export const isOfType = <T>(check: any): check is T => {
+    const keys = Object.keys(check as T);
+    for (let i = 0; i < keys.length; i++) {
+        if ((check as T)[keys[i]] === undefined) {
+            return false;
+        }
+    }
+    return true;
+};
+
+export const isOfTypeAndNotNull = <T>(check: any): check is T => {
+    const keys = Object.keys(check as T);
+    for (let i = 0; i < keys.length; i++) {
+        if ((check as T)[keys[i]] === undefined || (check as T)[keys[i]] === null) {
+            return false;
+        }
+    }
+    return true;
+};
+
+// TODO remove generic indexable Type!!
+// ATTENTION use with cause, since we can't use every string to to that!
+export interface StringIndexableObject {
+    [index: string]: unknown;
+}
+
+function isNullish<T = any>(argument: T): boolean {
+    if (argument === undefined) {
+        return true;
+    } else if (argument === null) {
+        return true;
+    } else if (argument === '') {
+        return true;
+    } else if (Array.isArray(argument) && argument.length === 0) {
+        return true;
+    } else if (Object.key(argument).length === 0) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+export { isNullish };
+
+// actual progress: 1174 remaining errors (-333 from last time)

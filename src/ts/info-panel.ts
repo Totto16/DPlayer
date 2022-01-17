@@ -1,14 +1,16 @@
 import DPlayer from '.';
-import { DPLAYER_VERSION, BUILD_TIME } from './global'; // same problem as in index.ts
+import { DPLAYER_VERSION, BUILD_TIME } from './index.d'; // same problem as in index.ts
 import Template from './template';
 
 class InfoPanel {
     container: HTMLElement;
     template: Template;
     player: DPlayer;
+    video: HTMLVideoElement;
+    beginTime?: number;
 
     constructor(player: DPlayer) {
-        this.container = player.template.infoPanel;
+        this.container = player.template.infoPanel!; // TODO remove !
         this.template = player.template;
         this.video = player.video;
         this.player = player;
@@ -41,20 +43,20 @@ class InfoPanel {
     }
 
     update(): void {
-        this.template.infoVersion.innerHTML = `v${DPLAYER_VERSION} ${BUILD_TIME}`;
-        this.template.infoType.innerHTML = this.player.type;
-        this.template.infoUrl.innerHTML = this.player.options.video.url;
-        this.template.infoResolution.innerHTML = `${this.player.video.videoWidth} x ${this.player.video.videoHeight}`;
-        this.template.infoDuration.innerHTML = this.player.video.duration;
+        this.template.infoVersion!.innerHTML = `v${DPLAYER_VERSION} ${BUILD_TIME}`;
+        this.template.infoType!.innerHTML = this.player.type;
+        this.template.infoUrl!.innerHTML = this.player.options.video.url;
+        this.template.infoResolution!.innerHTML = `${this.player.video.videoWidth} x ${this.player.video.videoHeight}`;
+        this.template.infoDuration!.innerHTML = this.player.video.duration;
         if (this.player.options.danmaku) {
-            this.template.infoDanmakuId.innerHTML = this.player.options.danmaku.id;
-            this.template.infoDanmakuApi.innerHTML = this.player.options.danmaku.api;
-            this.template.infoDanmakuAmount.innerHTML = this.player.danmaku.dan.length;
+            this.template.infoDanmakuId!.innerHTML = this.player.options.danmaku.id;
+            this.template.infoDanmakuApi!.innerHTML = this.player.options.danmaku.api;
+            this.template.infoDanmakuAmount!.innerHTML = this.player.danmaku.dan.length;
         }
     }
 
     fps(value: number): void {
-        this.template.infoFPS.innerHTML = `${value.toFixed(1)}`;
+        this.template.infoFPS!.innerHTML = `${value.toFixed(1)}`;
     }
 }
 

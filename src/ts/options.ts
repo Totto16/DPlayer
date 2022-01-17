@@ -1,11 +1,13 @@
 import { DPlayerSupportedLanguage } from './i18n.js';
-import DPlayer from './player.js';
-import utils from './utils.js';
+import { StringIndexableObject } from './index.js';
+import DPlayer from './player';
+import { DPlayerSubTitleOptions, DPlayerSubTitleOptionsWeak } from './subtitle.js';
+import utils from './utils';
 
-export default (options: DPlayerOptions, player: DPlayer) => {
+const config = (options: DPlayerOptions, player: DPlayer): DplayerParsedOptions => {
     // default options
-    const defaultOption: DPlayerOptions = {
-        container: options.element || document.getElementsByClassName('dplayer')[0],
+    const defaultOption: DPlayerDefaultOptions = {
+        container: options.element || (document.querySelector('.dplayer') as HTMLElement),
         live: false,
         autoplay: false,
         themeName: 'standard',
@@ -37,6 +39,9 @@ export default (options: DPlayerOptions, player: DPlayer) => {
         pluginOptions: { hls: {}, flv: {}, dash: {}, webtorrent: {}, ass: {} },
         balloon: false,
     };
+
+    // TODO somewhere initialize apiBackend
+
     for (const defaultKey in defaultOption) {
         if (defaultOption.hasOwnProperty(defaultKey) && !options.hasOwnProperty(defaultKey)) {
             options[defaultKey] = defaultOption[defaultKey];
@@ -218,9 +223,36 @@ export default (options: DPlayerOptions, player: DPlayer) => {
     return options;
 };
 
-// TODO remove
-export interface StringIndexableObject {
-    [index: string]: unknown;
+export default config;
+
+interface DPlayerDefaultOptions {
+    container?: HTMLElement;
+    live?: boolean;
+    autoplay?: boolean;
+    themeName?: string;
+    disableDarkMode?: boolean;
+    loop?: boolean;
+    lang?: DPlayerSupportedLanguage | string;
+    screenshot?: boolean;
+    airplay?: boolean | 'vendor';
+    chromecast?: boolean | 'vendor';
+    hotkey?: boolean;
+    advancedHotkeys?: boolean;
+    preload?: DPlayerPreloadOption;
+    logo?: string; // TODO See where implemented
+    volume?: number;
+    playbackSpeed?: [number, number, number, number, number, number];
+    video?: DplayerVideoOptions | {};
+    contextmenu?: DplayerContextMenuOption[];
+    fullScreenPolicy?: DPlayerFullScreenOption;
+    highlightSkipArray?: (RegExp | string)[];
+    highlightSkipMode?: DPlayerSkipModeOption;
+    highlightSkip?: boolean;
+    skipDelay?: number;
+    hardSkipHighlights?: boolean;
+    mutex?: boolean;
+    pluginOptions?: DPlayerPluginOptions;
+    balloon?: boolean;
 }
 
 export interface DPlayerOptions extends StringIndexableObject {
@@ -244,7 +276,7 @@ export interface DPlayerOptions extends StringIndexableObject {
     playbackSpeed?: [number, number, number, number, number, number];
     apiBackend?: DPlayerAPIBackendOption;
     video?: DplayerVideoOptions;
-    subtitle?: DPlayerSubTitleOption;
+    subtitle?: DPlayerSubTitleOptionsWeak;
     danmaku?: DPlayerDanmakuOption;
     contextmenu?: DplayerContextMenuOption[];
     fullScreenPolicy?: DPlayerFullScreenOption;
@@ -259,6 +291,10 @@ export interface DPlayerOptions extends StringIndexableObject {
     balloon?: boolean;
 }
 
+export interface DplayerParsedOptions extends DPlayerOptions {
+    test: boolean; // TODO copy paste, for the lack of better solution!
+}
+
 export type DPlayerPreloadOption = 'none' | 'metadata' | 'auto';
 
 export type DPlayerAvailableVideoTypes = 'auto' | 'hls' | 'flv' | 'dash' | 'webtorrent' | 'normal';
@@ -266,8 +302,6 @@ export type DPlayerAvailableVideoTypes = 'auto' | 'hls' | 'flv' | 'dash' | 'webt
 export type DPlayerFullScreenOption = 'OnlyNormal' | 'OnlyWeb' | 'Both' | 0 | 1 | 2;
 
 export type DPlayerSkipModeOption = 'smoothPrompt' | 'immediately' | 'smoothCancelPrompt' | 'always' | 0 | 1 | 2 | 3;
-
-export type DPlayerSubTitleTypes = 'webvtt' | 'ass';
 
 export interface DPlayerHighLightItem {
     text: string;
@@ -288,14 +322,6 @@ export interface DplayerVideoOptions {
     customType?: unknown;
     quality?: DPlayerVideoQuality[];
     defaultQuality?: number;
-}
-
-export interface DPlayerSubTitle {
-    url: string;
-    type?: DPlayerSubTitleTypes;
-    fontSize?: string;
-    bottom?: string;
-    color?: string;
 }
 
 export interface DPlayerDanmakuOption {
@@ -323,11 +349,11 @@ export interface DPlayerPluginOptions {
     flv: {};
     dash: {};
     webtorrent: {};
-    ass: {};
+    ass: DPlayerAssOptions;
 }
 
-/* function isDPlayerOptions(opt: DPlayerOptions | unknown): opt is DPlayerOptions {
-    return (opt as DPlayerOptions).swim !== undefined;
+export interface DPlayerAssOptions {
+    //TODO
+}
 
-    // use, or try to use instanceof!!
-} */
+// TODO  use, or try to use instanceof!! use the isOfType isOfTYpeOrNull!!! to check DPlayerOptionsInput

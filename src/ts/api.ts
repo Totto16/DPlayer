@@ -1,7 +1,8 @@
 import axios, { AxiosResponse, Method } from 'axios';
+import { isOfType, StringIndexableObject } from '.';
 
 const API: DPlayerAPI = {
-    send: (options: DPlayerDanmakuOptions): void => {
+    send: (options: DPlayerDanmakuSendOptions): void => {
         axios
             .post(options.url, options.data)
             .then((response: AxiosResponse<StringIndexableObject, string>) => {
@@ -13,38 +14,53 @@ const API: DPlayerAPI = {
                     return;
                 }
                 if (typeof options.success === 'function') {
-                    options.success(data);
+                    if (typeof data === 'string') {
+                        options.success(data);
+                    } else {
+                        options.error?.(new Error('Returned data from API was empty!')) ?? console.warn('Error in DanmakuRequest without error handler!');
+                    }
                 }
             })
-            .catch((e) => {
+            .catch((e: Error) => {
                 console.error(e);
-                options.error && options.error(e);
+                if (typeof options.error === 'function') {
+                    options.error(e);
+                }
             });
     },
 
-    read: (options: DPlayerDanmakuOptions): void => {
+    read: (options: DPlayerDanmakuReadOptions): void => {
         axios
             .get(options.url)
-            .then((response) => {
+            .then((response: AxiosResponse<StringIndexableObject, string>) => {
                 const data = response.data;
                 if (!data || data.code !== 0) {
-                    options.error && options.error(data && data.msg);
+                    if (typeof options.error === 'function') {
+                        options.error(new Error(typeof data.msg === 'string' ? data.msg : 'ERROR, no Error Message Present!!'));
+                    }
                     return;
                 }
-                options.success &&
-                    options.success(
-                        data.data.map((item) => ({
-                            time: item[0],
-                            type: item[1],
-                            color: item[2],
-                            author: item[3],
-                            text: item[4],
-                        }))
-                    );
+                if (typeof options.success === 'function') {
+                    const responseData: DPlayerDanmakuData[] = (data.data as string[][]).map((item: string[]) => ({
+                        time: item[0],
+                        type: item[1],
+                        color: item[2],
+                        author: item[3],
+                        text: item[4],
+                    }));
+
+                    if (isOfType<DPlayerDanmakuData[]>(responseData)) {
+                        options.success(responseData);
+                    } else {
+                        options.error?.(new Error('Returned data from API was not in the right format!')) ?? console.warn('Error in DanmakuRequest without error handler!');
+                    }
+                }
             })
-            .catch((e) => {
+            .catch((e: Error) => {
                 console.error(e);
-                options.error && options.error();
+                if (typeof options.error === 'function') {
+                    options.error(e);
+                }
             });
     },
 
@@ -75,7 +91,7 @@ const API: DPlayerAPI = {
                             }
                         } else {
                             const errorMsg: string =
-                                typeof response.data['error-message'] !== 'undefined' ? (response.data['error-message'] === 'string' ? response.data['error-message'] : 'Error in parsinf Error Message') : 'Error in parsinf Error Message';
+                                typeof response.data['error-message'] !== 'undefined' ? (response.data['error-message'] === 'string' ? response.data['error-message'] : 'Error in parsing Error Message') : 'Error in parsing Error Message';
 
                             switch (response.data['error-type']) {
                                 case 'notice':
@@ -103,10 +119,17 @@ const API: DPlayerAPI = {
 
 export default API;
 
-export interface DPlayerDanmakuOptions {
+export interface DPlayerDanmakuSendOptions {
+    url: string;
+    data: DPlayerDanmakuData;
+    success?: (response: DPlayerBackendResponse) => void;
+    error?: (error: Error) => void;
+}
+
+export interface DPlayerDanmakuReadOptions {
     url: string;
     data: StringIndexableObject;
-    success?: (response: DPlayerDanmakuResponse) => void;
+    success?: (response: DPlayerDanmakuData[]) => void;
     error?: (error: Error) => void;
 }
 
@@ -119,7 +142,7 @@ export interface DPlayerBackendOptions {
 
 export type DPlayerBackendResponse = string; // for the moment!
 
-export type DPlayerDanmakuResponse = {
+export type DPlayerDanmakuData = {
     time: string;
     type: string;
     color: string;
@@ -127,14 +150,8 @@ export type DPlayerDanmakuResponse = {
     text: string;
 };
 
-// TODO remove generic indexable Type!!
-// ATTENTION use with cause, since we can't use every string to to that!
-export interface StringIndexableObject {
-    [index: string]: unknown;
-}
-
 export interface DPlayerAPI {
-    send: (options: DPlayerDanmakuOptions) => void;
-    read: (options: DPlayerDanmakuOptions) => void;
+    send: (options: DPlayerDanmakuSendOptions) => void;
+    read: (options: DPlayerDanmakuReadOptions) => void;
     backend: (options?: DPlayerBackendOptions) => Promise<DPlayerBackendResponse | null>;
 }

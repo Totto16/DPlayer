@@ -1,8 +1,17 @@
 import Keyboard from 'simple-keyboard';
+import DPlayer from '.';
+import { DPlayerHotkeysStorage } from './hotkey';
+import Template from './template';
 
 class HotkeyPanel {
-    constructor(player) {
-        this.container = player.template.hotkeyPanel;
+    player: DPlayer;
+    container: HTMLDivElement;
+    template: Template;
+    video: HTMLVideoElement;
+    hotkeys: DPlayerHotkeysStorage;
+
+    constructor(player: DPlayer) {
+        this.container = player.template.hotkeyPanel!; // TODO remove !
         this.template = player.template;
         this.video = player.video;
         this.player = player;

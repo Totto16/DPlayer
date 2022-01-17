@@ -1,8 +1,7 @@
 import axios from 'axios';
-import api from './api.js';
-import apiBackend, { DPlayerAPI, DPlayerBackendResponse } from './api.js';
-import { Highlight } from './controller.js';
-import { DPlayerOptions } from './options.js';
+import apiBackend, { DPlayerAPI, DPlayerBackendResponse } from './api';
+import { Highlight } from './controller';
+import { DPlayerOptions } from './options';
 
 const isMobile = /mobile/i.test(window.navigator.userAgent);
 const isChrome = /chrome/i.test(window.navigator.userAgent);
@@ -97,11 +96,20 @@ const utils: DPlayerUtils = {
     isSafari,
 
     storage: {
-        set: (key, value) => {
-            localStorage.setItem(key, value);
+        set: (key: string, value: unknown): void => {
+            if (typeof value === 'object') {
+                localStorage.setItem(key, JSON.stringify(value));
+            } else if (typeof value === 'string') {
+                localStorage.setItem(key, value);
+            } else if (typeof value.toString === 'function') {
+                localStorage.setItem(key, value.toString());
+            } else {
+                console.warn('In storage.set: unknwon Type provided.');
+                return;
+            }
         },
 
-        get: (key) => localStorage.getItem(key),
+        get: (key: string) => localStorage.getItem(key),
     },
 
     encodeValueAsObject(val: any): DPlayerEncodedValue {

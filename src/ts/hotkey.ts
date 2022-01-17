@@ -1,5 +1,7 @@
+import DPlayer from '.';
+
 // all available options!
-const keys = {
+const keys: DPlayerKeyMapping = {
     32: 'togglePlayer',
     37: 'left',
     39: 'right',
@@ -18,7 +20,7 @@ const keys = {
     78: 'speedNormal',
 };
 
-const advancedKeys = {
+const advancedKeys: DPlayerAdvancedKeyMapping = {
     ' ': 'togglePlayer',
     ArrowLeft: 'left',
     ArrowRight: 'right',
@@ -43,7 +45,13 @@ const advancedKeys = {
 };
 
 class HotKey {
-    constructor(player) {
+    player: DPlayer;
+    doHotKeyHandler: DPlayerHotkeyHandler;
+    destroyed?: boolean;
+    enabledKeys: DPlayerHotkeysStorage;
+    disabledKeys: DPlayerHotkeysStorage;
+
+    constructor(player: DPlayer) {
         this.player = player;
         this.doHotKeyHandler = this.doHotKey.bind(this);
         if (this.player.options.hotkey) {
@@ -74,7 +82,7 @@ class HotKey {
         }
     }
 
-    doHotKey(e) {
+    doHotKey(e: Event): void {
         if (this.player.focus) {
             const tag = document.activeElement.tagName.toUpperCase();
             const editable = document.activeElement.getAttribute('contenteditable');
@@ -192,6 +200,18 @@ class HotKey {
         }
     }
 
+    key(event: Event): undefined | DPlayerKeyMappingValues {
+        if (this.enabledKeys.keys[event.keyCode]) {
+            return this.enabledKeys.keys[event.keyCode];
+        }
+        // String Names to be extra sure! (Useful for mediaPlay Buttons on PC!)
+        if (this.player.options.advancedHotkeys) {
+            if (this.enabledKeys.advancedKeys[event.keyCode]) {
+                return this.enabledKeys.advancedKeys[event.keyCode];
+            }
+        }
+    }
+    /* 
     keyOLD(event) {
         switch (event.keyCode) {
             case 32:
@@ -272,18 +292,6 @@ class HotKey {
         }
     }
 
-    key(event) {
-        if (this.enabledKeys.keys[event.keyCode]) {
-            return this.enabledKeys.keys[event.keyCode];
-        }
-        // String Names to be extra sure! (Useful for mediaPlay Buttons on PC!)
-        if (this.player.options.advancedHotkeys) {
-            if (this.enabledKeys.advancedKeys[event.keyCode]) {
-                return this.enabledKeys.advancedKeys[event.keyCode];
-            }
-        }
-    }
-
     keysOld() {
         const enabled = [];
         for (let i = 32; i <= 90; i++) {
@@ -294,9 +302,9 @@ class HotKey {
             }
         }
         return enabled;
-    }
+    } */
 
-    keys() {
+    keys(): DPlayerHotkeysStorage {
         const enabled = Object.entries(this.enabledKeys.keys).map((a) => {
             const [index, name] = a;
             const key = String.fromCharCode(index).toLowerCase().replace(' ', '{space}').replace('%', '{arrowleft}').replace('&', '{arrowup}').replace("'", '{arrowright}').replace('(', '{arrowdown}');
@@ -310,7 +318,7 @@ class HotKey {
         return { enabled, disabled, all: enabled.concat(disabled) };
     }
 
-    destroy() {
+    destroy(): void {
         if (this.player.options.hotkey) {
             document.removeEventListener('keydown', this.doHotKeyHandler);
         }
@@ -320,3 +328,61 @@ class HotKey {
 }
 
 export default HotKey;
+
+export type DPlayerKeyMappingKeys = 32 | 37 | 39 | 38 | 40 | 27 | 70 | 87 | 77 | 83 | 68 | 65 | 76 | 86 | 67 | 78;
+
+export type DPlayerKeyMappingValues =
+    | 'togglePlayer'
+    | 'left'
+    | 'right'
+    | 'up'
+    | 'down'
+    | 'cancelBothFullscreen'
+    | 'toggleFullscreen'
+    | 'toggleWebFullscreen'
+    | 'mute'
+    | 'screenshot'
+    | 'nextChapter'
+    | 'previousChapter'
+    | 'changeLoop'
+    | 'speedUp'
+    | 'speedDown'
+    | 'speedNormal';
+
+export type DPlayerAdvancedKeyMappingKeys =
+    | ' '
+    | 'ArrowLeft'
+    | 'ArrowRight'
+    | 'ArrowUp'
+    | 'ArrowDown'
+    | 'Escape'
+    | 'f'
+    | 'w'
+    | 'MediaPlayPause'
+    | 'MediaStop'
+    | 'AudioVolumeMute'
+    | 'm'
+    | 's'
+    | 'MediaTrackPrevious'
+    | 'MediaTrackNext'
+    | 'd'
+    | 'a'
+    | 'l'
+    | 'v'
+    | 'c'
+    | 'n';
+
+export type DPlayerHotkeyHandler = (e: Event) => void;
+
+export type DPlayerAdvancedKeyMapping = {
+    [key in DPlayerAdvancedKeyMappingKeys]: keyof DPlayerKeyMappingValues;
+};
+
+export type DPlayerKeyMapping = {
+    [key in DPlayerKeyMappingKeys]: keyof DPlayerKeyMappingValues;
+};
+
+export type DPlayerHotkeysStorage = {
+    keys: DPlayerAdvancedKeyMapping;
+    advancedKeys: DPlayerKeyMapping;
+};

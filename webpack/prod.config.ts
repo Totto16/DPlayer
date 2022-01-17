@@ -37,7 +37,7 @@ const config: webpack.Configuration = {
 
     resolve: {
         modules: ['node_modules'],
-        extensions: ['.js', '.scss', '.ts', '.art'],
+        extensions: ['.js', '.scss', '.ts', '.art', '.svg'],
         preferRelative: true,
     },
 
@@ -45,7 +45,11 @@ const config: webpack.Configuration = {
         strictExportPresence: true,
         rules: [
             {
-                test: /\.ts$/,
+                test: /\.d\.ts$/,
+                loader: 'ignore-loader',
+            },
+            {
+                test: /(?<!\.d)\.ts$/,
                 exclude: /node_module/,
                 use: 'ts-loader',
             },

@@ -1,9 +1,11 @@
 import path from 'path';
-import webpack from 'webpack';
+import * as webpack from 'webpack';
+import * as webpackDevServer from 'webpack-dev-server';
 import { GitRevisionPlugin } from 'git-revision-webpack-plugin';
 import autoprefixer from 'autoprefixer';
 import cssnano from 'cssnano';
 import packageConfig from '../package.json';
+import ImageMinimizerPlugin from 'image-minimizer-webpack-plugin';
 const gitRevisionPlugin = new GitRevisionPlugin();
 
 const config: webpack.Configuration = {
@@ -35,7 +37,7 @@ const config: webpack.Configuration = {
 
     resolve: {
         modules: ['node_modules'],
-        extensions: ['.js', '.scss', '.ts', '.art'],
+        extensions: ['.js', '.scss', '.ts', '.art', '.svg'],
         preferRelative: true,
     },
 
@@ -43,7 +45,11 @@ const config: webpack.Configuration = {
         strictExportPresence: true,
         rules: [
             {
-                test: /\.ts$/,
+                test: /\.d\.ts$/,
+                loader: 'ignore-loader',
+            },
+            {
+                test: /(?<!\.d)\.ts$/,
                 exclude: /node_module/,
                 use: 'ts-loader',
             },
@@ -93,15 +99,8 @@ const config: webpack.Configuration = {
                 ],
             },
             {
-                test: /\.(png|jpg)$/,
-                loader: 'url-loader',
-                options: {
-                    limit: 40000,
-                },
-            },
-            {
-                test: /\.svg$/,
-                loader: 'svg-inline-loader',
+                test: /\.(jpe?g|png|gif|svg)$/i,
+                type: 'asset',
             },
             {
                 test: /\.art$/,
@@ -154,6 +153,31 @@ const config: webpack.Configuration = {
     },
     optimization: {
         mangleWasmImports: false,
+        minimizer: [
+            '...',
+            new ImageMinimizerPlugin({
+                minimizer: {
+                    implementation: ImageMinimizerPlugin.imageminMinify,
+                    options: {
+                        // Lossless optimization with custom option
+                        // Feel free to experiment with options for better result for you
+                        plugins: [
+                            ['gifsicle', { interlaced: true }],
+                            ['jpegtran', { progressive: true }],
+                            ['optipng', { optimizationLevel: 5 }],
+                            // Svgo configuration here https://github.com/svg/svgo#configuration
+                            // TODO look into that things, to have LOSSLESS optimization!
+                            [
+                                'svgo',
+                                {
+                                    plugins: 'preset-default',
+                                },
+                            ],
+                        ],
+                    },
+                },
+            }),
+        ],
     },
 };
 

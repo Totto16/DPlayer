@@ -1,7 +1,17 @@
+import DPlayer from '.';
+import Events from './events';
 import utils from './utils';
 
 class Danmaku {
-    constructor(options) {
+    options: DPlayerDanmakuOptions;
+    player: DPlayer;
+    container: HTMLDivElement;
+    opacity: number;
+    danIndex: number;
+    unlimited: number;
+    events: Events;
+
+    constructor(options: DPlayerDanmakuOptions) {
         this.options = options;
         this.player = this.options.player;
         this.container = this.options.container;
@@ -13,7 +23,7 @@ class Danmaku {
         this.danIndex = 0;
         this.dan = [];
         this.showing = true;
-        this._opacity = this.options.opacity;
+        this.opacity = this.options.opacity;
         this.events = this.options.events;
         this.unlimited = this.options.unlimited;
         this._measure('');
@@ -82,7 +92,7 @@ class Danmaku {
         }
     }
 
-    send(danmaku: DPlayerDanmakuItem, callback: () => void): void {
+    send(dan: DPlayerDanmakuItem, callback: () => void): void {
         const danmakuData = {
             token: this.options.api.token,
             id: this.options.api.id,
@@ -357,3 +367,12 @@ export interface DPlayerDanmakuItem {
 }
 
 export type DPlayerDanmakuDirectionType = 'top' | 'right' | 'bottom';
+
+export interface DPlayerDanmakuOptions {
+    player: DPlayer;
+    container: HTMLDivElement;
+    opacity: number;
+    danIndex: number;
+    unlimited: number;
+    events: Events;
+}

@@ -26,13 +26,17 @@ window.DPLAYER_INSTANCES = [];
 class DPlayer {
     state: DPlayerState;
     options: DPlayerOptions; //TODO without critical :?, s enforce default value!
-    events: Events;
-    qualityIndex: number;
-    languageFeatures: i18n;
-    translate: (key?: DPlayerTranslateKey, replacement?: DPlayerReplacementTypes) => null | DPlayerTranslatedString;
-    container: HTMLElement;
-    arrow: boolean;
-    template: Template;
+    events!: Events;
+    qualityIndex!: number;
+    languageFeatures!: i18n;
+    translate!: (key?: DPlayerTranslateKey, replacement?: DPlayerReplacementTypes) => null | DPlayerTranslatedString;
+    container!: HTMLElement;
+    arrow!: boolean;
+    template!: Template;
+    bar!: Bar;
+    video!: HTMLVideoElement;
+    user!: User;
+    // TODO remove !s
 
     constructor(options?: DPlayerOptions) {
         try {
@@ -727,9 +731,9 @@ class DPlayer {
         this.video.playbackRate = rate;
     }
 
-    balloon(translate, mode) {
+    balloon(translateKey: DPlayerTranslateKey, mode: DPlayerBalloonPosition): DPlayerBalloonHTML {
         if (this.options.balloon) {
-            return `aria-label="${this.translate(translate)}" data-balloon-pos="${mode}"`;
+            return `aria-label="${this.translate(translateKey)}" data-balloon-pos="${mode}"`;
         } else {
             return '';
         }
@@ -767,7 +771,6 @@ class DPlayer {
     }
 
     static get version() {
-        /* global DPLAYER_VERSION */
         return DPLAYER_VERSION;
     }
 }
@@ -781,3 +784,7 @@ export interface DPlayerState {
 }
 
 // used some of this types: https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/dplayer/index.d.ts, but for inner functions its not that helpful
+
+export type DPlayerBalloonHTML = string;
+
+export type DPlayerBalloonPosition = 'up' | 'down' | 'left' | 'right' | 'up-left' | 'up-right' | 'down-left' | 'down-right';

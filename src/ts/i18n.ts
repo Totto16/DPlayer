@@ -248,6 +248,8 @@ export type DPlayerAvaiableTranslationObject = {
     [language in DPlayerSupportedLanguage]?: DPlayerTranslationObject;
 };
 
+export type DPLayerTranslateFunction = (key?: DPlayerTranslateKey, replacement?: DPlayerReplacementTypes) => null | DPlayerTranslatedString;
+
 // Quick and dirty export function
 
 /* let fs = require("fs");

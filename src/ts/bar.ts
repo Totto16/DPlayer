@@ -1,10 +1,17 @@
+import DPlayer, { isNullish } from '.';
+import Template from './template';
+
 class Bar {
-    constructor(template, player, mode) {
-        this.elements = {};
-        this.elements.volume = template.volumeBar;
-        this.elements.played = template.playedBar;
-        this.elements.loaded = template.loadedBar;
-        this.elements.danmaku = template.danmakuOpacityBar;
+    mode?: DPLayerBarMode;
+    player: DPlayer;
+    previousMode?: DPLayerBarMode;
+    RangesChanged: boolean;
+    elements: DPlayerBarStorage;
+    loaded?: boolean;
+    previousRanges: DPlayerProgressRange[];
+
+    constructor(template: Template, player: DPlayer, mode?: DPLayerBarMode) {
+        this.elements = { volume: template.volumeBar!, played: template.playedBar!, loaded: template.loadedBar!, danmaku: template.danmakuOpacityBar! }; // that ! should be safe, since we explicitly check for non null in the Template initialization, but // TODO solve it in better
         this.mode = mode;
         this.player = player;
         this.previousRanges = [];
@@ -18,11 +25,13 @@ class Bar {
      * @param {String} type - Point out which bar it is
      * @param {Number} percentage
      */
-    set(type, Obj) {
-        let percentage, ranges, force;
+    set(type: DPlayerBarTypes, Obj: DPlayerBarSetOptions): void {
+        let percentage: number;
+        let ranges: DPlayerProgressRange[];
+        let force: boolean;
         if (typeof Obj === 'number') {
             percentage = Obj;
-            force = Obj.force ? true : false;
+            force = false;
             ranges = [];
             for (let i = 0; i < this.player.video.buffered.length; i++) {
                 const start = this.player.video.buffered.start(i);
@@ -49,40 +58,41 @@ class Bar {
 
         switch (this.mode || 'nomode') {
             case 'normal':
-                this.elements[type].style.width = `${percentage * 100}%`;
-                if (this.RangesChanged && ranges && ranges.length > 0) {
+                (this.elements[type] as HTMLElement).style.width = `${percentage * 100}%`;
+                if (this.RangesChanged && !isNullish<DPlayerProgressRange[]>(ranges) && ranges.length > 0) {
                     type = 'loaded';
-                    this.elements[type].style.width = `${LPercentage * 100}%`;
+                    (this.elements[type] as HTMLElement).style.width = `${LPercentage * 100}%`;
                     // this means some ranges are now together example: 1-20 and 40 -60, you load 20-40 and now you have only one range!
                     if (ranges.length < previousRanges.length) {
                         Array.from(this.elements[type].children).forEach((a) => this.elements[type].removeChild(a));
                     }
-                    ranges.forEach((range, index) => {
+                    for (let index = 0; index < ranges.length; index++) {
+                        const range: DPlayerProgressRange = ranges[index];
                         const start = range.start;
                         const end = range.end;
-                        const exists = Array.from(this.elements[type].children).filter((a) => a.getAttribute('data-index') === index.toString());
-                        const Loaded_dur = this.player.video.duration * LPercentage;
-                        let p;
+                        const exists: HTMLElement[] = Array.from(this.elements[type].children).filter((a: Element) => a.getAttribute('data-index') === index.toString()) as HTMLElement[];
+                        const LoadedDur = this.player.video.duration * LPercentage;
+                        let p: HTMLElement;
                         if (exists.length > 0) {
                             p = exists[0];
 
-                            p.style.left = `${(start / Loaded_dur) * 100}%`;
-                            p.style.width = `${((end - start) / Loaded_dur) * 100}%`;
-                            p.setAttribute('data-start', start);
-                            p.setAttribute('data-end', end);
+                            p.style.left = `${(start / LoadedDur) * 100}%`;
+                            p.style.width = `${((end - start) / LoadedDur) * 100}%`;
+                            p.setAttribute('data-start', start.toString());
+                            p.setAttribute('data-end', end.toString());
                         } else {
                             p = document.createElement('div');
 
                             p.classList.add('dplayer-loaded-strips');
-                            p.setAttribute('data-index', index);
-                            p.style.left = `${(start / Loaded_dur) * 100}%`;
-                            p.style.width = `${((end - start) / Loaded_dur) * 100}%`;
-                            p.setAttribute('data-start', start);
-                            p.setAttribute('data-end', end);
+                            p.setAttribute('data-index', index.toString());
+                            p.style.left = `${(start / LoadedDur) * 100}%`;
+                            p.style.width = `${((end - start) / LoadedDur) * 100}%`;
+                            p.setAttribute('data-start', start.toString());
+                            p.setAttribute('data-end', end.toString());
 
-                            this.elements[type].appendChild(p);
+                            (this.elements[type] as HTMLElement).appendChild(p); // TODO as is dangerous
                         }
-                    });
+                    }
                 }
                 break;
             case 'side':
@@ -124,7 +134,7 @@ class Bar {
                         }
                     });
                 } else {
-                    this.elements[type].style.width = percentage * 100 + '%';
+                    this.elements[type].style.width = `${percentage * 100}%`;
                 }
                 if (this.RangesChanged && ranges && ranges.length > 0) {
                     this.elements.loaded = this.player.container.querySelectorAll('.dplayer-loaded');
@@ -187,10 +197,10 @@ class Bar {
                 if (type === 'loaded') {
                     this.loaded = LPercentage;
                 }
-                this.elements[type].style.width = percentage * 100 + '%';
+                this.elements[type].style.width = `${percentage * 100}%`;
                 if (this.RangesChanged && ranges && ranges.length > 0) {
                     type = 'loaded';
-                    this.elements[type].style.width = LPercentage * 100 + '%';
+                    this.elements[type].style.width = `${LPercentage * 100}%`;
                     // this means some ranges are now together example: 1-20 and 40 -60, you load 20-40 and now you have only one range!
                     if (ranges.length < previousRanges.length) {
                         Array.from(this.elements[type].children).forEach((a) => this.elements[type].removeChild(a));
@@ -229,7 +239,7 @@ class Bar {
         }
     }
 
-    setMode(mode) {
+    setMode(mode: DPLayerBarMode): void {
         this.mode = mode;
         if (this.loaded) {
             this.set('loaded', this.loaded);
@@ -238,3 +248,27 @@ class Bar {
 }
 
 export default Bar;
+
+export type DPlayerBarTypes = 'loaded' | 'played' | 'volume';
+
+export type DPLayerBarMode = 'normal' | 'top' | 'side';
+
+export interface DPlayerBarStorage {
+    volume: HTMLElement;
+    played: NodeListOf<HTMLElement> | HTMLElement; // since it can be one ore more, depending on the mode,
+    loaded: NodeListOf<HTMLElement> | HTMLElement; // TODO optimize that its clearer where we use singel or multiple, and then also check for that!!
+    danmaku: HTMLElement;
+}
+
+export type DPlayerBarSetOptions =
+    | number
+    | {
+          percentage: number;
+          ranges: DPlayerProgressRange[];
+          force: boolean;
+      };
+
+export interface DPlayerProgressRange {
+    start: number;
+    end: number;
+}

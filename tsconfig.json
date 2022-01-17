@@ -22,5 +22,5 @@
         "strict-boolean-expressions": true,
         "no-unnecessary-condition": true
     },
-    "typeRoots": ["src/ts/*.d.ts", "node_modules/@types"]
+    "typeRoots": ["src/ts/index.d.ts", "node_modules/@types", "src/ts/*.d.ts"]
 }

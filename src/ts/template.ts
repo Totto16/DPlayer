@@ -1,14 +1,97 @@
 import Icons from './icons';
 import tplPlayer from '../template/player.art';
+// import * as tplPlayer from '../template/player.art';
 import utils from './utils';
 import DPlayer, { DPlayerDestroyable } from '.';
 import { DPlayerOptions } from './options';
+import { DPLayerTranslateFunction, DPlayerTranslateKey } from './i18n';
+import { DPlayerBalloonHTML, DPlayerBalloonPosition } from './player';
 
-class Template implements DPlayerTemplateElements, DPlayerDestroyable {
+class Template implements DPlayerDestroyable {
     // TODO see if that DPlayerDestroyable is useful
     player: DPlayer;
     container: HTMLElement;
     options: DPlayerOptions;
+    index: number;
+    translate: DPLayerTranslateFunction;
+
+    volumeBar!: HTMLDivElement | null;
+    volumeBarWrap!: HTMLDivElement | null;
+    volumeBarWrapWrap!: HTMLDivElement | null;
+    volumeButton!: HTMLDivElement | null;
+    volumeButtonIcon!: HTMLDivElement | null;
+    volumeIcon!: HTMLButtonElement | null;
+    playedBar!: HTMLDivElement | null;
+    loadedBar!: HTMLDivElement | null;
+    playedBarWrap!: HTMLDivElement | null;
+    barHighlight!: NodeListOf<HTMLDivElement> | null;
+    barHighlightTop!: NodeListOf<HTMLDivElement> | null;
+    playedBarTime!: HTMLDivElement | null;
+    topChapterDiv!: HTMLDivElement | null;
+    barInfoDiv!: HTMLDivElement | null;
+    danmaku!: HTMLDivElement | null;
+    danmakuLoading!: HTMLSpanElement | null;
+    video!: HTMLVideoElement | null;
+    bezel!: HTMLSpanElement | null;
+    playButton!: HTMLButtonElement | null;
+    mobilePlayButton!: HTMLButtonElement | null;
+    videoWrap!: HTMLDivElement | null;
+    controllerMask!: HTMLDivElement | null;
+    ptime!: HTMLSpanElement | null;
+    settingButton!: HTMLButtonElement | null;
+    settingBox!: HTMLDivElement | null;
+    mask!: HTMLDivElement | null;
+    loop!: HTMLDivElement | null;
+    loopToggle!: HTMLDivElement | null;
+    showDanmaku!: HTMLDivElement | null;
+    showDanmakuToggle!: HTMLInputElement | null;
+    unlimitDanmaku!: HTMLDivElement | null;
+    unlimitDanmakuToggle!: HTMLInputElement | null;
+    speed!: HTMLDivElement | null;
+    speedItem!: NodeListOf<HTMLDivElement> | null;
+    danmakuOpacityBar!: HTMLDivElement | null;
+    danmakuOpacityBarWrap!: HTMLDivElement | null;
+    danmakuOpacityBarWrapWrap!: HTMLDivElement | null;
+    danmakuOpacityBox!: HTMLDivElement | null;
+    dtime!: HTMLSpanElement | null;
+    controller!: HTMLDivElement | null;
+    commentInput!: HTMLInputElement | null;
+    commentButton!: HTMLButtonElement | null;
+    commentSettingBox!: HTMLDivElement | null;
+    commentSettingButton!: HTMLButtonElement | null;
+    commentSettingFill!: SVGMPathElement | null;
+    commentSendButton!: HTMLButtonElement | null;
+    commentSendFill!: SVGMPathElement | null;
+    commentColorSettingBox!: HTMLDivElement | null;
+    browserFullButton!: HTMLButtonElement | null;
+    webFullButton!: HTMLButtonElement | null;
+    menu!: HTMLDivElement | null;
+    menuItem!: NodeListOf<HTMLDivElement> | null;
+    qualityList!: HTMLDivElement | null;
+    cameraButton!: HTMLDivElement | null;
+    airplayButton!: HTMLDivElement | null;
+    chromecastButton!: HTMLDivElement | null;
+    subtitleButton!: HTMLButtonElement | null;
+    subtitleButtonInner!: HTMLSpanElement | null;
+    subtitle!: HTMLDivElement | null;
+    qualityButton!: HTMLButtonElement | null;
+    barPreview!: HTMLDivElement | null;
+    barWrap!: HTMLDivElement | null;
+    noticeList!: HTMLDivElement | null;
+    skipWindow!: HTMLDivElement | null;
+    infoPanel!: HTMLDivElement | null;
+    infoPanelClose!: HTMLDivElement | null;
+    hotkeyPanel!: HTMLDivElement | null;
+    hotkeyPanelClose!: HTMLDivElement | null;
+    infoVersion!: HTMLSpanElement | null;
+    infoFPS!: HTMLSpanElement | null;
+    infoType!: HTMLSpanElement | null;
+    infoUrl!: HTMLSpanElement | null;
+    infoResolution!: HTMLSpanElement | null;
+    infoDuration!: HTMLSpanElement | null;
+    infoDanmakuId!: HTMLSpanElement | null;
+    infoDanmakuApi!: HTMLSpanElement | null;
+    infoDanmakuAmount!: HTMLSpanElement | null;
 
     constructor(options: DPlayerTemplateOptions) {
         this.container = options.container;
@@ -17,14 +100,21 @@ class Template implements DPlayerTemplateElements, DPlayerDestroyable {
         this.index = options.index;
         this.translate = options.translate;
         this.init();
+        if (!this.checkTemplate()) {
+            console.error('[FATAL] Error in retrieving Needed HTML Elements from Template, this is an internal BUG! Please report this!');
+        }
+    }
+
+    checkTemplate(): boolean {
+        return isOfTypeAndNotNull<Template>(this);
     }
 
     init(): void {
-        this.container.innerHTML = tplPlayer({
+        this.container.innerHTML = (tplPlayer as DPlayerARTInitializeFunction)({
             options: this.options,
             index: this.index,
             translate: this.translate,
-            balloon: (a, b) => this.player.balloon.call(this.player, a, b),
+            balloon: (a: DPlayerTranslateKey, b: DPlayerBalloonPosition): DPlayerBalloonHTML => this.player.balloon.call(this.player, a, b),
             icons: Icons,
             mobile: utils.isMobile,
             video: {
@@ -37,7 +127,7 @@ class Template implements DPlayerTemplateElements, DPlayerDestroyable {
                 url: this.options.video.url,
                 subtitle: this.options.subtitle,
             },
-        });
+        }); // TODO change
 
         this.volumeBar = this.container.querySelector('.dplayer-volume-bar-inner');
         this.volumeBarWrap = this.container.querySelector('.dplayer-volume-bar');
@@ -45,11 +135,11 @@ class Template implements DPlayerTemplateElements, DPlayerDestroyable {
         this.volumeButton = this.container.querySelector('.dplayer-volume');
         this.volumeButtonIcon = this.container.querySelector('.dplayer-volume-icon');
         this.volumeIcon = this.container.querySelector('.dplayer-volume-icon .dplayer-icon-content');
-        this.playedBar = this.container.querySelector('.dplayer-played');
+        this.playedBar = this.container.querySelectorAll('.dplayer-played');
         this.loadedBar = this.container.querySelector('.dplayer-loaded');
         this.playedBarWrap = this.container.querySelector('.dplayer-bar-wrap');
-        this.barHighlight = this.playedBarWrap.querySelectorAll('.dplayer-highlight');
-        this.barHighlightTop = this.playedBarWrap.querySelectorAll('.dplayer-highlight-top');
+        this.barHighlight = this.playedBarWrap?.querySelectorAll('.dplayer-highlight') ?? null;
+        this.barHighlightTop = this.playedBarWrap?.querySelectorAll('.dplayer-highlight-top') ?? null;
         this.playedBarTime = this.container.querySelector('.dplayer-bar-time');
         this.topChapterDiv = this.container.querySelector('.dplayer-thumb-text');
         this.barInfoDiv = this.container.querySelector('.dplayer-info-div');
@@ -122,7 +212,7 @@ class Template implements DPlayerTemplateElements, DPlayerDestroyable {
         const { text, opacity, mode, type, DontAnimate } = options;
         const notice = document.createElement('div');
         notice.classList.add('dplayer-notice');
-        notice.style.opacity = opacity;
+        notice.style.opacity = opacity.toString();
         notice.innerText = text;
         if (DontAnimate) {
             notice.classList.add('dont_animate');
@@ -238,4 +328,16 @@ export interface DPlayerTemplateOptions {
     player: DPlayer;
     container: HTMLElement;
     options: DPlayerOptions;
+    index: number;
+    translate: DPLayerTranslateFunction;
+}
+
+export type DPlayerARTInitializeFunction = (options: DplayerARTOptions) => string;
+
+export type DplayerARTOptions = {
+    [x: string]: unknown;
+};
+
+function isOfTypeAndNotNull<T>(arg0: this): boolean {
+    throw new Error('Function not implemented.');
 }

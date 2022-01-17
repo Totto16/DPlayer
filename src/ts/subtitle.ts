@@ -1,5 +1,15 @@
+import DPlayer, { isNullish } from '.';
+import Events from './events';
+
 class Subtitle {
-    constructor(player, container, options, events) {
+    player: DPlayer;
+    container: HTMLDivElement;
+    video: HTMLVideoElement;
+    events: Events;
+    options: DPlayerSubTitleOptions;
+    instance?: DPlayerAssInstance;
+
+    constructor(player: DPlayer, container: HTMLDivElement, options: DPlayerSubTitleOptions, events: Events) {
         this.player = player;
         this.container = container;
         this.video = player.video;
@@ -17,13 +27,16 @@ class Subtitle {
                 this.container.style.color = this.options.color;
 
                 if (this.video.textTracks && this.video.textTracks[0]) {
-                    const track = this.video.textTracks[0];
+                    const track: TextTrack = this.video.textTracks[0];
 
                     track.oncuechange = () => {
                         console.log(track.cues);
-                        const cue = track.activeCues[0];
+                        if (track.activeCues === null || track.activeCues.length === 0) {
+                            return;
+                        }
+                        const cue: VTTCue = track.activeCues[0] as VTTCue; // TODO test in the practical mode : https://developer.mozilla.org/en-US/docs/Web/API/VTTCue
                         this.container.innerHTML = '';
-                        if (cue) {
+                        if (!isNullish(cue)) {
                             const template = document.createElement('div');
                             template.appendChild(cue.getCueAsHTML());
                             const trackHtml = template.innerHTML
@@ -35,12 +48,13 @@ class Subtitle {
                         this.events.trigger('subtitle_change');
                     };
                 }
-                if (!this.player.user.get('subtitle')) {
+                if (isNullish(this.player.user.get('subtitle'))) {
                     this.hide();
                 }
                 break;
             case 'ass':
                 if (window.ass) {
+                    // TODO add to global ass ?: ...
                     const options = {
                         video: this.player.video,
                         subUrl: this.options.url,
@@ -49,11 +63,11 @@ class Subtitle {
                         options,
                         this.player,
                         () => {
-                            if (!this.player.user.get('subtitle')) {
+                            if (isNullish(this.player.user.get('subtitle'))) {
                                 this.hide();
                             }
                         },
-                        (SO) => {
+                        (SO: DPlayerAssInstance): void => {
                             this.instance = SO;
                         }
                     );
@@ -62,19 +76,20 @@ class Subtitle {
                 }
                 break;
             default:
-                console.warn(`Not supported Subtitle type: ${this.options.type}`);
+                // TODO yes ts says its not possible, but user input has to be treated as GARBAGE!!!!
+                console.warn(`Not supported Subtitle type: ${this.options.type.toString()}`);
                 break;
         }
     }
 
-    show() {
+    show(): void {
         switch (this.options.type) {
             case 'webvtt':
                 this.container.classList.remove('dplayer-subtitle-hide');
                 this.events.trigger('subtitle_show');
                 break;
             case 'ass':
-                if (window.ass && this.instance) {
+                if (window.ass && this.instance !== undefined) {
                     this.instance.canvas.classList.remove('hide-force');
                     this.events.trigger('subtitle_show');
                 }
@@ -85,7 +100,7 @@ class Subtitle {
         }
     }
 
-    hide() {
+    hide(): void {
         switch (this.options.type) {
             case 'webvtt':
                 this.container.classList.add('dplayer-subtitle-hide');
@@ -100,12 +115,13 @@ class Subtitle {
                 }
                 break;
             default:
-                console.warn(`Not supported Subtitle type: ${this.options.type}`);
+                // same as above
+                console.warn(`Not supported Subtitle type: ${this.options.type.toString()}`);
                 break;
         }
     }
 
-    toggle() {
+    toggle(): void {
         switch (this.options.type) {
             case 'webvtt':
                 if (this.container.classList.contains('dplayer-subtitle-hide')) {
@@ -115,7 +131,7 @@ class Subtitle {
                 }
                 break;
             case 'ass':
-                if (window.ass && this.instance) {
+                if (window.ass && this.instance !== undefined) {
                     if (this.instance.canvas.classList.contains('hide-force')) {
                         this.show();
                     } else {
@@ -124,12 +140,13 @@ class Subtitle {
                 }
                 break;
             default:
-                console.warn(`Not supported Subtitle type: ${this.options.type}`);
+                // garbage input checker
+                console.warn(`Not supported Subtitle type: ${this.options.type.toString()}`);
                 break;
         }
     }
 
-    destroy() {
+    destroy(): void {
         if (this.instance) {
             this.instance.dispose();
         }
@@ -137,3 +154,26 @@ class Subtitle {
 }
 
 export default Subtitle;
+
+export interface DPlayerAssInstance {
+    dispose: () => void;
+    canvas: HTMLCanvasElement;
+} // TODO, get right things here!
+
+export interface DPlayerSubTitleOptionsWeak {
+    url: string;
+    type?: DPlayerSubTitleTypes;
+    fontSize?: string;
+    bottom?: string;
+    color?: string;
+}
+
+export interface DPlayerSubTitleOptions {
+    url: string;
+    type: DPlayerSubTitleTypes;
+    fontSize: string;
+    bottom: string;
+    color: string;
+}
+
+export type DPlayerSubTitleTypes = 'webvtt' | 'ass';
