@@ -33,7 +33,7 @@ export interface DPlayerAutoObject {
 
 export type DPlayerCreateAutoCallback = (instance: DPlayer) => void;
 
-// TODO:  add to index.d.ts
+// TODO(#36):  add to index.d.ts
 export interface DPlayerDestroyable {
     destroy(): void;
 }
