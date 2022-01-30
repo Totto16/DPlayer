@@ -148,8 +148,8 @@ class Events {
         }
         return false;
     }
-    // TODOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO VERY IMPORTANT BEFORE RELEASING THIS
-    // TODO find an elegant way to handle unkwon data, meaning down compiled js can have any types, the user can input any types!!!!
+    // TODO(#22): OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO VERY IMPORTANT BEFORE RELEASING THIS
+    // TODO:  find an elegant way to handle unkwon data, meaning down compiled js can have any types, the user can input any types!!!!
     type(name: DPlayerEvent): DPlayerEventType | null {
         if (this.playerEvents.indexOf(name as DPlayerPlayerEvent) !== -1) {
             return 'player';
@@ -245,11 +245,11 @@ export type UUID = number | null; // For the moment, also doesn't need to be cha
 
 export type DPlayerEventProperties = { UUID: UUID; event: DPlayerEvent };
 
-export type DPlayerEventInfo = unknown; //  for the moment // TODO add better info handling tied to the event name!
+export type DPlayerEventInfo = unknown; //  for the moment // TODO:  add better info handling tied to the event name!
 
 export type DPlayerEventCallback = (info: DPlayerEventInfo, properties: DPlayerEventProperties) => void;
 
-/* //TODO use these + add new ones!
+/* //TODO:  use these + add new ones!
 export enum DPlayerEvents {
     abort = 'abort',
     canplay = 'canplay',
