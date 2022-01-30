@@ -206,7 +206,7 @@ class Template implements DPlayerDestroyable {
         this.infoDanmakuId = this.container.querySelector('.dplayer-info-panel-item-danmaku-id .dplayer-info-panel-item-data');
         this.infoDanmakuApi = this.container.querySelector('.dplayer-info-panel-item-danmaku-api .dplayer-info-panel-item-data');
         this.infoDanmakuAmount = this.container.querySelector('.dplayer-info-panel-item-danmaku-amount .dplayer-info-panel-item-data');
-        // TODO:  add buttons for previous and next chapters!!!!! ( in inithighlight)
+        // TODO(#57):  add buttons for previous and next chapters!!!!! ( in inithighlight)
     }
     static NewNotice(options: DPlayerNoticeOptions): HTMLDivElement {
         const { text, opacity, mode, type, DontAnimate } = options;
