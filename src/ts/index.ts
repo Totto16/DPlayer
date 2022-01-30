@@ -8,7 +8,7 @@ console.log(`${'\n'} %c DPlayer v${DPLAYER_VERSION} ${BUILD_TIME} %c http://dpla
 /* New Format of starting Dplayer, it will start automatically, after its loaded, for available options see future ReadME //TODO(#33):  add readme !!!!*/
 
 // TODO(#34): OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO VERY IMPORTANT BEFORE RELEASING THIS
-// TODO:  find an elegant way to handle unknown data, meaning down compiled js can have any types, the user can input any types!!!!
+// TODO(#35):  find an elegant way to handle unknown data, meaning down compiled js can have any types, the user can input any types!!!!
 
 if (window.DPLAYER_AUTO) {
     if (typeof window.DPLAYER_AUTO.name === 'undefined' || typeof window.DPLAYER_AUTO.name !== 'string') {
