@@ -65,7 +65,7 @@ class Controller {
     }
 
     initHighlights(): void {
-        // TODO:  add buttons for previous and next chapters!!!!!
+        // TODO(#16):  add buttons for previous and next chapters!!!!!
         this.player.on(['durationchange', 'highlight_change'], () => {
             if (this.player.video.duration && this.player.video.duration !== 1 && this.player.video.duration !== Infinity) {
                 if (this.player.options.highlights && this.player.options.highlights.marker && Array.isArray(this.player.options.highlights.marker) && this.player.options.highlights.marker.length > 0) {
