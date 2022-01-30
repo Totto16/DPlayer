@@ -58,7 +58,7 @@ export const isOfTypeAndNotNull = <T>(check: any): check is T => {
     return true;
 };
 
-// TODO:  remove generic indexable Type!!
+// TODO(#37):  remove generic indexable Type!!
 // ATTENTION use with cause, since we can't use every string to to that!
 export interface StringIndexableObject {
     [index: string]: unknown;
