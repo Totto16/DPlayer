@@ -34,7 +34,9 @@ class Subtitle {
                         if (track.activeCues === null || track.activeCues.length === 0) {
                             return;
                         }
-                        const cue: VTTCue = track.activeCues[0] as VTTCue; // TODO test in the practical mode : https://developer.mozilla.org/en-US/docs/Web/API/VTTCue
+                        const cue: VTTCue = track.activeCues[0] as VTTCue;
+                        // TODO(#51):  test in the practical mode : 
+                        // see https://developer.mozilla.org/en-US/docs/Web/API/VTTCue
                         this.container.innerHTML = '';
                         if (!isNullish(cue)) {
                             const template = document.createElement('div');
@@ -54,7 +56,7 @@ class Subtitle {
                 break;
             case 'ass':
                 if (window.ass) {
-                    // TODO add to global ass ?: ...
+                    // TODO:  add to global ass ?: ...
                     const options = {
                         video: this.player.video,
                         subUrl: this.options.url,
@@ -76,7 +78,7 @@ class Subtitle {
                 }
                 break;
             default:
-                // TODO yes ts says its not possible, but user input has to be treated as GARBAGE!!!!
+                // TODO:  yes ts says its not possible, but user input has to be treated as GARBAGE!!!!
                 console.warn(`Not supported Subtitle type: ${this.options.type.toString()}`);
                 break;
         }
@@ -158,7 +160,7 @@ export default Subtitle;
 export interface DPlayerAssInstance {
     dispose: () => void;
     canvas: HTMLCanvasElement;
-} // TODO, get right things here!
+} // TODO: , get right things here!
 
 export interface DPlayerSubTitleOptionsWeak {
     url: string;
