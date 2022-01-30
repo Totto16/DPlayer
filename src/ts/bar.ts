@@ -11,7 +11,7 @@ class Bar {
     previousRanges: DPlayerProgressRange[];
 
     constructor(template: Template, player: DPlayer, mode?: DPLayerBarMode) {
-        this.elements = { volume: template.volumeBar!, played: template.playedBar!, loaded: template.loadedBar!, danmaku: template.danmakuOpacityBar! }; // that ! should be safe, since we explicitly check for non null in the Template initialization, but // TODO solve it in better
+        this.elements = { volume: template.volumeBar!, played: template.playedBar!, loaded: template.loadedBar!, danmaku: template.danmakuOpacityBar! }; // that ! should be safe, since we explicitly check for non null in the Template initialization, but // TODO(#11):  solve it in better
         this.mode = mode;
         this.player = player;
         this.previousRanges = [];
@@ -90,7 +90,7 @@ class Bar {
                             p.setAttribute('data-start', start.toString());
                             p.setAttribute('data-end', end.toString());
 
-                            (this.elements[type] as HTMLElement).appendChild(p); // TODO as is dangerous
+                            (this.elements[type] as HTMLElement).appendChild(p); // TODO:  as is dangerous
                         }
                     }
                 }
@@ -256,7 +256,7 @@ export type DPLayerBarMode = 'normal' | 'top' | 'side';
 export interface DPlayerBarStorage {
     volume: HTMLElement;
     played: NodeListOf<HTMLElement> | HTMLElement; // since it can be one ore more, depending on the mode,
-    loaded: NodeListOf<HTMLElement> | HTMLElement; // TODO optimize that its clearer where we use singel or multiple, and then also check for that!!
+    loaded: NodeListOf<HTMLElement> | HTMLElement; // TODO:  optimize that its clearer where we use singel or multiple, and then also check for that!!
     danmaku: HTMLElement;
 }
 
