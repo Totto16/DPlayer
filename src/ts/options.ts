@@ -271,7 +271,7 @@ export interface DPlayerOptions extends StringIndexableObject {
     hotkey?: boolean;
     advancedHotkeys?: boolean;
     preload?: DPlayerPreloadOption;
-    logo?: string; // TODO:  See where implemented
+    logo?: string; // TODO(#41):  See where implemented
     volume?: number;
     playbackSpeed?: [number, number, number, number, number, number];
     apiBackend?: DPlayerAPIBackendOption;
