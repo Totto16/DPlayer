@@ -118,7 +118,7 @@ class Controller {
                                 }
                             }
                             this.player.bar.setMode('normal');
-                            // TODO:  If implemented trigger checkSkipState with actual chapter!!!!
+                            // TODO(#17):  If implemented trigger checkSkipState with actual chapter!!!!
                             break;
                         case 'top':
                             this.player.template.playedBarWrap.querySelectorAll('.dplayer-bar').forEach((item) => {
