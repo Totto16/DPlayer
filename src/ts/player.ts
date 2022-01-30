@@ -163,7 +163,7 @@ class DPlayer {
 
             index++;
             window.DPLAYER_INSTANCES.push(this);
-            this.state = { code: 0, message: 'ok' }; // TODO:  implement the right state indicators where they need to be added!
+            this.state = { code: 0, message: 'ok' }; // TODO(#48):  implement the right state indicators where they need to be added!
             /*
             {code : 0, message:'ok'};
             {code : 1, message:'warn', data:warning};
