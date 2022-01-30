@@ -167,7 +167,7 @@ const utils: DPlayerUtils = {
     parseVtt(vtt_url: string, callback: DPlayerParseVttCallback, startOrEnd = 0, options: DPlayerOptions | null = null): string {
         if (vtt_url === 'API' && API_URL !== null) {
             const video_url = new URL(options.video.url);
-            // TODO this has to be customizable, to match it between naming conventions and file names!!!
+            // TODO(#64):  this has to be customizable, to match it between naming conventions and file names!!!
             const parameter =
                 options.video.type === 'hls'
                     ? video_url.pathname
@@ -176,8 +176,8 @@ const utils: DPlayerUtils = {
                           .filter((str) => str !== '')
                           .join('-')
                     : video_url.pathname.substring(video_url.pathname.lastIndexOf('/') + 1);
-            // TODO here are some specs!
-            // TODO version, 1 at the moment, get either reference or nothing/everything else means raw data!, type, vtt, or chapter, or thumbnails or etc TODO
+            // TODO:  here are some specs!
+            // TODO:  version, 1 at the moment, get either reference or nothing/everything else means raw data!, type, vtt, or chapter, or thumbnails or etc TODO:
             api.backend({
                 url: options.API_URL,
                 query: {
