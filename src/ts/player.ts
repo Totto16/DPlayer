@@ -36,7 +36,7 @@ class DPlayer {
     bar!: Bar;
     video!: HTMLVideoElement;
     user!: User;
-    // TODO:  remove !s
+    // TODO(#47):  remove !s
 
     constructor(options?: DPlayerOptions) {
         try {
