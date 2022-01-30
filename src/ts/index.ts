@@ -5,10 +5,10 @@ import DPlayer from './player';
 
 console.log(`${'\n'} %c DPlayer v${DPLAYER_VERSION} ${BUILD_TIME} %c http://dplayer.js.org ${'\n'}${'\n'}`, 'color: #a912ee; background: #aaa; padding:5px 0;', 'background: #a912ee; color:#fff; padding:5px 0;');
 
-/* New Format of starting Dplayer, it will start automatically, after its loaded, for available options see future ReadME //TODO add readme !!!!*/
+/* New Format of starting Dplayer, it will start automatically, after its loaded, for available options see future ReadME //TODO(#33):  add readme !!!!*/
 
-// TODOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO VERY IMPORTANT BEFORE RELEASING THIS
-// TODO find an elegant way to handle unknown data, meaning down compiled js can have any types, the user can input any types!!!!
+// TODO: OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO VERY IMPORTANT BEFORE RELEASING THIS
+// TODO:  find an elegant way to handle unknown data, meaning down compiled js can have any types, the user can input any types!!!!
 
 if (window.DPLAYER_AUTO) {
     if (typeof window.DPLAYER_AUTO.name === 'undefined' || typeof window.DPLAYER_AUTO.name !== 'string') {
@@ -33,7 +33,7 @@ export interface DPlayerAutoObject {
 
 export type DPlayerCreateAutoCallback = (instance: DPlayer) => void;
 
-// TODO add to index.d.ts
+// TODO:  add to index.d.ts
 export interface DPlayerDestroyable {
     destroy(): void;
 }
@@ -58,7 +58,7 @@ export const isOfTypeAndNotNull = <T>(check: any): check is T => {
     return true;
 };
 
-// TODO remove generic indexable Type!!
+// TODO:  remove generic indexable Type!!
 // ATTENTION use with cause, since we can't use every string to to that!
 export interface StringIndexableObject {
     [index: string]: unknown;
