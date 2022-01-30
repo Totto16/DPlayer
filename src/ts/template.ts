@@ -8,7 +8,7 @@ import { DPLayerTranslateFunction, DPlayerTranslateKey } from './i18n';
 import { DPlayerBalloonHTML, DPlayerBalloonPosition } from './player';
 
 class Template implements DPlayerDestroyable {
-    // TODO see if that DPlayerDestroyable is useful
+    // TODO(#55):  see if that DPlayerDestroyable is useful
     player: DPlayer;
     container: HTMLElement;
     options: DPlayerOptions;
@@ -127,7 +127,7 @@ class Template implements DPlayerDestroyable {
                 url: this.options.video.url,
                 subtitle: this.options.subtitle,
             },
-        }); // TODO change
+        }); // TODO:  change
 
         this.volumeBar = this.container.querySelector('.dplayer-volume-bar-inner');
         this.volumeBarWrap = this.container.querySelector('.dplayer-volume-bar');
@@ -206,7 +206,7 @@ class Template implements DPlayerDestroyable {
         this.infoDanmakuId = this.container.querySelector('.dplayer-info-panel-item-danmaku-id .dplayer-info-panel-item-data');
         this.infoDanmakuApi = this.container.querySelector('.dplayer-info-panel-item-danmaku-api .dplayer-info-panel-item-data');
         this.infoDanmakuAmount = this.container.querySelector('.dplayer-info-panel-item-danmaku-amount .dplayer-info-panel-item-data');
-        // TODO add buttons for previous and next chapters!!!!! ( in inithighlight)
+        // TODO:  add buttons for previous and next chapters!!!!! ( in inithighlight)
     }
     static NewNotice(options: DPlayerNoticeOptions): HTMLDivElement {
         const { text, opacity, mode, type, DontAnimate } = options;
@@ -223,7 +223,7 @@ class Template implements DPlayerDestroyable {
     }
 
     destroy(): void {
-        // TODO maybe do something, maybe not!
+        // TODO:  maybe do something, maybe not!
     }
 }
 
