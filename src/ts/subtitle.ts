@@ -160,7 +160,7 @@ export default Subtitle;
 export interface DPlayerAssInstance {
     dispose: () => void;
     canvas: HTMLCanvasElement;
-} // TODO: , get right things here!
+} // TODO(#54): , get right things here!
 
 export interface DPlayerSubTitleOptionsWeak {
     url: string;
