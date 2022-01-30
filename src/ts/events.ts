@@ -249,7 +249,7 @@ export type DPlayerEventInfo = unknown; //  for the moment // TODO(#24):  add be
 
 export type DPlayerEventCallback = (info: DPlayerEventInfo, properties: DPlayerEventProperties) => void;
 
-/* //TODO:  use these + add new ones!
+/* //TODO(#25):  use these + add new ones!
 export enum DPlayerEvents {
     abort = 'abort',
     canplay = 'canplay',
