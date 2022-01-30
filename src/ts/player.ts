@@ -25,7 +25,7 @@ window.DPLAYER_INSTANCES = [];
 
 class DPlayer {
     state: DPlayerState;
-    options: DPlayerOptions; //TODO without critical :?, s enforce default value!
+    options: DPlayerOptions; //TODO(#46):  without critical :?, s enforce default value!
     events!: Events;
     qualityIndex!: number;
     languageFeatures!: i18n;
@@ -36,7 +36,7 @@ class DPlayer {
     bar!: Bar;
     video!: HTMLVideoElement;
     user!: User;
-    // TODO remove !s
+    // TODO:  remove !s
 
     constructor(options?: DPlayerOptions) {
         try {
@@ -163,7 +163,7 @@ class DPlayer {
 
             index++;
             window.DPLAYER_INSTANCES.push(this);
-            this.state = { code: 0, message: 'ok' }; // TODO implement the right state indicators where they need to be added!
+            this.state = { code: 0, message: 'ok' }; // TODO:  implement the right state indicators where they need to be added!
             /*
             {code : 0, message:'ok'};
             {code : 1, message:'warn', data:warning};
@@ -200,7 +200,7 @@ class DPlayer {
         this.template.ptime.innerHTML = utils.secondToTime(time);
     }
 
-    // TODO implement with in utils.secondToTime
+    // TODO:  implement with in utils.secondToTime
     formatTime(time) {
         if (time < 60) {
             return this.translate('seconds', time.toFixed(0));
@@ -229,7 +229,7 @@ class DPlayer {
         this.template.mobilePlayButton.innerHTML = Icons.pause;
 
         if (!fromNative) {
-            const playedPromise = Promise.resolve(this.video.play()); // TODO see if promise is right here and works!
+            const playedPromise = Promise.resolve(this.video.play()); // TODO:  see if promise is right here and works!
             playedPromise
                 .catch(() => {
                     this.pause();
