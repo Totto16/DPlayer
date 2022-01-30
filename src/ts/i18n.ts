@@ -237,7 +237,7 @@ export type DPlayerLanguageModel = {
 export interface DPlayerLanguageModelDescription {
     symbol: string;
     name: string;
-    example: string; // TODO:  get from symbol or name!!!
+    example: string; // TODO(#30):  get from symbol or name!!!
 }
 
 export type DPlayerTranslationObject = {
