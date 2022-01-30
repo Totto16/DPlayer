@@ -11,7 +11,7 @@ class HotkeyPanel {
     hotkeys: DPlayerHotkeysStorage;
 
     constructor(player: DPlayer) {
-        this.container = player.template.hotkeyPanel!; // TODO remove !
+        this.container = player.template.hotkeyPanel!; // TODO(#26):  remove !
         this.template = player.template;
         this.video = player.video;
         this.player = player;
