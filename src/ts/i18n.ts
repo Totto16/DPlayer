@@ -78,7 +78,7 @@ const GLOB_MODEL: DPlayerLanguageModel = {
 };
 
 // Standard english translations
-const GLOB_standard: DPlayerTranslationObject = require('../translations/en.json') as DPlayerTranslationObject; // TODO read from json in tsscript
+const GLOB_standard: DPlayerTranslationObject = require('../translations/en.json') as DPlayerTranslationObject; // TODO(#27):  read from json in tsscript
 // add translation first to the folder and then here!
 const GLOB_tranTxt: DPlayerAvaiableTranslationObject = {
     en: standard,
@@ -110,7 +110,7 @@ class i18n {
             console.error(`key for translation is not a string, but a '${typeof key}'!`);
             return null;
         }
-        // TODO check if DPlayerTranslateKey
+        // TODO:  check if DPlayerTranslateKey
         const finalKey: DPlayerTranslateKey = key.toLowerCase() as DPlayerTranslateKey;
         let result = null;
         if (this.tranTxt[this.lang] && this.tranTxt[this.lang][finalKey]) {
@@ -228,7 +228,7 @@ export type DPlayerTranslateKey =
 
 export type DPlayerTranslatedString = string;
 
-export type DPlayerReplacementTypes = string | number; // TODO check on key by looking it uup in the model!!!!
+export type DPlayerReplacementTypes = string | number; // TODO:  check on key by looking it uup in the model!!!!
 
 export type DPlayerLanguageModel = {
     [index in DPlayerTranslateKey]?: DPlayerLanguageModelDescription[];
@@ -237,7 +237,7 @@ export type DPlayerLanguageModel = {
 export interface DPlayerLanguageModelDescription {
     symbol: string;
     name: string;
-    example: string; // TODO get from symbol or name!!!
+    example: string; // TODO:  get from symbol or name!!!
 }
 
 export type DPlayerTranslationObject = {
