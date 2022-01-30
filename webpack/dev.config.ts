@@ -166,7 +166,7 @@ const config: webpack.Configuration = {
                             ['jpegtran', { progressive: true }],
                             ['optipng', { optimizationLevel: 5 }],
                             // Svgo configuration here https://github.com/svg/svgo#configuration
-                            // TODO look into that things, to have LOSSLESS optimization!
+                            // TODO(#67):  look into that things, to have LOSSLESS optimization!
                             [
                                 'svgo',
                                 {
