@@ -86,7 +86,7 @@ const API: DPlayerAPI = {
                                 // TODO(#9):  'as' is dangerous, check that manually!
                                 resolve(typeof response.data.data !== 'undefined' ? (response.data.data as DPlayerBackendResponse) : null);
                             } else {
-                                // TODO:  handle raw data!
+                                // TODO(#10):  handle raw data!
                                 throw new Error("Couldn't handle raw data at the moment!");
                             }
                         } else {
