@@ -1,7 +1,7 @@
 import DPlayer from '.';
 
 class Timer implements DPlayerTimerProperties2, DPlayerTimerProperties2, DPlayerTimerProperties3 {
-    // TODO define that for every class, to see if they implement destroy() :  extends DestroyableInstance
+    // TODO(#61):  define that for every class, to see if they implement destroy() :  extends DestroyableInstance
     player: DPlayer;
     types: DPlayerTimerType[];
     fpsStart?: number; // could solve this with the above trick, but there are only these two
