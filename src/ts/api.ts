@@ -83,10 +83,10 @@ const API: DPlayerAPI = {
 
                         if (response.data.error === false) {
                             if (response.data.type === 'reference') {
-                                // TODO 'as' is dangerous, check that manually!
+                                // TODO(#9):  'as' is dangerous, check that manually!
                                 resolve(typeof response.data.data !== 'undefined' ? (response.data.data as DPlayerBackendResponse) : null);
                             } else {
-                                // TODO handle raw data!
+                                // TODO:  handle raw data!
                                 throw new Error("Couldn't handle raw data at the moment!");
                             }
                         } else {
