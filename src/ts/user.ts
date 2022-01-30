@@ -13,7 +13,7 @@ class User {
             unlimited: 'dplayer-danmaku-unlimited',
             danmaku: 'dplayer-danmaku-show',
             subtitle: 'dplayer-subtitle-show',
-            //TODO add other useful like selected quality index, current time etc
+            //TODO(#62):  add other useful like selected quality index, current time etc
         };
         this.default = {
             opacity: 0.7,
@@ -40,7 +40,7 @@ class User {
     }
 
     set(key: DPlayerUserStorageInternalKeys, value: string) {
-        // TODO valueOf DPlayerUserStorageValues
+        // TODO:  valueOf DPlayerUserStorageValues
         this.data[key] = value;
         utils.storage.set(this.storageName[key], value);
     }
