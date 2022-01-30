@@ -90,7 +90,7 @@ class Bar {
                             p.setAttribute('data-start', start.toString());
                             p.setAttribute('data-end', end.toString());
 
-                            (this.elements[type] as HTMLElement).appendChild(p); // TODO:  as is dangerous
+                            (this.elements[type] as HTMLElement).appendChild(p); // TODO(#12):  as is dangerous
                         }
                     }
                 }
