@@ -200,7 +200,7 @@ class DPlayer {
         this.template.ptime.innerHTML = utils.secondToTime(time);
     }
 
-    // TODO:  implement with in utils.secondToTime
+    // TODO(#49):  implement with in utils.secondToTime
     formatTime(time) {
         if (time < 60) {
             return this.translate('seconds', time.toFixed(0));
