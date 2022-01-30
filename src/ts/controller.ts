@@ -367,7 +367,7 @@ class Controller {
                 // TODO(#20):  API
             });
             this.player.on('loadedmetadata', () => {
-                // TODO:  calculate rigth size!!! for moving!
+                // TODO(#21):  calculate rigth size!!! for moving!
                 this.thumbnails.resize(this.player.video.videoHeight / this.player.video.videoWidth, this.player.template.barWrap.offsetWidth);
             });
         }
