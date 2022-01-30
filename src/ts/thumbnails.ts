@@ -19,7 +19,7 @@ class Thumbnails {
                 this.container.style.backgroundColor = 'rgba(0, 0, 0, 0)';
                 this.container.classList.remove('hidden');
                 // https://ddl.amalgam-fansubs.moe/API/Dplayer
-                // TODO:  API!!!
+                // TODO(#60):  API!!!
             }); */
         } else {
             this.container.style.backgroundImage = `url('${options.url}')`;
