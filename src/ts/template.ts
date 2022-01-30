@@ -127,7 +127,7 @@ class Template implements DPlayerDestroyable {
                 url: this.options.video.url,
                 subtitle: this.options.subtitle,
             },
-        }); // TODO:  change
+        }); // TODO(#56):  change
 
         this.volumeBar = this.container.querySelector('.dplayer-volume-bar-inner');
         this.volumeBarWrap = this.container.querySelector('.dplayer-volume-bar');
