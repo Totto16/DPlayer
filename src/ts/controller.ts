@@ -364,7 +364,7 @@ class Controller {
                 barWidth: this.player.template.barWrap.offsetWidth,
                 url: this.player.options.video.thumbnails,
                 events: this.player.events,
-                // TODO:  API
+                // TODO(#20):  API
             });
             this.player.on('loadedmetadata', () => {
                 // TODO:  calculate rigth size!!! for moving!
