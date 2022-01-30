@@ -40,7 +40,7 @@ const config = (options: DPlayerOptions, player: DPlayer): DplayerParsedOptions 
         balloon: false,
     };
 
-    // TODO somewhere initialize apiBackend
+    // TODO(#39):  somewhere initialize apiBackend
 
     for (const defaultKey in defaultOption) {
         if (defaultOption.hasOwnProperty(defaultKey) && !options.hasOwnProperty(defaultKey)) {
@@ -239,7 +239,7 @@ interface DPlayerDefaultOptions {
     hotkey?: boolean;
     advancedHotkeys?: boolean;
     preload?: DPlayerPreloadOption;
-    logo?: string; // TODO See where implemented
+    logo?: string; // TODO:  See where implemented
     volume?: number;
     playbackSpeed?: [number, number, number, number, number, number];
     video?: DplayerVideoOptions | {};
@@ -271,7 +271,7 @@ export interface DPlayerOptions extends StringIndexableObject {
     hotkey?: boolean;
     advancedHotkeys?: boolean;
     preload?: DPlayerPreloadOption;
-    logo?: string; // TODO See where implemented
+    logo?: string; // TODO:  See where implemented
     volume?: number;
     playbackSpeed?: [number, number, number, number, number, number];
     apiBackend?: DPlayerAPIBackendOption;
@@ -292,7 +292,7 @@ export interface DPlayerOptions extends StringIndexableObject {
 }
 
 export interface DplayerParsedOptions extends DPlayerOptions {
-    test: boolean; // TODO copy paste, for the lack of better solution!
+    test: boolean; // TODO:  copy paste, for the lack of better solution!
 }
 
 export type DPlayerPreloadOption = 'none' | 'metadata' | 'auto';
@@ -336,10 +336,10 @@ export interface DPlayerDanmakuOption {
 }
 
 export interface DplayerContextMenuOption {
-    // TODO add missing
+    // TODO:  add missing
     text: string;
     link?: string;
-    key?: string; // TODO keyof translation available keys!
+    key?: string; // TODO:  keyof translation available keys!
     click?: (player: DPlayer) => void;
     // Missing?
 }
@@ -353,7 +353,7 @@ export interface DPlayerPluginOptions {
 }
 
 export interface DPlayerAssOptions {
-    //TODO
+    //TODO:
 }
 
-// TODO  use, or try to use instanceof!! use the isOfType isOfTYpeOrNull!!! to check DPlayerOptionsInput
+// TODO:   use, or try to use instanceof!! use the isOfType isOfTYpeOrNull!!! to check DPlayerOptionsInput
