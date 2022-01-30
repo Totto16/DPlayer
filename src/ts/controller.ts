@@ -98,7 +98,7 @@ class Controller {
 
                     // TODO(#68):  check if this also works if loaded after the first chapter is passed,
                     // TODO(#69): maybe the API call from getVtts is slow, or the chapters are small, or the user gets the time to skip manually to another chapter,
-                    // TODO: event based things can happen before or after the user does something, so there might be a bug!!
+                    // TODO(#70): event based things can happen before or after the user does something, so there might be a bug!!
                     const inbetween = 1;
                     switch (this.player.options.highlights.mode) {
                         case 'normal':
