@@ -177,7 +177,7 @@ const utils: DPlayerUtils = {
                           .join('-')
                     : video_url.pathname.substring(video_url.pathname.lastIndexOf('/') + 1);
             // TODO(#65):  here are some specs!
-            // TODO:  version, 1 at the moment, get either reference or nothing/everything else means raw data!, type, vtt, or chapter, or thumbnails or etc TODO:
+            // TODO(#66):  version, 1 at the moment, get either reference or nothing/everything else means raw data!, type, vtt, or chapter, or thumbnails or etc TODO:
             api.backend({
                 url: options.API_URL,
                 query: {
