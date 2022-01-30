@@ -292,7 +292,7 @@ export interface DPlayerOptions extends StringIndexableObject {
 }
 
 export interface DplayerParsedOptions extends DPlayerOptions {
-    test: boolean; // TODO:  copy paste, for the lack of better solution!
+    test: boolean; // TODO(#42):  copy paste, for the lack of better solution!
 }
 
 export type DPlayerPreloadOption = 'none' | 'metadata' | 'auto';
