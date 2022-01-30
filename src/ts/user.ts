@@ -40,7 +40,7 @@ class User {
     }
 
     set(key: DPlayerUserStorageInternalKeys, value: string) {
-        // TODO:  valueOf DPlayerUserStorageValues
+        // TODO(#63):  valueOf DPlayerUserStorageValues
         this.data[key] = value;
         utils.storage.set(this.storageName[key], value);
     }
