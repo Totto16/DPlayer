@@ -245,7 +245,7 @@ export type UUID = number | null; // For the moment, also doesn't need to be cha
 
 export type DPlayerEventProperties = { UUID: UUID; event: DPlayerEvent };
 
-export type DPlayerEventInfo = unknown; //  for the moment // TODO:  add better info handling tied to the event name!
+export type DPlayerEventInfo = unknown; //  for the moment // TODO(#24):  add better info handling tied to the event name!
 
 export type DPlayerEventCallback = (info: DPlayerEventInfo, properties: DPlayerEventProperties) => void;
 
