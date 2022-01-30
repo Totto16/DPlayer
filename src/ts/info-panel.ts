@@ -10,7 +10,7 @@ class InfoPanel {
     beginTime?: number;
 
     constructor(player: DPlayer) {
-        this.container = player.template.infoPanel!; // TODO remove !
+        this.container = player.template.infoPanel!; // TODO(#38):  remove !
         this.template = player.template;
         this.video = player.video;
         this.player = player;
