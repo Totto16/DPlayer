@@ -339,7 +339,7 @@ export interface DplayerContextMenuOption {
     // TODO(#43):  add missing
     text: string;
     link?: string;
-    key?: string; // TODO:  keyof translation available keys!
+    key?: string; // TODO(#44):  keyof translation available keys!
     click?: (player: DPlayer) => void;
     // Missing?
 }
