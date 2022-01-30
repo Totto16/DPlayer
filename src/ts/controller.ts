@@ -169,7 +169,7 @@ class Controller {
                             }
                             this.player.bar.setMode('top');
 
-                            // TODO:  trigger checkSkipState with actual chapter, not the first!!!!! Maybe that is already correct, check if it works!
+                            // TODO(#18):  trigger checkSkipState with actual chapter, not the first!!!!! Maybe that is already correct, check if it works!
                             this.updateChapters({}, this.player, true);
 
                             break;
