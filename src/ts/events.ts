@@ -149,7 +149,7 @@ class Events {
         return false;
     }
     // TODO(#22): OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO VERY IMPORTANT BEFORE RELEASING THIS
-    // TODO:  find an elegant way to handle unkwon data, meaning down compiled js can have any types, the user can input any types!!!!
+    // TODO(#23):  find an elegant way to handle unkwon data, meaning down compiled js can have any types, the user can input any types!!!!
     type(name: DPlayerEvent): DPlayerEventType | null {
         if (this.playerEvents.indexOf(name as DPlayerPlayerEvent) !== -1) {
             return 'player';
