@@ -4,7 +4,7 @@ import Icons from './icons';
 import { Subject } from 'rxjs';
 import DPlayer from '.';
 
-let cast; // TODO chromecast
+let cast; // TODO(#15):  chromecast
 let runOnce = true;
 let isCasting = false;
 
@@ -65,7 +65,7 @@ class Controller {
     }
 
     initHighlights(): void {
-        // TODO add buttons for previous and next chapters!!!!!
+        // TODO:  add buttons for previous and next chapters!!!!!
         this.player.on(['durationchange', 'highlight_change'], () => {
             if (this.player.video.duration && this.player.video.duration !== 1 && this.player.video.duration !== Infinity) {
                 if (this.player.options.highlights && this.player.options.highlights.marker && Array.isArray(this.player.options.highlights.marker) && this.player.options.highlights.marker.length > 0) {
@@ -96,7 +96,7 @@ class Controller {
                         this.player.template.playedBarWrap.removeChild(item);
                     }); */
 
-                    // TODO check if this also works if loaded after the first chapter is passed, maybe the API call from getVtts is slow, or the chapters are small, or the user gets the time to skip manually to another chapter, event based things can happen before or after the user does something, so there migh t be a bug!!
+                    // TODO:  check if this also works if loaded after the first chapter is passed, maybe the API call from getVtts is slow, or the chapters are small, or the user gets the time to skip manually to another chapter, event based things can happen before or after the user does something, so there migh t be a bug!!
                     const inbetween = 1;
                     switch (this.player.options.highlights.mode) {
                         case 'normal':
@@ -118,7 +118,7 @@ class Controller {
                                 }
                             }
                             this.player.bar.setMode('normal');
-                            // TODO If implemented trigger checkSkipState with actual chapter!!!!
+                            // TODO:  If implemented trigger checkSkipState with actual chapter!!!!
                             break;
                         case 'top':
                             this.player.template.playedBarWrap.querySelectorAll('.dplayer-bar').forEach((item) => {
@@ -169,7 +169,7 @@ class Controller {
                             }
                             this.player.bar.setMode('top');
 
-                            // TODO trigger checkSkipState with actual chapter, not the first!!!!! Maybe that is already correct, check if it works!
+                            // TODO:  trigger checkSkipState with actual chapter, not the first!!!!! Maybe that is already correct, check if it works!
                             this.updateChapters({}, this.player, true);
 
                             break;
@@ -212,7 +212,7 @@ class Controller {
                 }
                 break;
             default:
-                // TODO assert!!
+                // TODO:  assert!!
                 console.warn("This shouldn't be Called, we only have three types of chapter events!");
         }
     }
@@ -364,10 +364,10 @@ class Controller {
                 barWidth: this.player.template.barWrap.offsetWidth,
                 url: this.player.options.video.thumbnails,
                 events: this.player.events,
-                // TODO API
+                // TODO:  API
             });
             this.player.on('loadedmetadata', () => {
-                // TODO calculate rigth size!!! for moving!
+                // TODO:  calculate rigth size!!! for moving!
                 this.thumbnails.resize(this.player.video.videoHeight / this.player.video.videoWidth, this.player.template.barWrap.offsetWidth);
             });
         }
