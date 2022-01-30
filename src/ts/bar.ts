@@ -256,7 +256,7 @@ export type DPLayerBarMode = 'normal' | 'top' | 'side';
 export interface DPlayerBarStorage {
     volume: HTMLElement;
     played: NodeListOf<HTMLElement> | HTMLElement; // since it can be one ore more, depending on the mode,
-    loaded: NodeListOf<HTMLElement> | HTMLElement; // TODO:  optimize that its clearer where we use singel or multiple, and then also check for that!!
+    loaded: NodeListOf<HTMLElement> | HTMLElement; // TODO(#13):  optimize that its clearer where we use singel or multiple, and then also check for that!!
     danmaku: HTMLElement;
 }
 
