@@ -229,7 +229,7 @@ class DPlayer {
         this.template.mobilePlayButton.innerHTML = Icons.pause;
 
         if (!fromNative) {
-            const playedPromise = Promise.resolve(this.video.play()); // TODO:  see if promise is right here and works!
+            const playedPromise = Promise.resolve(this.video.play()); // TODO(#50):  see if promise is right here and works!
             playedPromise
                 .catch(() => {
                     this.pause();
