@@ -1,7 +1,7 @@
 /* declare namespace DPlayerTypes {
     // TODO(#31):  use this!
 
-    // TODO:  remove generic indexable Type!!
+    // TODO(#32):  remove generic indexable Type!!
     // ATTENTION use with cause, since we can't use every string to to that!
     interface StringIndexableObject {
         [index: string]: unknown;
