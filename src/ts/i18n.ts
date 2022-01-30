@@ -228,7 +228,7 @@ export type DPlayerTranslateKey =
 
 export type DPlayerTranslatedString = string;
 
-export type DPlayerReplacementTypes = string | number; // TODO:  check on key by looking it uup in the model!!!!
+export type DPlayerReplacementTypes = string | number; // TODO(#29):  check on key by looking it uup in the model!!!!
 
 export type DPlayerLanguageModel = {
     [index in DPlayerTranslateKey]?: DPlayerLanguageModelDescription[];
