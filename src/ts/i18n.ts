@@ -110,7 +110,7 @@ class i18n {
             console.error(`key for translation is not a string, but a '${typeof key}'!`);
             return null;
         }
-        // TODO:  check if DPlayerTranslateKey
+        // TODO(#28):  check if DPlayerTranslateKey
         const finalKey: DPlayerTranslateKey = key.toLowerCase() as DPlayerTranslateKey;
         let result = null;
         if (this.tranTxt[this.lang] && this.tranTxt[this.lang][finalKey]) {
