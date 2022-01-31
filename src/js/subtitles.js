@@ -150,7 +150,7 @@ class Subtitles {
         }
     }
 
-    // TODO: ass is merely supported, but atm only for single ones!
+    // TODO(#74): ass is merely supported, but atm only for single ones!
     show() {
         if (this.multiple) {
             this.container.classList.remove('dplayer-subtitles-hide');
