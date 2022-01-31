@@ -71,6 +71,8 @@ class HotKey {
                     console.warn(`'options.fullScreenPolicy' not set correctly, this should not occur!`);
                     break;
             }
+            // TODO(#76): debug an issue regarding multiple instances of inherited "advancedKeys" objects (their getting deleted) , maybe a deep copy solves the problem!
+            console.log(this.disabledKeys, this.enabledKeys.keys);
         }
     }
 
@@ -302,6 +304,7 @@ class HotKey {
             const key = String.fromCharCode(index).toLowerCase().replace(' ', '{space}').replace('%', '{arrowleft}').replace('&', '{arrowup}').replace("'", '{arrowright}').replace('(', '{arrowdown}');
             return { key, tooltip: name, keyCode: index };
         });
+        console.log(this.disabledKeys);
         const disabled = Object.entries(this.disabledKeys.keys).map((a) => {
             const [index, name] = a;
             const key = String.fromCharCode(index).toLowerCase().replace(' ', '{space}').replace('%', '{arrowleft}').replace('&', '{arrowup}').replace("'", '{arrowright}').replace('(', '{arrowdown}');
