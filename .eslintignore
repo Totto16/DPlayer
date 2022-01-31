@@ -12,3 +12,4 @@ package.json
 .eslintrc
 .prettierrc
 .*ignore
+.vscode/

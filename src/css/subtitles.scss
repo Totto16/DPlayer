@@ -1,0 +1,16 @@
+.dplayer-subtitles-container {
+    position: absolute;
+    bottom: 40px;
+    width: 90%;
+    left: 5%;
+    text-align: center;
+    color: var(--dplayer-subtitles-text-color);
+    text-shadow: 0.5px 0.5px 0.5px var(--dplayer-subtitles-box-sh);
+    font-size: 20px;
+    &.dplayer-subtitles-hide {
+        display: none;
+    }
+    p {
+        color: inherit;
+    }
+}

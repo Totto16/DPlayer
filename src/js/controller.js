@@ -61,12 +61,10 @@ class Controller {
     }
 
     initHighlights() {
+        // TODO add buttons for previous and next chapters!!!!!
         this.player.on(['durationchange', 'highlight_change'], () => {
             if (this.player.video.duration && this.player.video.duration !== 1 && this.player.video.duration !== Infinity) {
-                if (this.player.options.highlights && this.player.options.highlights.marker) {
-                    if (this.player.options.highlights.marker === 'processing') {
-                        return;
-                    }
+                if (this.player.options.highlights && this.player.options.highlights.marker && Array.isArray(this.player.options.highlights.marker) && this.player.options.highlights.marker.length > 0) {
                     const marker = this.player.options.highlights.marker.map((mark) => {
                         const corrected = mark;
                         if (typeof mark.time !== 'number') {
@@ -93,6 +91,8 @@ class Controller {
                     /* this.player.template.barHighlightTop.forEach((item) => {
                         this.player.template.playedBarWrap.removeChild(item);
                     }); */
+
+                    // TODO check if this also works if loaded after the first chapter is passed, maybe the API call from getVtts is slow, or the chapters are small, or the user gets the time to skip manually to another chapter, event based things can happen before or after the user does something, so there migh t be a bug!!
                     const inbetween = 1;
                     switch (this.player.options.highlights.mode) {
                         case 'normal':
@@ -114,14 +114,7 @@ class Controller {
                                 }
                             }
                             this.player.bar.setMode('normal');
-                            break;
-                        case 'side':
-                            if (marker[0].time !== 0) {
-                                console.warn('The mode "side" must have a chapter that starts at 0 / the beginning chapters beginning at the start, however its not required for the "normal" mode", consider using that mode!');
-                            } else {
-                                this.chapters = { marker, mode: 'side', currentChapter: 0 };
-                            }
-                            this.player.bar.setMode('side');
+                            // TODO If implemented trigger checkSkipState with actual chapter!!!!
                             break;
                         case 'top':
                             this.player.template.playedBarWrap.querySelectorAll('.dplayer-bar').forEach((item) => {
@@ -171,6 +164,10 @@ class Controller {
                                 }
                             }
                             this.player.bar.setMode('top');
+
+                            // TODO trigger checkSkipState with actual chapter, not the first!!!!! Maybe that is already correct, check if it works!
+                            this.updateChapters({}, this.player, true);
+
                             break;
                         default:
                             console.warn(`No valid mode for highlights defined: ${this.player.options.highlights.mode}`);
@@ -185,6 +182,7 @@ class Controller {
     }
     checkSkipState(event) {
         if (!this.player.options.highlightSkip) {
+            this.player.events.trigger('cancelskip');
             return;
         }
         switch (event.type) {
@@ -238,25 +236,25 @@ class Controller {
     skipHighlight(chapter, name) {
         switch (this.player.options.highlightSkipMode.toString().toLowerCase()) {
             case 'smoothprompt':
-                this.showSkipPrompt.call(this, false, 5000, name, () => {
+                this.showSkipPrompt.call(this, false, this.player.options.skipDelay, name, () => {
                     this.player.seek(chapter.time, true);
-                    this.player.notice(this.player.tran('skipped_chapter', name));
+                    this.player.notice(this.player.translate('skipped_chapter', name));
                 });
                 break;
             case 'immediately':
                 this.player.seek(chapter.time, true);
-                this.player.notice(this.player.tran('skipped_chapter', name));
+                this.player.notice(this.player.translate('skipped_chapter', name));
                 break;
             case 'smoothcancelprompt':
-                this.showSkipPrompt.call(this, true, 5000, name, () => {
+                this.showSkipPrompt.call(this, true, this.player.options.skipDelay, name, () => {
                     this.player.seek(chapter.time, true);
-                    this.player.notice(this.player.tran('skipped_chapter', name));
+                    this.player.notice(this.player.translate('skipped_chapter', name));
                 });
                 break;
             case 'always':
                 this.showSkipPrompt.call(this, false, -1, name, () => {
                     this.player.seek(chapter.time, true);
-                    this.player.notice(this.player.tran('skipped_chapter', name));
+                    this.player.notice(this.player.translate('skipped_chapter', name));
                 });
                 break;
             default:
@@ -271,8 +269,8 @@ class Controller {
         const progress = prompt.querySelector('.progress');
         if (timeShown > 0) {
             if (cancellable) {
-                button.innerText = this.player.tran('cancel');
-                text.innerText = this.player.tran('skip_chapter', name);
+                button.innerText = this.player.translate('cancel');
+                text.innerText = this.player.translate('skip_chapter', name);
 
                 const timeoutID = setTimeout(() => {
                     button.onclick = null;
@@ -284,18 +282,21 @@ class Controller {
                     prompt.style.display = 'none';
                     clearTimeout(timeoutID);
                 };
-                this.player.once(
-                    'chapter',
-                    () => {
+                const UUIDs = this.player.once(
+                    ['chapter', 'cancelskip'],
+                    (_, { UUID }) => {
                         button.onclick = null;
                         prompt.style.display = 'none';
                         clearTimeout(timeoutID);
+                        const remainingUUIDs = UUIDs.filter((u) => u !== UUID);
+                        // if wwe remove the uuid from itself, its dangerous!!
+                        this.player.events.removeByUUID(remainingUUIDs);
                     },
-                    this.player.options.once_delay
+                    true
                 );
             } else {
-                button.innerText = this.player.tran('skip');
-                text.innerText = this.player.tran('skip_chapter', name);
+                button.innerText = this.player.translate('skip');
+                text.innerText = this.player.translate('skip_chapter', name);
                 const timeoutID = setTimeout(() => {
                     button.onclick = null;
                     prompt.style.display = 'none';
@@ -306,34 +307,42 @@ class Controller {
                     clearTimeout(timeoutID);
                     callback();
                 };
-                this.player.once(
-                    'chapter',
-                    () => {
+
+                const UUIDs = this.player.once(
+                    ['chapter', 'cancelskip'],
+                    (_, { UUID }) => {
                         button.onclick = null;
                         prompt.style.display = 'none';
                         clearTimeout(timeoutID);
+                        const remainingUUIDs = UUIDs.filter((u) => u !== UUID);
+                        // if wwe remove the uuid from itself, its dangerous!!
+                        this.player.events.removeByUUID(remainingUUIDs);
                     },
-                    this.player.options.once_delay
+                    true
                 );
             }
             progress.style.display = 'unset';
             progress.animate([{ width: '0%' }, { width: '100%' }], timeShown);
         } else {
-            button.innerText = this.player.tran('skip');
-            text.innerText = this.player.tran('skip_chapter', name);
+            button.innerText = this.player.translate('skip');
+            text.innerText = this.player.translate('skip_chapter', name);
             progress.style.display = 'none';
             button.onclick = () => {
                 button.onclick = null;
                 // prompt.style.display = 'none';
                 callback();
             };
-            this.player.once(
-                'chapter',
-                () => {
+
+            const UUIDs = this.player.once(
+                ['chapter', 'cancelskip'],
+                (_, { UUID }) => {
                     button.onclick = null;
                     prompt.style.display = 'none';
+                    const remainingUUIDs = UUIDs.filter((u) => u !== UUID);
+                    // if wwe remove the uuid from itself, its dangerous!!
+                    this.player.events.removeByUUID(remainingUUIDs);
                 },
-                this.player.options.once_delay
+                true
             );
         }
         prompt.style.display = 'flex';
@@ -348,10 +357,11 @@ class Controller {
                 barWidth: this.player.template.barWrap.offsetWidth,
                 url: this.player.options.video.thumbnails,
                 events: this.player.events,
+                // TODO API
             });
-
             this.player.on('loadedmetadata', () => {
-                this.thumbnails.resize(160, (this.player.video.videoHeight / this.player.video.videoWidth) * 160, this.player.template.barWrap.offsetWidth);
+                // TODO calculate rigth size!!! for moving!
+                this.thumbnails.resize(this.player.video.videoHeight / this.player.video.videoWidth, this.player.template.barWrap.offsetWidth);
             });
         }
     }
@@ -631,19 +641,20 @@ class Controller {
 
     initSubtitleButton() {
         if (this.player.options.subtitle) {
+            // if multiple than don't show this
             this.player.events.on('subtitle_show', () => {
-                this.player.template.subtitleButton.dataset.balloon = this.player.tran('hide-subs');
+                this.player.template.subtitleButton.dataset.balloon = this.player.translate('hide-subs');
                 this.player.template.subtitleButtonInner.style.opacity = '';
                 this.player.user.set('subtitle', 1);
             });
             this.player.events.on('subtitle_hide', () => {
-                this.player.template.subtitleButton.dataset.balloon = this.player.tran('show-subs');
+                this.player.template.subtitleButton.dataset.balloon = this.player.translate('show-subs');
                 this.player.template.subtitleButtonInner.style.opacity = '0.4';
                 this.player.user.set('subtitle', 0);
             });
 
             this.player.template.subtitleButton.addEventListener('click', () => {
-                this.player.subtitle.toggle();
+                this.player.subtitles.toggle();
             });
         }
     }
@@ -666,6 +677,7 @@ class Controller {
         this.player.container.classList.add('dplayer-hide-controller');
         this.player.setting.hide();
         this.player.comment && this.player.comment.hide();
+        this.player.subtitles.hideModal();
     }
 
     isShow() {
@@ -679,7 +691,7 @@ class Controller {
             this.show();
         }
     }
-    updateChapters(object = {}, player = this.player) {
+    updateChapters(object = {}, player = this.player, start = false) {
         // percentage, or time + duration, or we can get that from the video   player.video.currentTime , player.video.duration
         let { percentage, time, duration } = object;
         if (percentage) {
@@ -723,6 +735,8 @@ class Controller {
                     } else if (next_condition) {
                         this.chapters.currentChapter++;
                         this.player.events.trigger('chapter', { type: 'next', previous: current, current: next, next: currentChapter < marker.length - 2 ? marker[currentChapter + 2] : null });
+                    } else if (start === true) {
+                        this.player.events.trigger('chapter', { type: 'next', previous, current, next });
                     }
                     break;
             }
@@ -737,10 +751,12 @@ class Controller {
         const actualTime = this.player.video.currentTime;
         let goToChapter = currentChapter + number;
         let togo;
+        // Threshold is made for backtracing, that means, if you press Previous Chapter and you are only Threshold seconds in, you don't go back Threshold seconds, but to the previous chapter!
+        const Threshold = 1.5;
         switch (mode) {
             case 'top':
                 togo = goToChapter >= 0 && goToChapter < marker.length ? marker[goToChapter] : goToChapter === marker.length ? { time: this.player.video.duration } : null;
-                if (number === 0 && Math.abs(togo.time - actualTime) <= 1) {
+                if (number === 0 && Math.abs(togo.time - actualTime) <= Threshold) {
                     goToChapter--;
                     togo = goToChapter >= 0 && goToChapter < marker.length ? marker[goToChapter] : goToChapter === marker.length ? { time: this.player.video.duration } : null;
                 }
@@ -752,7 +768,7 @@ class Controller {
                 break;
             case 'normal':
                 togo = goToChapter >= 0 && goToChapter < marker.length ? marker[goToChapter] : goToChapter === marker.length ? { time: this.player.video.duration } : goToChapter === -1 ? { time: 0 } : null;
-                if (number === 0 && Math.abs(togo.time - actualTime) <= 1) {
+                if (number === 0 && Math.abs(togo.time - actualTime) <= Threshold) {
                     goToChapter--;
                     togo = goToChapter >= 0 && goToChapter < marker.length ? marker[goToChapter] : goToChapter === marker.length ? { time: this.player.video.duration } : goToChapter === -1 ? { time: 0 } : null;
                 }
@@ -798,7 +814,7 @@ class Controller {
                 document.body.appendChild(link);
                 link.click();
                 this.player.events.trigger('screenshot', dataURL);
-                this.player.notice(this.player.tran('saved-screenshot', downloadName));
+                this.player.notice(this.player.translate('saved-screenshot', downloadName));
                 document.body.removeChild(link);
                 URL.revokeObjectURL(dataURL);
                 this.player.container.click();

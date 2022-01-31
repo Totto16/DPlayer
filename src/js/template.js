@@ -8,7 +8,7 @@ class Template {
         this.options = options.options;
         this.player = options.player;
         this.index = options.index;
-        this.tran = options.tran;
+        this.translate = options.translate;
         this.init();
     }
 
@@ -16,7 +16,7 @@ class Template {
         this.container.innerHTML = tplPlayer({
             options: this.options,
             index: this.index,
-            tran: this.tran,
+            translate: this.translate,
             balloon: (a, b) => this.player.balloon.call(this.player, a, b),
             icons: Icons,
             mobile: utils.isMobile,
@@ -88,9 +88,13 @@ class Template {
         this.cameraButton = this.container.querySelector('.dplayer-camera-icon');
         this.airplayButton = this.container.querySelector('.dplayer-airplay-icon');
         this.chromecastButton = this.container.querySelector('.dplayer-chromecast-icon');
-        this.subtitleButton = this.container.querySelector('.dplayer-subtitle-icon');
-        this.subtitleButtonInner = this.container.querySelector('.dplayer-subtitle-icon .dplayer-icon-content');
-        this.subtitle = this.container.querySelector('.dplayer-subtitle');
+        this.subtitleButton = this.container.querySelector('.dplayer-subtitles-icon');
+        this.subtitleButtonInner = this.container.querySelector('.dplayer-subtitles-icon .dplayer-icon-content');
+        this.subtitlesButton = this.container.querySelector('.dplayer-subtitles-icon');
+        this.subtitlesBox = this.container.querySelector('.dplayer-subtitles-box');
+        this.subtitlesItem = this.container.querySelectorAll('.dplayer-subtitles-item');
+        this.subtitle = this.container.querySelector('.dplayer-subtitles-container');
+        this.subtrack = this.container.querySelector('.dplayer-subtrack');
         this.qualityButton = this.container.querySelector('.dplayer-quality-icon');
         this.barPreview = this.container.querySelector('.dplayer-bar-preview');
         this.barWrap = this.container.querySelector('.dplayer-bar-wrap');
@@ -109,6 +113,7 @@ class Template {
         this.infoDanmakuId = this.container.querySelector('.dplayer-info-panel-item-danmaku-id .dplayer-info-panel-item-data');
         this.infoDanmakuApi = this.container.querySelector('.dplayer-info-panel-item-danmaku-api .dplayer-info-panel-item-data');
         this.infoDanmakuAmount = this.container.querySelector('.dplayer-info-panel-item-danmaku-amount .dplayer-info-panel-item-data');
+        // TODO add buttons for previous and next chapters!!!!! ( in inithighlight)
     }
     static NewNotice(options) {
         const { text, opacity, mode, type, DontAnimate } = options;

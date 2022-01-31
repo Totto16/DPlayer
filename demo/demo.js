@@ -2,6 +2,7 @@
 const stats = new Stats();
 stats.showPanel(0); // 0: fps, 1: ms, 2: mb, 3+: custom
 document.body.appendChild(stats.dom);
+
 function animate() {
     stats.begin();
     // monitored code goes here
@@ -12,256 +13,180 @@ function animate() {
 requestAnimationFrame(animate);
 
 initPlayers();
-handleEvent();
-
-function handleEvent() {
-    document.getElementById('dplayer-dialog').addEventListener('click', (e) => {
-        const $clickDom = e.currentTarget;
-        const isShowStatus = $clickDom.getAttribute('data-show');
-
-        if (isShowStatus) {
-            document.getElementById('float-dplayer').style.display = 'none';
-        } else {
-            $clickDom.setAttribute('data-show', 1);
-            document.getElementById('float-dplayer').style.display = 'block';
-        }
-    });
-
-    document.getElementById('close-dialog').addEventListener('click', () => {
-        const $openDialogBtnDom = document.getElementById('dplayer-dialog');
-
-        $openDialogBtnDom.setAttribute('data-show', '');
-        document.getElementById('float-dplayer').style.display = 'none';
-    });
-}
 
 function initPlayers() {
-    // dplayer-float
-    window.dpFloat = new DPlayer({
-        container: document.getElementById('dplayer-container'),
-        preload: 'none',
-        screenshot: true,
-        video: {
-            url: 'http://static.smartisanos.cn/common/video/t1-ui.mp4',
-            pic: 'http://static.smartisanos.cn/pr/img/video/video_03_cc87ce5bdb.jpg',
-            thumbnails: 'http://static.smartisanos.cn/pr/img/video/video_03_cc87ce5bdb.jpg'
-        },
-        subtitle: {
-            url: 'subtitle test'
-        },
-        danmaku: {
-            id: '9E2E3368B56CDBB4',
-            api: 'https://api.prprpr.me/dplayer/'
-        }
-    });
-    // dp1
-    window.dp1 = new DPlayer({
-        container: document.getElementById('dplayer1'),
-        preload: 'none',
-        screenshot: true,
-        video: {
-            url: 'https://api.dogecloud.com/player/get.mp4?vcode=5ac682e6f8231991&userId=17&ext=.mp4',
-            pic: 'https://i.loli.net/2019/06/06/5cf8c5d9c57b510947.png',
-            thumbnails: 'https://i.loli.net/2019/06/06/5cf8c5d9cec8510758.jpg'
-        },
-        highlights: {marker:[{time:20,text:"start 20s"},{time:120,text:"2 minuntes"}],mode:'normal'},
-        subtitle: {
-            url: 'https://s-sh-17-dplayercdn.oss.dogecdn.com/hikarunara.vtt'
-        },
-    });
 
-    // dp2
-    window.dp2 = new DPlayer({
-        container: document.getElementById('dplayer2'),
-        preload: 'none',
-        autoplay: false,
-        theme: '#FADFA3',
-        loop: true,
-        screenshot: true,
-        airplay: true,
-        hotkey: true,
-        logo: 'https://i.loli.net/2019/06/06/5cf8c5d94521136430.png',
-        volume: 0.2,
-        mutex: true,
-        video: {
-            url: 'https://api.dogecloud.com/player/get.mp4?vcode=5ac682e6f8231991&userId=17&ext=.mp4',
-            pic: 'https://i.loli.net/2019/06/06/5cf8c5d9c57b510947.png',
-            thumbnails: 'https://i.loli.net/2019/06/06/5cf8c5d9cec8510758.jpg',
-            type: 'auto'
+    const qualities =/*  [{
+            "name": "1080p",
+            "url": "https://api.dogecloud.com/player/get.mp4?vcode=5ac682e6f8231991&userId=17&ext=.mp",
+            "type": "normal"
         },
+        {
+            "name": "720p",
+            "url": "https://api.dogecloud.com/player/get.mp4?vcode=5ac682e6f8231991&userId=17&ext=.mp",
+            "type": "normal"
+        }
+    ];
+     */
+    [  {
+        "name": "FHD",
+        "url": "http://localhost:9090/[Totto]DetektivConan-1029-RFCT-[1080p].mp4",
+        "type": "normal"
+      },{
+          "name": "1080p",
+          "url": "https://ddl.amalgam-fansubs.moe/content/Conan/1080p/%5BTotto%5DDetektivConan-1029-RFCT-%5B1080p%5D.mp4",
+          "type": "normal"
+        },
+        {
+          "name": "720p",
+          "url": "https://ddl.amalgam-fansubs.moe/content/Conan/720p/%5BAMALGAM%5DConan_1029%5B1280x720%5D%5Bx264%5D%5BHD%5D.mp4",
+          "type": "normal"
+        },
+        {
+          "name": "cdn",
+          "url": "https://cdn.amalgam-fansubs.moe/detektiv-conan/1029/master.m3u8",
+          "type": "hls"
+        },
+
+      ];
+
+      const qualities1 =
+        [ {
+            "name": "Kindaichi",
+            "url": "https://ddl.amalgam-fansubs.moe/content/Kindaichi/%5BAmalgam%5DKindaichi%20088%20%5BGerman-Sub%5D.mp4",
+            "type": "normal"
+        }];
+
+    const dpOptions = {
+        container: document.getElementById("video-wrapper"),
+        screenshot: true,
+        lang: "de",
+        video: {
+            quality: qualities,
+            defaultQuality: 0,
+            pic: 'http://localhost:9090/amalgam-1029.png',
+           // thumbnails: 'API',
+        },
+        API_URL:'https://ddl.amalgam-fansubs.moe/DPlayer.php',
+        theme:"red",
+        hotkey: true,
+        highlights:{vtt:"API",mode:"auto"}, //TODO make all reasonable things also able to request via API 
+        //TODO autoNext (enable default +1 counter and function to manually pass how to behave or API)
+        airplay: "vendor",
+        fullScreenPolicy: 0, // available "OnlyNormal","OnlyWeb","Both" or 0,1,2
+        highlightSkip:true,
+        highlightSkipMode: 0 ,// available "smoothPrompt", "immediately", "smoothCancelPrompt", "always" or 0,1,2,3
+        hardSkipHighlights:false,
+        skipDelay:5555,
+        highlightSkipArray:['*',/.*Ending.*/i,/.*Opening.*/i,/.*Pause.*/i],
+        chromecast: "vendor"
+    };
+
+    const dpOptions1 = {
+        container: document.getElementById("video-wrapper"),
+        screenshot: true,
+        lang: "de",
+        video: {
+            quality: qualities1,
+            defaultQuality: 0
+           // thumbnails: 'API',
+        },
+        API_URL:'https://ddl.amalgam-fansubs.moe/DPlayer.php',
+        theme:"red",
+        hotkey: true,
+        highlights:{vtt:"API",mode:"auto"}, //TODO make all reasonable things also able to request via API 
+        //TODO autoNext (enable default +1 counter and function to manually pass how to behave or API)
+        airplay: "vendor",
+        fullScreenPolicy: 0, // available "OnlyNormal","OnlyWeb","Both" or 0,1,2
+        highlightSkip:true,
+        highlightSkipMode: 0 ,// available "smoothPrompt", "immediately", "smoothCancelPrompt", "always" or 0,1,2,3
+        hardSkipHighlights:false,
+        skipDelay:5555,
+        highlightSkipArray:['*',/.*Ending.*/i,/.*Opening.*/i,/.*Pause.*/i],
+        chromecast: "vendor"
+    };
+
+    const dpOptions2 = {
+        container: document.getElementById("video-wrapper"),
+        screenshot: true,
+        lang: "de",
+        video: {
+            quality: qualities1,
+            defaultQuality: 0
+           // thumbnails: 'API',
+        },
+        API_URL:'https://ddl.amalgam-fansubs.moe/DPlayer.php',
         subtitle: {
             url: 'https://s-sh-17-dplayercdn.oss.dogecdn.com/hikarunara.vtt',
             type: 'webvtt',
             fontSize: '25px',
-            bottom: '10%',
+            bottom: '5%',
             color: '#b7daff'
         },
-        danmaku: {
-            id: '9E2E3368B56CDBB4',
-            api: 'https://api.prprpr.me/dplayer/',
-            token: 'tokendemo',
-            maximum: 3000,
-            user: 'DIYgod',
-            bottom: '15%',
-            unlimited: true
+        theme:"red",
+        hotkey: true,
+        highlights:{vtt:"API",mode:"auto"}, //TODO make all reasonable things also able to request via API 
+        //TODO autoNext (enable default +1 counter and function to manually pass how to behave or API)
+        airplay: "vendor",
+        fullScreenPolicy: 0, // available "OnlyNormal","OnlyWeb","Both" or 0,1,2
+        highlightSkip:true,
+        highlightSkipMode: 0 ,// available "smoothPrompt", "immediately", "smoothCancelPrompt", "always" or 0,1,2,3
+        hardSkipHighlights:false,
+        skipDelay:5555,
+        highlightSkipArray:['*',/.*Ending.*/i,/.*Opening.*/i,/.*Pause.*/i],
+        chromecast: "vendor"
+    };
+
+
+    const dpOptions3 = {
+        container: document.getElementById("video-wrapper"),
+        screenshot: true,
+        lang: "de",
+        video: {
+            quality: qualities1,
+            defaultQuality: 0
+           // thumbnails: 'API',
         },
-        contextmenu: [
-            {
-                text: 'custom contextmenu',
-                link: 'https://github.com/MoePlayer/DPlayer'
-            }
-        ]
-    });
+        API_URL:'https://ddl.amalgam-fansubs.moe/DPlayer.php',
+        subtitle: {
+            url: [
+                {
+                    subtitle: 'https://s-sh-17-dplayercdn.oss.dogecdn.com/hikarunara.vtt',
+                    lang: 'zh-cn',
+                    name: '光',
+                },
+                {
+                    subtitle: 'https://gist.githubusercontent.com/samdutton/ca37f3adaf4e23679957b8083e061177/raw/e19399fbccbc069a2af4266e5120ae6bad62699a/sample.vtt',
+                    lang: 'en',
+                    name: 'github',
+                },
+            ],
+            defaultSubtitle: 1, // -1 or off, or undefined work for "off"
+            type: 'webvtt',
+            fontSize: '25px',
+            bottom: '5%',
+            color: '#b7daff'
+        },
+        theme:"red",
+        hotkey: true,
+        highlights:{vtt:"API",mode:"auto"}, //TODO make all reasonable things also able to request via API 
+        //TODO autoNext (enable default +1 counter and function to manually pass how to behave or API)
+        airplay: "vendor",
+        fullScreenPolicy: 0, // available "OnlyNormal","OnlyWeb","Both" or 0,1,2
+        highlightSkip:true,
+        highlightSkipMode: 0 ,// available "smoothPrompt", "immediately", "smoothCancelPrompt", "always" or 0,1,2,3
+        hardSkipHighlights:false,
+        skipDelay:5555,
+        highlightSkipArray:['*',/.*Ending.*/i,/.*Opening.*/i,/.*Pause.*/i],
+        chromecast: "vendor"
+    };
 
-    const events = [
-        'abort', 'canplay', 'canplaythrough', 'durationchange', 'emptied', 'ended', 'error',
-        'loadeddata', 'loadedmetadata', 'loadstart', 'mozaudioavailable', 'pause', 'play',
-        'playing', 'ratechange', 'seeked', 'seeking', 'stalled',
-        'volumechange', 'waiting',
-        'screenshot',
-        'thumbnails_show', 'thumbnails_hide',
-        'danmaku_show', 'danmaku_hide', 'danmaku_clear',
-        'danmaku_loaded', 'danmaku_send', 'danmaku_opacity',
-        'contextmenu_show', 'contextmenu_hide',
-        'notice_show', 'notice_hide',
-        'quality_start', 'quality_end',
-        'destroy',
-        'resize',
-        'fullscreen', 'fullscreen_cancel', 'webfullscreen', 'webfullscreen_cancel',
-        'subtitle_show', 'subtitle_hide', 'subtitle_change'
-    ];
-    const eventsEle = document.getElementById('events');
-    for (let i = 0; i < events.length; i++) {
-        dp2.on(events[i], (info) => {
-            eventsEle.innerHTML += `<p>Event: ${events[i]} ${info?`Data: <span>${JSON.stringify(info)}</span>`:''}</p>`;
-            eventsEle.scrollTop = eventsEle.scrollHeight;
-        });
+    //const dp = new DPlayer(dpOptions);
+
+    if(typeof DPlayer !== "undefined"){
+        window.dp = new DPlayer(dpOptions);
+    }else{
+        window.DPLAYER_AUTO = {name:"dp",options:dpOptions3}
     }
 
-    // dp3
-    // window.dp3 = new DPlayer({
-    //     container: document.getElementById('dplayer3'),
-    //     preload: 'none',
-    //     video: {
-    //         quality: [{
-    //             name: 'HD',
-    //             url: 'https://s-sh-17-dplayercdn.oss.dogecdn.com/hikarunara.m3u8',
-    //             type: 'hls'
-    //         }, {
-    //             name: 'SD',
-    //             url: 'https://api.dogecloud.com/player/get.mp4?vcode=5ac682e6f8231991&userId=17&ext=.mp4',
-    //             type: 'normal'
-    //         }],
-    //         defaultQuality: 0,
-    //         pic: 'https://i.loli.net/2019/06/06/5cf8c5d9c57b510947.png'
-    //     }
-    // });
-
-    // // dp4
-    // window.dp4 = new DPlayer({
-    //     container: document.getElementById('dplayer4'),
-    //     preload: 'none',
-    //     video: {
-    //         url: 'https://s-sh-17-dplayercdn.oss.dogecdn.com/hikarunara.m3u8',
-    //         type: 'hls'
-    //     }
-    // });
-
-    // // dp5
-    // window.dp5 = new DPlayer({
-    //     container: document.getElementById('dplayer5'),
-    //     preload: 'none',
-    //     video: {
-    //         url: 'https://moeplayer.b0.upaiyun.com/dplayer/hikarunara.flv',
-    //         type: 'flv'
-    //     }
-    // });
-
-    // window.dp8 = new DPlayer({
-    //     container: document.getElementById('dplayer8'),
-    //     preload: 'none',
-    //     video: {
-    //         url: 'https://moeplayer.b0.upaiyun.com/dplayer/dash/hikarunara.mpd',
-    //         type: 'dash'
-    //     }
-    // });
-
-    // window.dp9 = new DPlayer({
-    //     container: document.getElementById('dplayer9'),
-    //     video: {
-    //         url: 'magnet:?xt=urn:btih:08ada5a7a6183aae1e09d831df6748d566095a10&dn=Sintel&tr=udp%3A%2F%2Fexplodie.org%3A6969&tr=udp%3A%2F%2Ftracker.coppersurfer.tk%3A6969&tr=udp%3A%2F%2Ftracker.empire-js.us%3A1337&tr=udp%3A%2F%2Ftracker.leechers-paradise.org%3A6969&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337&tr=wss%3A%2F%2Ftracker.btorrent.xyz&tr=wss%3A%2F%2Ftracker.fastcast.nz&tr=wss%3A%2F%2Ftracker.openwebtorrent.com&ws=https%3A%2F%2Fwebtorrent.io%2Ftorrents%2F&xs=https%3A%2F%2Fwebtorrent.io%2Ftorrents%2Fsintel.torrent',
-    //         type: 'webtorrent'
-    //     }
-    // });
-
-    // window.dp6 = new DPlayer({
-    //     container: document.getElementById('dplayer6'),
-    //     preload: 'none',
-    //     live: true,
-    //     danmaku: true,
-    //     apiBackend: {
-    //         read: function (endpoint, callback) {
-    //             console.log('假装 WebSocket 连接成功');
-    //             callback();
-    //         },
-    //         send: function (endpoint, danmakuData, callback) {
-    //             console.log('假装通过 WebSocket 发送数据', danmakuData);
-    //             callback();
-    //         }
-    //     },
-    //     video: {
-    //         url: 'https://s-sh-17-dplayercdn.oss.dogecdn.com/hikarunara.m3u8',
-    //         type: 'hls'
-    //     }
-    // });
-
-    // window.dp10 = new DPlayer({
-    //     container: document.getElementById('dplayer10'),
-    //     video: {
-    //         url: 'https://qq.webrtc.win/tv/Pear-Demo-Yosemite_National_Park.mp4',
-    //         type: 'pearplayer',
-    //         customType: {
-    //             'pearplayer': function (video, player) {
-    //                 new PearPlayer(video, {
-    //                     src: video.src,
-    //                     autoplay: player.options.autoplay
-    //                 });
-    //             }
-    //         }
-    //     }
-    // });
-}
-
-function clearPlayers() {
-    for (let i = 0; i < 6; i++) {
-        window['dp' + (i + 1)].pause();
-        document.getElementById('dplayer' + (i + 1)).innerHTML = '';
-    }
-}
-
-function switchDPlayer() {
-    if (dp2.options.danmaku.id !== '5rGf5Y2X55qu6Z2p') {
-        dp2.switchVideo({
-            url: 'http://static.smartisanos.cn/common/video/t1-ui.mp4',
-            pic: 'http://static.smartisanos.cn/pr/img/video/video_03_cc87ce5bdb.jpg',
-            type: 'auto',
-        }, {
-            id: '5rGf5Y2X55qu6Z2p',
-            api: 'https://api.prprpr.me/dplayer/',
-            maximum: 3000,
-            user: 'DIYgod'
-        });
-    } else {
-        dp2.switchVideo({
-            url: 'https://api.dogecloud.com/player/get.mp4?vcode=5ac682e6f8231991&userId=17&ext=.mp4',
-            pic: 'https://i.loli.net/2019/06/06/5cf8c5d9c57b510947.png',
-            thumbnails: 'https://i.loli.net/2019/06/06/5cf8c5d9cec8510758.jpg',
-            type: 'auto'
-        }, {
-            id: '9E2E3368B56CDBB42',
-            api: 'https://api.prprpr.me/dplayer/',
-            maximum: 3000,
-            user: 'DIYgod'
-        });
-    }
 }

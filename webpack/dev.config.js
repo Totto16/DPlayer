@@ -4,10 +4,10 @@ const { GitRevisionPlugin } = require('git-revision-webpack-plugin');
 const gitRevisionPlugin = new GitRevisionPlugin();
 const autoprefixer = require('autoprefixer');
 const cssnano = require('cssnano');
-
 module.exports = {
     mode: 'development',
 
+    // fastest mode, for more see: https://webpack.js.org/configuration/devtool/
     devtool: 'eval',
 
     entry: {
@@ -33,7 +33,7 @@ module.exports = {
 
     resolve: {
         modules: ['node_modules'],
-        extensions: ['.js', '.scss'],
+        extensions: ['.js', '.scss', '.art', '.svg'],
         preferRelative: true,
     },
 
@@ -48,6 +48,18 @@ module.exports = {
                         options: {
                             cacheDirectory: true,
                             presets: ['@babel/preset-env'],
+                            plugins: [
+                                [
+                                    '@babel/plugin-transform-runtime',
+                                    {
+                                        absoluteRuntime: false,
+                                        corejs: false,
+                                        helpers: false,
+                                        regenerator: true,
+                                        version: '^7.0.0',
+                                    },
+                                ],
+                            ],
                         },
                     },
                 ],
@@ -73,16 +85,17 @@ module.exports = {
                     'sass-loader',
                 ],
             },
+            // using https://webpack.js.org/guides/asset-modules TODO(#75): test png and jpg
             {
-                test: /\.(png|jpg)$/,
-                loader: 'url-loader',
-                options: {
-                    limit: 40000,
-                },
+                test: /\.(jpe?g|png|gif)$/i,
+                type: 'asset/resource',
             },
             {
-                test: /\.svg$/,
-                loader: 'svg-inline-loader',
+                test: /\.svg$/i,
+                type: 'asset/inline',
+                generator: {
+                    dataUrl: (content) => content.toString(), // important!!!
+                },
             },
             {
                 test: /\.art$/,
@@ -120,6 +133,8 @@ module.exports = {
         new webpack.DefinePlugin({
             DPLAYER_VERSION: `"${require('../package.json').version}"`,
             GIT_TIME: JSON.stringify(gitRevisionPlugin.lastcommitdatetime()),
+            GIT_HASH: JSON.stringify(gitRevisionPlugin.version()),
+            BUILD_TIME: `"${new Date().toISOString()}"`,
         }),
     ],
 

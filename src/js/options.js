@@ -8,7 +8,6 @@ export default (options, player) => {
         container: options.element || document.getElementsByClassName('dplayer')[0],
         live: false,
         autoplay: false,
-        once_delay: 100,
         themeName: 'standard',
         disableDarkMode: false,
         loop: false,
@@ -30,10 +29,10 @@ export default (options, player) => {
             },
         ],
         fullScreenPolicy: 'OnlyNormal', // available "OnlyNormal","OnlyWeb","Both" or 0,1,2
-
-        highlightSkipArray: [/^Opening$/i, /^Ending$/i, /^OP$/i, /^ED$/i, /^Intro$/i, /^Outro$/i, /^Credits$/i, /^Pause$/i],
+        highlightSkipArray: [/^\s*Opening\s*\d*$/i, /^\s*Ending\s*\d*$/i, /^\s*OP\s*\d*$/i, /^\s*ED\s*\d*$/i, /^\s*Intro\s*$/i, /^\s*Outro\s*$/i, /^\s*Credits\s*$/i, /^\s*Pause\s*$/i],
         highlightSkipMode: 'smoothPrompt', // available "smoothPrompt", "immediately", "smoothCancelPrompt", "always" or 0,1,2,3
         highlightSkip: false,
+        skipDelay: 5000,
         hardSkipHighlights: false, // if we go backwards and end in a Skip Highlight, we normally stay there, but with that mode, we skip hard, that means, we skip the skip chapters ALWAYS
         mutex: true,
         pluginOptions: { hls: {}, flv: {}, dash: {}, webtorrent: {}, ass: {} },
@@ -48,7 +47,7 @@ export default (options, player) => {
         options.video.type = 'auto';
     }
     if (typeof options.danmaku === 'object' && options.danmaku) {
-        !options.danmaku.user && (options.danmaku.user = 'DIYgod');
+        options.danmaku.user = options.danmaku.user || 'DIYgod';
     }
     if (options.subtitle) {
         if (!options.subtitle.type) {
@@ -57,10 +56,43 @@ export default (options, player) => {
                 options.subtitle.type = 'ass';
             }
         }
-        !options.subtitle.fontSize && (options.subtitle.fontSize = '20px');
-        !options.subtitle.bottom && (options.subtitle.bottom = '40px');
-        !options.subtitle.color && (options.subtitle.color = '#fff');
+        options.subtitle.fontSize = options.subtitle.fontSize || '20px';
+        options.subtitle.bottom = options.subtitle.bottom || '40px';
+        options.subtitle.color = options.subtitle.color || '#fff';
+
+        if (!Array.isArray(options.subtitle.url)) {
+            options.subtitle.url = [{ subtitle: options.subtitle.url, lang: null, name: 'default' }]; // handle null lang or other unknown values in the function!!
+        }
+        const offSubtitle = {
+            subtitle: '',
+            lang: 'off',
+        };
+
+        options.subtitle.url.push(offSubtitle);
+
+        if (options.subtitle.defaultSubtitle) {
+            if (typeof options.subtitle.defaultSubtitle === 'string') {
+                // defaultSubtitle is string, match in lang then name.
+                options.subtitle.index = options.subtitle.url.findIndex((sub) => sub.lang === options.subtitle.defaultSubtitle || sub.name === options.subtitle.defaultSubtitle);
+            } else if (typeof options.subtitle.defaultSubtitle === 'number') {
+                // defaultSubtitle is int, directly use for index
+                options.subtitle.index = options.subtitle.defaultSubtitle;
+            } else {
+                console.warn(`Invalid default Subtitle Index Provided, setting it to default, meaning 'off'`);
+                options.subtitle.index = -1; // means off
+            }
+        }
+
+        // defaultSubtitle not match or not exist or index bound(when defaultSubtitle is int), try browser language.
+        if (options.subtitle.index === -1 || !options.subtitle.index || options.subtitle.index > options.subtitle.url.length - 1) {
+            options.subtitle.index = options.subtitle.url.findIndex((sub) => sub.lang === options.lang);
+        }
+        // browser language not match, default to off title
+        if (options.subtitle.index === -1) {
+            options.subtitle.index = options.subtitle.url.length - 1;
+        }
     }
+
     if (options.video && !options.video.defaultQuality) {
         options.video.defaultQuality = 0;
     }
@@ -73,26 +105,35 @@ export default (options, player) => {
     }
 
     if (options.airplay) {
-        options.airplay = typeof options.airplay === 'string' && options.airplay === 'vendor' ? utils.supportsAirplay() : options.airplay;
+        options.airplay = typeof options.airplay === 'string' ? (options.airplay === 'vendor' ? utils.supportsAirplay() : false) : options.airplay;
     }
 
     if (options.chromecast) {
-        options.chromecast = typeof options.chromecast === 'string' && options.chromecast === 'vendor' ? utils.supportsChromeCast() : options.chromecast;
+        options.chromecast = typeof options.chromecast === 'string' ? (options.chromecast === 'vendor' ? utils.supportsChromeCast() : false) : options.chromecast;
     }
 
     if (options.highlight) {
         options.highlights = {
             marker: options.highlight,
-            mode: 'auto',
+            mode: 'auto', // available 'auto', 'normal', 'top'
         };
         options.highlight = null;
     }
 
     if (options.highlights && options.highlights.vtt) {
-        options.highlights.marker = utils.parseVtt(options.highlights.vtt, (marker) => {
-            player.options.highlights.marker = marker;
-            player.events.trigger('highlight_change');
-        });
+        utils.parseVtt(
+            options.highlights.vtt,
+            (marker) => {
+                if (!player.options.highlights) {
+                    player.options.highlights = {};
+                    console.warn(`Something really weird is going on, there is a bug somewhere! Please report that!`);
+                }
+                player.options.highlights.marker = marker;
+                player.events.trigger('highlight_change');
+            },
+            0,
+            options
+        );
     }
 
     if (options.highlights && !options.highlights.mode) {
@@ -102,7 +143,7 @@ export default (options, player) => {
     if (options.highlights && options.highlights.marker && options.highlights.marker.length <= 0) {
         options.highlights = null;
     }
-    if (options.highlightSkipMode) {
+    if (typeof options.highlightSkipMode !== 'undefined') {
         switch (options.highlightSkipMode.toString().toLowerCase()) {
             case 'smoothprompt':
                 break;
@@ -201,7 +242,7 @@ export default (options, player) => {
                     player.infoPanel.hide();
                     player.hotkeyPanel.triggle();
                 } else {
-                    player.notice(player.tran('hotkey_disabled'));
+                    player.notice(player.translate('hotkey_disabled'));
                 }
             },
         },

@@ -7,7 +7,7 @@ import Danmaku from './danmaku';
 import Events from './events';
 import FullScreen from './fullscreen';
 import User from './user';
-import Subtitle from './subtitle';
+import Subtitles from './subtitles';
 import Bar from './bar';
 import Timer from './timer';
 import Bezel from './bezel';
@@ -31,128 +31,142 @@ class DPlayer {
      * @constructor
      */
     constructor(options) {
-        this.options = handleOption({ preload: options && options.video && options.video.type === 'webtorrent' ? 'none' : 'metadata', ...options }, this);
+        try {
+            this.state = { code: 1, message: 'running', data: 'constructor' };
+            this.options = handleOption({ preload: options && options.video && options.video.type === 'webtorrent' ? 'none' : 'metadata', ...options }, this);
 
-        if (this.options.video.quality) {
-            this.qualityIndex = this.options.video.defaultQuality;
-            this.quality = this.options.video.quality[this.options.video.defaultQuality];
-        }
-        this.languageFeatures = new i18n(this.options.lang);
-        this.tran = this.languageFeatures.tran;
-        this.languageFeatures.checkPresentTranslations(this.options.lang, true);
-        this.events = new Events();
-        this.user = new User(this);
-        this.container = this.options.container;
+            if (this.options.video.quality) {
+                this.qualityIndex = this.options.video.defaultQuality;
+                this.quality = this.options.video.quality[this.options.video.defaultQuality];
+            }
+            this.languageFeatures = new i18n(this.options.lang);
+            this.translate = this.languageFeatures.translate;
+            this.languageFeatures.checkPresentTranslations(this.options.lang, true);
+            this.events = new Events();
+            this.user = new User(this);
+            this.container = this.options.container;
 
-        this.container.classList.add('dplayer');
-        this.container.classList.add(this.options.themeName);
-        if (this.options.disableDarkMode) {
-            this.container.classList.add('nodark');
-        }
-        if (!this.options.danmaku) {
-            this.container.classList.add('dplayer-no-danmaku');
-        }
-        if (this.options.live) {
-            this.container.classList.add('dplayer-live');
-        } else {
-            this.container.classList.remove('dplayer-live');
-        }
-        if (utils.isMobile) {
-            this.container.classList.add('dplayer-mobile');
-        }
-        this.arrow = this.container.offsetWidth <= 500;
-        if (this.arrow) {
-            this.container.classList.add('dplayer-arrow');
-        }
+            this.container.classList.add('dplayer');
+            this.container.classList.add(this.options.themeName);
+            if (this.options.disableDarkMode) {
+                this.container.classList.add('nodark');
+            }
+            if (!this.options.danmaku) {
+                this.container.classList.add('dplayer-no-danmaku');
+            }
+            if (this.options.live) {
+                this.container.classList.add('dplayer-live');
+            } else {
+                this.container.classList.remove('dplayer-live');
+            }
+            if (utils.isMobile) {
+                this.container.classList.add('dplayer-mobile');
+            }
+            this.arrow = this.container.offsetWidth <= 500;
+            if (this.arrow) {
+                this.container.classList.add('dplayer-arrow');
+            }
+            // multi subtitles defaultSubtitle add index, off option
 
-        this.template = new Template({
-            container: this.container,
-            player: this,
-            options: this.options,
-            index: index,
-            tran: this.tran,
-        });
-
-        this.video = this.template.video;
-
-        this.bar = new Bar(this.template, this);
-
-        this.bezel = new Bezel(this.template.bezel);
-
-        this.fullScreen = new FullScreen(this);
-
-        this.controller = new Controller(this);
-
-        if (this.options.danmaku) {
-            this.danmaku = new Danmaku({
+            this.template = new Template({
+                container: this.container,
                 player: this,
-                container: this.template.danmaku,
-                opacity: this.user.get('opacity'),
-                callback: () => {
-                    setTimeout(() => {
-                        this.template.danmakuLoading.style.display = 'none';
-
-                        // autoplay
-                        if (this.options.autoplay) {
-                            this.play();
-                        }
-                    }, 0);
-                },
-                error: (msg) => {
-                    this.notice(msg);
-                },
-                apiBackend: this.options.apiBackend,
-                borderColor: 'var(--dplayer-theme-color)',
-                height: this.arrow ? 24 : 30,
-                time: () => this.video.currentTime,
-                unlimited: this.user.get('unlimited'),
-                api: {
-                    id: this.options.danmaku.id,
-                    address: this.options.danmaku.api,
-                    token: this.options.danmaku.token,
-                    maximum: this.options.danmaku.maximum,
-                    addition: this.options.danmaku.addition,
-                    user: this.options.danmaku.user,
-                    speedRate: this.options.danmaku.speedRate,
-                },
-                events: this.events,
-                tran: (msg) => this.tran(msg),
+                options: this.options,
+                index: index,
+                translate: this.translate,
             });
 
-            this.comment = new Comment(this);
+            this.video = this.template.video;
+
+            this.bar = new Bar(this.template, this);
+
+            this.bezel = new Bezel(this.template.bezel);
+
+            this.fullScreen = new FullScreen(this);
+
+            this.controller = new Controller(this);
+
+            if (this.options.danmaku) {
+                this.danmaku = new Danmaku({
+                    player: this,
+                    container: this.template.danmaku,
+                    opacity: this.user.get('opacity'),
+                    callback: () => {
+                        setTimeout(() => {
+                            this.template.danmakuLoading.style.display = 'none';
+
+                            // autoplay
+                            if (this.options.autoplay) {
+                                this.play();
+                            }
+                        }, 0);
+                    },
+                    error: (msg) => {
+                        this.notice(msg);
+                    },
+                    apiBackend: this.options.apiBackend,
+                    borderColor: 'var(--dplayer-theme-color)',
+                    height: this.arrow ? 24 : 30,
+                    time: () => this.video.currentTime,
+                    unlimited: this.user.get('unlimited'),
+                    api: {
+                        id: this.options.danmaku.id,
+                        address: this.options.danmaku.api,
+                        token: this.options.danmaku.token,
+                        maximum: this.options.danmaku.maximum,
+                        addition: this.options.danmaku.addition,
+                        user: this.options.danmaku.user,
+                        speedRate: this.options.danmaku.speedRate,
+                    },
+                    events: this.events,
+                    translate: (msg) => this.translate(msg),
+                });
+
+                this.comment = new Comment(this);
+            }
+
+            this.setting = new Setting(this);
+            this.plugins = {};
+            this.docClickFun = () => {
+                this.focus = false;
+            };
+            this.containerClickFun = () => {
+                this.focus = true;
+            };
+            document.addEventListener('click', this.docClickFun, true);
+            this.container.addEventListener('click', this.containerClickFun, true);
+
+            this.paused = true;
+
+            this.timer = new Timer(this);
+
+            this.hotkey = new HotKey(this);
+
+            this.infoPanel = new InfoPanel(this);
+
+            this.hotkeyPanel = new HotkeyPanel(this);
+
+            this.contextmenu = new ContextMenu(this);
+
+            this.initVideo(this.video, (this.quality && this.quality.type) || this.options.video.type);
+
+            if (!this.danmaku && this.options.autoplay) {
+                this.play();
+            }
+
+            index++;
+            window.DPLAYER_INSTANCES.push(this);
+            this.state = { code: 0, message: 'ok' }; // TODO implement the right state indicators where they need to be added!
+            /*
+            {code : 0, message:'ok'};
+            {code : 1, message:'warn', data:warning};
+            {code : 2, message:'running', data:stage};
+            {code : 3, message:'error', data:error};
+            */
+        } catch (error) {
+            this.state = { code: 3, message: 'error', data: error };
+            console.error('DPLAYER initialization failed with:', error);
         }
-
-        this.setting = new Setting(this);
-        this.plugins = {};
-        this.docClickFun = () => {
-            this.focus = false;
-        };
-        this.containerClickFun = () => {
-            this.focus = true;
-        };
-        document.addEventListener('click', this.docClickFun, true);
-        this.container.addEventListener('click', this.containerClickFun, true);
-
-        this.paused = true;
-
-        this.timer = new Timer(this);
-
-        this.hotkey = new HotKey(this);
-
-        this.infoPanel = new InfoPanel(this);
-
-        this.hotkeyPanel = new HotkeyPanel(this);
-
-        this.contextmenu = new ContextMenu(this);
-
-        this.initVideo(this.video, (this.quality && this.quality.type) || this.options.video.type);
-
-        if (!this.danmaku && this.options.autoplay) {
-            this.play();
-        }
-
-        index++;
-        window.DPLAYER_INSTANCES.push(this);
     }
 
     /**
@@ -164,9 +178,9 @@ class DPlayer {
             time = Math.min(time, this.video.duration);
         }
         if (this.video.currentTime < time && !silent) {
-            this.notice(`${this.tran('ff', (time - this.video.currentTime).toFixed(0))}`);
+            this.notice(`${this.translate('ff', this.formatTime(time - this.video.currentTime))}`);
         } else if (this.video.currentTime > time && !silent) {
-            this.notice(`${this.tran('rew', (this.video.currentTime - time).toFixed(0))}`);
+            this.notice(`${this.translate('rew', this.formatTime(this.video.currentTime - time))}`);
         }
 
         this.video.currentTime = time;
@@ -177,6 +191,22 @@ class DPlayer {
         this.bar.set('played', time / this.video.duration);
         this.controller.updateChapters({ time, duration: this.video.duration }, this);
         this.template.ptime.innerHTML = utils.secondToTime(time);
+    }
+
+    // TODO implement with in utils.secondToTime
+    formatTime(time) {
+        if (time < 60) {
+            return this.translate('seconds', time.toFixed(0));
+        } else if (time < 60 * 60) {
+            return `${this.translate('minutes', Math.floor(time / 60).toFixed(0))} ${this.translate('seconds', (time % 60).toFixed(0))}`;
+        } else if (time < 60 * 60 * 24) {
+            return `${this.translate('hours', Math.floor(time / (60 * 60)).toFixed(0))} ${this.translate('minutes', Math.floor((time % (60 * 60)) / 60).toFixed(0))} ${this.translate('seconds', (time % 60).toFixed(0))}`;
+        } else {
+            return `${Math.floor(time / (60 * 60 * 24)).toFixed(0)} d ${this.translate('hours', Math.floor((time % (60 * 60 * 24)) / (60 * 60)).toFixed(0))} ${this.translate('minutes', Math.floor((time % (60 * 60)) / 60).toFixed(0))} ${this.translate(
+                'seconds',
+                (time % 60).toFixed(0)
+            )}`;
+        }
     }
 
     /**
@@ -192,7 +222,7 @@ class DPlayer {
         this.template.mobilePlayButton.innerHTML = Icons.pause;
 
         if (!fromNative) {
-            const playedPromise = Promise.resolve(this.video.play());
+            const playedPromise = Promise.resolve(this.video.play()); // TODO see if promise is right here and works!
             playedPromise
                 .catch(() => {
                     this.pause();
@@ -239,7 +269,8 @@ class DPlayer {
     }
 
     switchVolumeIcon() {
-        if (this.volume() >= 0.95) {
+        // 75 % is better, in my opinion
+        if (this.volume() >= 0.75) {
             this.template.volumeIcon.innerHTML = Icons.volumeUp;
         } else if (this.volume() > 0) {
             this.template.volumeIcon.innerHTML = Icons.volumeDown;
@@ -263,7 +294,7 @@ class DPlayer {
                 this.user.set('volume', percentage);
             }
             if (!nonotice) {
-                this.notice(`${this.tran('volume')} ${(percentage * 100).toFixed(0)}%`, { type: 'volume' });
+                this.notice(`${this.translate('volume')} ${(percentage * 100).toFixed(0)}%`, { type: 'volume' });
             }
 
             this.video.volume = percentage;
@@ -290,15 +321,15 @@ class DPlayer {
     /**
      * attach event
      */
-    on(name, callback, delayed) {
-        this.events.on(name, callback, delayed);
+    on(name, callback, once = false, delayed = false) {
+        return this.events.on(name, callback, once, delayed);
     }
 
     /**
      * attach single-event
      */
-    once(name, callback, delayed) {
-        this.events.once(name, callback, delayed);
+    once(name, callback, delayed = false) {
+        return this.events.once(name, callback, delayed);
     }
 
     /**
@@ -499,7 +530,7 @@ class DPlayer {
                 return;
             }
             // duplicate check because this error gets fired twice for some reason
-            this.tran && this.notice && this.type !== 'webtorrent' && this.notice(this.tran('video-failed'), { time: 3000, duplicate: 'check' });
+            this.translate && this.notice && this.type !== 'webtorrent' && this.notice(this.translate('video-failed'), { time: 3000, duplicate: 'check' });
         });
 
         // video end
@@ -545,9 +576,12 @@ class DPlayer {
         }
 
         this.volume(this.user.get('volume'), true, true);
-
         if (this.options.subtitle) {
-            this.subtitle = new Subtitle(this, this.template.subtitle, this.options.subtitle, this.events);
+            // init old single subtitle function(sub show and style)
+            this.subtitles = new Subtitles(this, this.template.subtitle, this.options.subtitle, this.events);
+            if (!this.user.get('subtitle')) {
+                this.subtitles.hide();
+            }
         }
     }
 
@@ -583,7 +617,7 @@ class DPlayer {
         this.video = videoEle;
         this.initVideo(this.video, this.quality.type || this.options.video.type);
         this.seek(this.prevVideo.currentTime);
-        this.notice(`${this.tran('switching-quality', this.quality.name)}`, { time: 3000, mode: `override` });
+        this.notice(`${this.translate('switching-quality', this.quality.name)}`, { time: 3000, mode: `override` });
         this.events.trigger('quality_start', this.quality);
 
         this.on('canplay', () => {
@@ -598,7 +632,7 @@ class DPlayer {
                     this.video.play();
                 }
                 this.prevVideo = null;
-                this.notice(`${this.tran('switched-quality', this.quality.name)}`);
+                this.notice(`${this.translate('switched-quality', this.quality.name)}`);
                 this.switchingQuality = false;
 
                 this.events.trigger('quality_end');
@@ -689,13 +723,13 @@ class DPlayer {
     }
 
     speed(rate) {
-        this.notice(this.tran('speed', `${rate * 100}%`));
+        this.notice(this.translate('speed', `${rate * 100}%`));
         this.video.playbackRate = rate;
     }
 
     balloon(translate, mode) {
         if (this.options.balloon) {
-            return `aria-label="${this.tran(translate)}" data-balloon-pos="${mode}"`;
+            return `aria-label="${this.translate(translate)}" data-balloon-pos="${mode}"`;
         } else {
             return '';
         }

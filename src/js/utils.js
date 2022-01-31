@@ -1,4 +1,5 @@
 import axios from 'axios';
+import api from './api';
 
 const isMobile = /mobile/i.test(window.navigator.userAgent);
 const isChrome = /chrome/i.test(window.navigator.userAgent);
@@ -159,8 +160,52 @@ const utils = {
                 return 'right';
         }
     },
+
+    deepCopyObject(obj) {
+        return JSON.parse(JSON.stringify(obj));
+    },
+
     // parsing according to web standards (https://developer.mozilla.org/en-US/docs/Web/API/WebVTT_API)
-    parseVtt(vtt_url, callback, startOrEnd = 0) {
+    parseVtt(vtt_url, callback, startOrEnd = 0, options = null) {
+        if (vtt_url === 'API' && options !== null) {
+            const video_url = new URL(options.video.url);
+            // TODO this has to be customizable, to match it between naming conventions and file names!!!
+            const parameter =
+                options.video.type === 'hls'
+                    ? video_url.pathname
+                          .substring(0, video_url.pathname.lastIndexOf('/'))
+                          .split('/')
+                          .filter((str) => str !== '')
+                          .join('-')
+                    : video_url.pathname.substring(video_url.pathname.lastIndexOf('/') + 1);
+            // TODO here are some specs!
+            // TODO version, 1 at the moment, get either reference or nothing/everything else means raw data!, type, vtt, or chapter, or thumbnails or etc TODO
+            api.backend({
+                url: options.API_URL,
+                query: {
+                    version: '1',
+                    get: 'reference',
+                    type: 'vtt',
+                    parameter,
+                    mode: 'regex',
+                },
+            })
+                .then((data) => {
+                    if (data !== undefined || data !== null) {
+                        this.parseVtt(data, callback, startOrEnd);
+                    } else {
+                        // we don't need to print an error, the server reported, that there are no vtts available, nothing severe happened
+                    }
+                })
+                .catch((error) => {
+                    console.error(`Error in API request for the Vtt Url!`, error);
+                    return null;
+                });
+            return 'processing API request';
+        } else if (vtt_url === 'API' && options.API_URL === null) {
+            console.warn(`Tried to pass 'API' as vtt_url, but didn't specify 'API_URL'!`);
+            return;
+        }
         const marker = [];
         axios
             .get(vtt_url)
@@ -200,8 +245,8 @@ const utils = {
                     }
                 });
             })
-            .catch((e) => {
-                console.error(`Couldn't parse Vtt Url! Fetching Error!`, e);
+            .catch((error) => {
+                console.error(`Couldn't parse Vtt Url! Fetching Error!`, error);
                 return null;
             })
             .finally(() => {

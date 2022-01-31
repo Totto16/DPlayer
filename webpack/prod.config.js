@@ -52,6 +52,18 @@ module.exports = {
                         options: {
                             cacheDirectory: true,
                             presets: ['@babel/preset-env'],
+                            plugins: [
+                                [
+                                    '@babel/plugin-transform-runtime',
+                                    {
+                                        absoluteRuntime: false,
+                                        corejs: false,
+                                        helpers: false,
+                                        regenerator: true,
+                                        version: '^7.0.0',
+                                    },
+                                ],
+                            ],
                         },
                     },
                 ],
@@ -77,16 +89,17 @@ module.exports = {
                     'sass-loader',
                 ],
             },
+            // using https://webpack.js.org/guides/asset-modules , for to do see dev.webpack.js
             {
-                test: /\.(png|jpg)$/,
-                loader: 'url-loader',
-                options: {
-                    limit: 40000,
-                },
+                test: /\.(jpe?g|png|gif)$/i,
+                type: 'asset/resource',
             },
             {
-                test: /\.svg$/,
-                loader: 'svg-inline-loader',
+                test: /\.svg$/i,
+                type: 'asset/inline',
+                generator: {
+                    dataUrl: (content) => content.toString(), // important!!!
+                },
             },
             {
                 test: /\.art$/,
@@ -99,6 +112,8 @@ module.exports = {
         new webpack.DefinePlugin({
             DPLAYER_VERSION: `"${require('../package.json').version}"`,
             GIT_TIME: JSON.stringify(gitRevisionPlugin.lastcommitdatetime()),
+            GIT_HASH: JSON.stringify(gitRevisionPlugin.version()),
+            BUILD_TIME: `"${new Date().toISOString()}"`,
         }),
     ],
 

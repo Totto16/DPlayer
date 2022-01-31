@@ -61,12 +61,12 @@ class HotkeyPanel {
             buttonAttributes: [
                 ...this.hotkeys.all.map((obj) => ({
                     attribute: 'title',
-                    value: this.player.tran(obj.tooltip),
+                    value: this.player.translate(obj.tooltip),
                     buttons: obj.key,
                 })),
                 /*      ...this.hotkeys.map((obj) => ({
                     attribute: 'aria-label',
-                    value: this.player.tran(obj.tooltip),
+                    value: this.player.translate(obj.tooltip),
                     buttons: obj.key,
                 })),
                 ...this.hotkeys.map((obj) => ({
