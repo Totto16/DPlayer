@@ -1,5 +1,5 @@
 import utils from './utils';
-
+// TODO more use cases, let the ser set some values manually and support more customization (like skip option, subtitle pos color etc, balloons, Langauge (essentially most "theme" options that are passed into dplayer at start (or their defaults)))
 class User {
     constructor(player) {
         this.storageName = {
@@ -7,7 +7,7 @@ class User {
             volume: 'dplayer-volume',
             unlimited: 'dplayer-danmaku-unlimited',
             danmaku: 'dplayer-danmaku-show',
-            subtitle: 'dplayer-subtitle-show',
+            subtitle: 'dplayer-subtitles-show',
         };
         this.default = {
             opacity: 0.7,

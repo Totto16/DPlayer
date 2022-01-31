@@ -17,6 +17,6 @@
     <source src="{{ url }}">
     {{ /if}}
     {{ if enableSubtitle }}
-    <track class="dplayer-subtrack" kind="metadata" default src="{{ typeof subtitle.url === 'string' ? subtitle.url : subtitle.url[subtitle.index].subtitle }}"></track>
+    <track class="dplayer-subtrack" kind="metadata" default src="{{  subtitle.url.length <= 2 ? subtitle.url[0].subtitle : subtitle.url[subtitle.index].subtitle }}"></track>
     {{ /if }}
 </video>

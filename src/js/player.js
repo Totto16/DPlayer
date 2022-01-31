@@ -7,7 +7,6 @@ import Danmaku from './danmaku';
 import Events from './events';
 import FullScreen from './fullscreen';
 import User from './user';
-import Subtitle from './subtitle';
 import Subtitles from './subtitles';
 import Bar from './bar';
 import Timer from './timer';
@@ -68,41 +67,6 @@ class DPlayer {
                 this.container.classList.add('dplayer-arrow');
             }
             // multi subtitles defaultSubtitle add index, off option
-            if (this.options.subtitle) {
-                if (Array.isArray(this.options.subtitle.url)) {
-                    const offSubtitle = {
-                        subtitle: '',
-                        lang: 'off',
-                    };
-                    this.options.subtitle.url.push(offSubtitle);
-                    if (this.options.subtitle.defaultSubtitle) {
-                        if (typeof this.options.subtitle.defaultSubtitle === 'string') {
-                            // defaultSubtitle is string, match in lang then name.
-                            this.options.subtitle.index = this.options.subtitle.url.findIndex((sub) =>
-                                /* if (sub.lang === this.options.subtitle.defaultSubtitle) {
-                                return true;
-                            } else if (sub.name === this.options.subtitle.defaultSubtitle) {
-                                return true;
-                            } else {
-                                return false;
-                            } */
-                                sub.lang === this.options.subtitle.defaultSubtitle ? true : sub.name === this.options.subtitle.defaultSubtitle ? true : false
-                            );
-                        } else if (typeof this.options.subtitle.defaultSubtitle === 'number') {
-                            // defaultSubtitle is int, directly use for index
-                            this.options.subtitle.index = this.options.subtitle.defaultSubtitle;
-                        }
-                    }
-                    // defaultSubtitle not match or not exist or index bound(when defaultSubtitle is int), try browser language.
-                    if (this.options.subtitle.index === -1 || !this.options.subtitle.index || this.options.subtitle.index > this.options.subtitle.url.length - 1) {
-                        this.options.subtitle.index = this.options.subtitle.url.findIndex((sub) => sub.lang === this.options.lang);
-                    }
-                    // browser language not match, default off title
-                    if (this.options.subtitle.index === -1) {
-                        this.options.subtitle.index = this.options.subtitle.url.length - 1;
-                    }
-                }
-            }
 
             this.template = new Template({
                 container: this.container,
@@ -614,13 +578,9 @@ class DPlayer {
         this.volume(this.user.get('volume'), true, true);
         if (this.options.subtitle) {
             // init old single subtitle function(sub show and style)
-            this.subtitle = new Subtitle(this, this.template.subtitle, this.options.subtitle, this.events);
-            // init multi subtitles function(sub update), normal subtitles with one choice is similar to the choice on/off with simple check this is implementable in a single class!
-            if (Array.isArray(this.options.subtitle.url)) {
-                this.subtitles = new Subtitles(this);
-            }
+            this.subtitles = new Subtitles(this, this.template.subtitle, this.options.subtitle, this.events);
             if (!this.user.get('subtitle')) {
-                this.subtitle.hide();
+                this.subtitles.hide();
             }
         }
     }

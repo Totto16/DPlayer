@@ -88,12 +88,12 @@ class Template {
         this.cameraButton = this.container.querySelector('.dplayer-camera-icon');
         this.airplayButton = this.container.querySelector('.dplayer-airplay-icon');
         this.chromecastButton = this.container.querySelector('.dplayer-chromecast-icon');
-        this.subtitleButton = this.container.querySelector('.dplayer-subtitle-icon');
-        this.subtitleButtonInner = this.container.querySelector('.dplayer-subtitle-icon .dplayer-icon-content');
+        this.subtitleButton = this.container.querySelector('.dplayer-subtitles-icon');
+        this.subtitleButtonInner = this.container.querySelector('.dplayer-subtitles-icon .dplayer-icon-content');
         this.subtitlesButton = this.container.querySelector('.dplayer-subtitles-icon');
         this.subtitlesBox = this.container.querySelector('.dplayer-subtitles-box');
         this.subtitlesItem = this.container.querySelectorAll('.dplayer-subtitles-item');
-        this.subtitle = this.container.querySelector('.dplayer-subtitle');
+        this.subtitle = this.container.querySelector('.dplayer-subtitles-container');
         this.subtrack = this.container.querySelector('.dplayer-subtrack');
         this.qualityButton = this.container.querySelector('.dplayer-quality-icon');
         this.barPreview = this.container.querySelector('.dplayer-bar-preview');

@@ -1,5 +1,8 @@
 /* 
 How to define your custom Style, you have to load this style sheet yourself!
+TODO: improve this schemes, and also the colors that get used more for the same purpose can be merged
+
+
  */
 
 /* the light or default configuartion */
@@ -81,8 +84,8 @@ How to define your custom Style, you have to load this style sheet yourself!
         --dplayer-notice-text: rgb(255, 255, 255);
         --dplayer-svg-paths-fill: rgb(255, 255, 255);
         --dplayer-prefix-wk-fullscreen: rgb(0, 0, 0);
-        --dplayer-subtitle-text-color: rgb(255, 255, 255);
-        --dplayer-subtitle-box-sh: rgba(0, 0, 0, 0.5);
+        --dplayer-subtitles-text-color: rgb(255, 255, 255);
+        --dplayer-subtitles-box-sh: rgba(0, 0, 0, 0.5);
         --dplayer-video-wrap-bk: rgb(0, 0, 0);
         --dplayer-theme-color: rgb(183, 218, 255);
         --dplayer-label-bk: rgb(255, 255, 255);
@@ -139,8 +142,8 @@ How to define your custom Style, you have to load this style sheet yourself!
         --dplayer-notice-text: rgb(19, 19, 19);
         --dplayer-svg-paths-fill: rgb(0, 0, 0);
         --dplayer-prefix-wk-fullscreen: rgb(0, 0, 0);
-        --dplayer-subtitle-text-color: rgb(255, 255, 255);
-        --dplayer-subtitle-box-sh: rgba(0, 0, 0, 0.5);
+        --dplayer-subtitles-text-color: rgb(255, 255, 255);
+        --dplayer-subtitles-box-sh: rgba(0, 0, 0, 0.5);
         --dplayer-video-wrap-bk: rgb(0, 0, 0);
         --dplayer-theme-color: rgb(21, 17, 145);
         --dplayer-label-bk: rgb(255, 255, 255);
@@ -195,8 +198,8 @@ How to define your custom Style, you have to load this style sheet yourself!
         --dplayer-notice-text: rgb(255, 255, 255);
         --dplayer-svg-paths-fill: rgb(255, 255, 255);
         --dplayer-prefix-wk-fullscreen: rgb(0, 0, 0);
-        --dplayer-subtitle-text-color: rgb(255, 255, 255);
-        --dplayer-subtitle-box-sh: rgba(0, 0, 0, 0.5);
+        --dplayer-subtitles-text-color: rgb(255, 255, 255);
+        --dplayer-subtitles-box-sh: rgba(0, 0, 0, 0.5);
         --dplayer-video-wrap-bk: rgb(0, 0, 0);
         --dplayer-theme-color: rgb(183, 218, 255);
         --dplayer-label-bk: rgb(255, 255, 255);

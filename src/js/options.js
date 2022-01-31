@@ -59,7 +59,42 @@ export default (options, player) => {
         options.subtitle.fontSize = options.subtitle.fontSize || '20px';
         options.subtitle.bottom = options.subtitle.bottom || '40px';
         options.subtitle.color = options.subtitle.color || '#fff';
+
+        if (!Array.isArray(options.subtitle.url)) {
+            options.subtitle.url = [{subtitle:options.subtitle.url, lang:null, name:'default'}]; // handle null lang or other unknown values in the function!!
+        }
+        const offSubtitle = {
+            subtitle: '',
+            lang: 'off',
+        };
+
+        options.subtitle.url.push(offSubtitle);
+
+        if (options.subtitle.defaultSubtitle) {
+            if (typeof options.subtitle.defaultSubtitle === 'string') {
+                    // defaultSubtitle is string, match in lang then name.
+                options.subtitle.index = options.subtitle.url.findIndex((sub) =>
+                    sub.lang === options.subtitle.defaultSubtitle || sub.name === options.subtitle.defaultSubtitle
+                );
+            } else if (typeof options.subtitle.defaultSubtitle === 'number') {
+                // defaultSubtitle is int, directly use for index
+                options.subtitle.index = options.subtitle.defaultSubtitle;
+            } else {
+                console.warn(`Invalid default Subtitle Index Provided, setting it to default, meaning 'off'`);
+                options.subtitle.index = -1; // means off
+            }
+        }
+
+         // defaultSubtitle not match or not exist or index bound(when defaultSubtitle is int), try browser language.
+        if (options.subtitle.index === -1 || !options.subtitle.index || options.subtitle.index > options.subtitle.url.length - 1) {
+            options.subtitle.index = options.subtitle.url.findIndex((sub) => sub.lang === options.lang);
+        }
+        // browser language not match, default to off title
+        if (options.subtitle.index === -1) {
+            options.subtitle.index = options.subtitle.url.length - 1;
+        }
     }
+
     if (options.video && !options.video.defaultQuality) {
         options.video.defaultQuality = 0;
     }

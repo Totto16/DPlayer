@@ -120,7 +120,7 @@ function initPlayers() {
             url: 'https://s-sh-17-dplayercdn.oss.dogecdn.com/hikarunara.vtt',
             type: 'webvtt',
             fontSize: '25px',
-            bottom: '10%',
+            bottom: '5%',
             color: '#b7daff'
         },
         theme:"red",
@@ -161,10 +161,10 @@ function initPlayers() {
                     name: 'github',
                 },
             ],
-            defaultSubtitle: 1, // I think -1 will work for off?
+            defaultSubtitle: 1, // -1 or off, or undefined work for "off"
             type: 'webvtt',
             fontSize: '25px',
-            bottom: '10%',
+            bottom: '5%',
             color: '#b7daff'
         },
         theme:"red",

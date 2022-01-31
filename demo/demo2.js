@@ -49,10 +49,10 @@ function initPlayers() {
         subtitle: {
             url: 'subtitle test'
         },
-        danmaku: {
+      /*   danmaku: {
             id: '9E2E3368B56CDBB4',
             api: 'https://api.prprpr.me/dplayer/'
-        }
+        } */
     });
     // dp1
     window.dp1 = new DPlayer({
@@ -102,13 +102,13 @@ function initPlayers() {
                     name: 'github',
                 },
             ],
-            defaultSubtitle: 7,
+            defaultSubtitle: 1,
             type: 'webvtt',
             fontSize: '25px',
-            bottom: '10%',
+            bottom: '5%',
             color: '#b7daff'
         },
-        danmaku: {
+      /*   danmaku: {
             id: '9E2E3368B56CDBB4',
             api: 'https://api.prprpr.me/dplayer/',
             token: 'tokendemo',
@@ -116,7 +116,7 @@ function initPlayers() {
             user: 'DIYgod',
             bottom: '15%',
             unlimited: true
-        },
+        }, */
         contextmenu: [
             {
                 text: 'custom contextmenu',

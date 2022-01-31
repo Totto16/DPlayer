@@ -9,7 +9,7 @@
     <div class="dplayer-danmaku"{{ if options.danmaku && options.danmaku.bottom }} style="margin-bottom:{{ options.danmaku.bottm }}"{{ /if }}>
         <div class="dplayer-danmaku-item dplayer-danmaku-item--demo"></div>
     </div>
-    <div class="dplayer-subtitle"></div>
+    <div class="dplayer-subtitles-container"></div>
     <div class="dplayer-bezel">
         <span class="dplayer-bezel-icon"></span>
         {{ if options.danmaku }}
@@ -131,22 +131,22 @@
             </button>
         </div>
         {{ if options.subtitle }}
-        {{ if (typeof options.subtitle.url === 'string') }}
-        <div class="dplayer-subtitle-btn">
-            <button class="dplayer-icon dplayer-subtitle-icon" {{@ balloon('hide-subs','up')}}>
+        {{ if (options.subtitle.url.length <= 2) }}
+        <div class="dplayer-subtitles-btn">
+            <button class="dplayer-icon dplayer-subtitles-icon" {{@ balloon('hide-subs','up')}}>
                 <span class="dplayer-icon-content">{{@ icons.subtitle }}</span>
             </button>
         </div>
         {{ else }}
-        <div class="dplayer-subtitles">
-            <button class="dplayer-icon dplayer-subtitles-icon" data-balloon="{{ translate('subtitle') }}" data-balloon-pos="up">
+        <div class="dplayer-subtitles-multiple dplayer-subtitles-btn">
+            <button class="dplayer-icon dplayer-subtitles-icon" {{@ balloon('subtitle','up')}}>
                 <span class="dplayer-icon-content">{{@ icons.subtitle }}</span>
             </button>
             <div class="dplayer-subtitles-box">
                 <div class="dplayer-subtitles-panel">
                     {{ each options.subtitle.url }}
                         <div class="dplayer-subtitles-item" data-subtitle="{{ $value.subtitle }}">
-                            <!-- if lang, show translate(lang). if lang and name, show name + (translate(lang)). if name, show name. off option use lang for translation. -->
+                            <!-- if lang, show translate(lang). if lang and name, show name + (translate(lang)). if name, show name. off option uses lang for translation. -->
                             <span class="dplayer-label">{{ $value.lang ? $value.name ?  $value.name+' ('+translate($value.lang)+')' : translate($value.lang) : $value.name }}</span>
                         </div>
                     {{ /each }}

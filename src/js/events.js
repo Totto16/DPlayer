@@ -52,11 +52,11 @@ class Events {
             'subtitle_show',
             'subtitle_hide',
             'subtitle_change',
+            'subtitle_switch',
             'chapter',
             'highlight_change',
             'cancelskip',
-            'ranges_change',
-            'all',
+            'ranges_change'
         ];
     }
 
