@@ -1,3 +1,5 @@
+import utils from './utils.js';
+
 // all available options!
 const keys = {
     32: 'togglePlayer',
@@ -17,8 +19,6 @@ const keys = {
     67: 'speedDown',
     78: 'speedNormal',
 };
-
-// TODO(#78): add option for subtitle select, disabled if no subtitles are loaded, add toggle and swichting hotkeys
 
 const advancedKeys = {
     ' ': 'togglePlayer',
@@ -47,12 +47,15 @@ const advancedKeys = {
 class HotKey {
     constructor(player) {
         this.player = player;
+
         this.doHotKeyHandler = this.doHotKey.bind(this);
         if (this.player.options.hotkey) {
             document.addEventListener('keydown', this.doHotKeyHandler);
-            this.enabledKeys = { keys, advancedKeys };
+            this.enabledKeys = { keys: utils.deepCopyObject(keys), advancedKeys: utils.deepCopyObject(advancedKeys) };
             this.disabledKeys = { keys: {}, advancedKeys: {} };
             // fullscreen handling
+
+            // TODO(#79): if no highlights were found, disbale the hotkeys for that!
             switch (this.player.options.fullScreenPolicy.toString().toLowerCase()) {
                 case 'onlynormal':
                     this.disabledKeys.keys = { ...this.disabledKeys.keys, 87: keys[87] };
@@ -74,7 +77,6 @@ class HotKey {
                     break;
             }
             // TODO(#76): debug an issue regarding multiple instances of inherited "advancedKeys" objects (their getting deleted) , maybe a deep copy solves the problem!
-            console.log(this.disabledKeys, this.enabledKeys.keys);
         }
     }
 
@@ -306,7 +308,6 @@ class HotKey {
             const key = String.fromCharCode(index).toLowerCase().replace(' ', '{space}').replace('%', '{arrowleft}').replace('&', '{arrowup}').replace("'", '{arrowright}').replace('(', '{arrowdown}');
             return { key, tooltip: name, keyCode: index };
         });
-        console.log(this.disabledKeys);
         const disabled = Object.entries(this.disabledKeys.keys).map((a) => {
             const [index, name] = a;
             const key = String.fromCharCode(index).toLowerCase().replace(' ', '{space}').replace('%', '{arrowleft}').replace('&', '{arrowup}').replace("'", '{arrowright}').replace('(', '{arrowdown}');
