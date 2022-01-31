@@ -11,108 +11,102 @@ class Subtitles {
         this.init();
     }
 
-
     init() {
-            switch (this.options.type) {
-                case 'webvtt':
-                    if (this.multiple) {
-                        this.player.template.mask.addEventListener('click', () => {
-                            this.hideModal(); // also acts like the close button click, since its mask is over that
-                        });
-            
-            
-                        for (let i = 0; i < this.player.template.subtitlesItem.length; i++) {
-                            this.player.template.subtitlesItem[i].addEventListener('click', () => {
-                                if (this.subtitles[i].lang === "off") {
-                                    if (!this.container.classList.contains('dplayer-subtitles-hide')) {
-                                        this.hide();
-                                    }
-                                } else {
-                                    if (this.container.classList.contains('dplayer-subtitles-hide')) {
-                                        this.show();
-                                    }
-                                    if (this.player.options.subtitle.index !== i) {
-                                        // clear subtitle show for new subtitle don't have now duration time. If don't, will display last subtitle.
-                                        this.player.template.subtitle.innerHTML = `<p></p>`;
-                                        // update video track src
-                                        this.player.template.subtrack.src = this.player.template.subtitlesItem[i].dataset.subtitle;
-                                        // update options current subindex for reload (such as changeQuality)
-                                        this.player.options.subtitle.index = i;
-                                        this.events.trigger('subtitle_change');
-                                    }
-            
-                                }
-                                this.hideModal();
-            
-                            });
-                        }
-            
-            
-                    }
+        switch (this.options.type) {
+            case 'webvtt':
+                if (this.multiple) {
+                    this.player.template.mask.addEventListener('click', () => {
+                        this.hideModal(); // also acts like the close button click, since its mask is over that
+                    });
 
-
-                    this.container.style.fontSize = this.options.fontSize;
-                    this.container.style.bottom = this.options.bottom;
-                    this.container.style.color = this.options.color;
-
-                    if (typeof this.video === 'undefined') { // for security reasons!
-                        console.error('[CRITICAL] BUG in Subtitle!');
-                        return;
-                    }
-
-                    if (this.video.textTracks && this.video.textTracks[0]) {
-                        const track = this.video.textTracks[0];
-                        track.oncuechange = () => {
-                            const cue = track.activeCues[0];
-                            this.container.innerHTML = '';
-                            if (cue) {
-                                const template = document.createElement('div');
-                                template.appendChild(cue.getCueAsHTML());
-                                const trackHtml = template.innerHTML
-                                    .split(/\r?\n/)
-                                    .map((item) => `<p>${item}</p>`)
-                                    .join('');
-                                this.container.innerHTML = trackHtml;
-                            }
-                            this.events.trigger('subtitle_change');
-                        };
-                    }
-                    if (!this.player.user.get('subtitle')) {
-                        this.hide();
-                    }
-
-                    break;
-                case 'ass':
-                    if (this.multiple) {
-                        console.error("Currently only webvtt type is supported by multiple Subtitles!");
-                        return;
-                    }
-
-                    if (window.ass) {
-                        const options = {
-                            video: this.player.video,
-                            subUrl: this.options.url,
-                        };
-                        window.ass(
-                            options,
-                            this.player,
-                            () => {
-                                if (!this.player.user.get('subtitle')) {
+                    for (let i = 0; i < this.player.template.subtitlesItem.length; i++) {
+                        this.player.template.subtitlesItem[i].addEventListener('click', () => {
+                            if (this.subtitles[i].lang === 'off') {
+                                if (!this.container.classList.contains('dplayer-subtitles-hide')) {
                                     this.hide();
                                 }
-                            },
-                            (SO) => {
-                                this.instance = SO;
+                            } else {
+                                if (this.container.classList.contains('dplayer-subtitles-hide')) {
+                                    this.show();
+                                }
+                                if (this.player.options.subtitle.index !== i) {
+                                    // clear subtitle show for new subtitle don't have now duration time. If don't, will display last subtitle.
+                                    this.player.template.subtitle.innerHTML = `<p></p>`;
+                                    // update video track src
+                                    this.player.template.subtrack.src = this.player.template.subtitlesItem[i].dataset.subtitle;
+                                    // update options current subindex for reload (such as changeQuality)
+                                    this.player.options.subtitle.index = i;
+                                    this.events.trigger('subtitle_change');
+                                }
                             }
-                        );
-                    } else {
-                        this.player.notice("Error: Can't find ass support.", { warn: true });
+                            this.hideModal();
+                        });
                     }
-                    break;
-                default:
-                    console.warn(`Not supported Subtitle type: ${this.options.type}`);
-                    break;
-            }
+                }
+
+                this.container.style.fontSize = this.options.fontSize;
+                this.container.style.bottom = this.options.bottom;
+                this.container.style.color = this.options.color;
+
+                if (typeof this.video === 'undefined') {
+                    // for security reasons!
+                    console.error('[CRITICAL] BUG in Subtitle!');
+                    return;
+                }
+
+                if (this.video.textTracks && this.video.textTracks[0]) {
+                    const track = this.video.textTracks[0];
+                    track.oncuechange = () => {
+                        const cue = track.activeCues[0];
+                        this.container.innerHTML = '';
+                        if (cue) {
+                            const template = document.createElement('div');
+                            template.appendChild(cue.getCueAsHTML());
+                            const trackHtml = template.innerHTML
+                                .split(/\r?\n/)
+                                .map((item) => `<p>${item}</p>`)
+                                .join('');
+                            this.container.innerHTML = trackHtml;
+                        }
+                        this.events.trigger('subtitle_change');
+                    };
+                }
+                if (!this.player.user.get('subtitle')) {
+                    this.hide();
+                }
+
+                break;
+            case 'ass':
+                if (this.multiple) {
+                    console.error('Currently only webvtt type is supported by multiple Subtitles!');
+                    return;
+                }
+
+                if (window.ass) {
+                    const options = {
+                        video: this.player.video,
+                        subUrl: this.options.url,
+                    };
+                    window.ass(
+                        options,
+                        this.player,
+                        () => {
+                            if (!this.player.user.get('subtitle')) {
+                                this.hide();
+                            }
+                        },
+                        (SO) => {
+                            this.instance = SO;
+                        }
+                    );
+                } else {
+                    this.player.notice("Error: Can't find ass support.", { warn: true });
+                }
+                break;
+            default:
+                console.warn(`Not supported Subtitle type: ${this.options.type}`);
+                break;
+        }
     }
 
     showModal() {
@@ -122,7 +116,6 @@ class Subtitles {
             this.player.controller.disableAutoHide = true;
         }
     }
-
 
     hideModal() {
         if (this.multiple) {
@@ -189,7 +182,6 @@ class Subtitles {
         }
     }
 
-
     toggle() {
         if (this.multiple) {
             this.toggleModal();
@@ -224,8 +216,6 @@ class Subtitles {
             this.instance.dispose();
         }
     }
-
-
 }
 
 export default Subtitles;

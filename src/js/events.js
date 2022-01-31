@@ -56,7 +56,7 @@ class Events {
             'chapter',
             'highlight_change',
             'cancelskip',
-            'ranges_change'
+            'ranges_change',
         ];
     }
 
