@@ -89,7 +89,7 @@ module.exports = {
                     'sass-loader',
                 ],
             },
-            // using https://webpack.js.org/guides/asset-modules TODO: test png and jpg
+            // using https://webpack.js.org/guides/asset-modules , for to do see dev.webpack.js
             {
                 test: /\.(jpe?g|png|gif)$/i,
                 type: 'asset/resource',
