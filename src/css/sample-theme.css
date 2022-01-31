@@ -1,9 +1,10 @@
 /* 
 How to define your custom Style, you have to load this style sheet yourself!
-TODO: improve this schemes, and also the colors that get used more for the same purpose can be merged
-
-
  */
+
+/* TODO(#73): improve this schemes, and also the colors that get used more for the same purpose can be merged*/
+
+
 
 /* the light or default configuartion */
 @media (prefers-color-scheme: light) {
