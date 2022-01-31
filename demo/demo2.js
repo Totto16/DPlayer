@@ -105,7 +105,7 @@ function initPlayers() {
             defaultSubtitle: 1,
             type: 'webvtt',
             fontSize: '25px',
-            bottom: '5%',
+            bottom: '10%',
             color: '#b7daff'
         },
       /*   danmaku: {

@@ -160,6 +160,11 @@ const utils = {
                 return 'right';
         }
     },
+
+    deepCopyObject(obj) {
+        return JSON.parse(JSON.stringify(obj));
+    },
+
     // parsing according to web standards (https://developer.mozilla.org/en-US/docs/Web/API/WebVTT_API)
     parseVtt(vtt_url, callback, startOrEnd = 0, options = null) {
         if (vtt_url === 'API' && options !== null) {
