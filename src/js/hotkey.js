@@ -18,6 +18,8 @@ const keys = {
     78: 'speedNormal',
 };
 
+// TODO(#78): add option for subtitle select, disabled if no subtitles are loaded, add toggle and swichting hotkeys
+
 const advancedKeys = {
     ' ': 'togglePlayer',
     ArrowLeft: 'left',
