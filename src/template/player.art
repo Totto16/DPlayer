@@ -146,6 +146,8 @@
                 <div class="dplayer-subtitles-panel">
                     {{ each options.subtitle.url }}
                         <div class="dplayer-subtitles-item" data-subtitle="{{ $value.subtitle }}">
+                            <!-- TODO(#77): better langauge support, maybe language Flags, (lang) is kinda strange, especially when chinese(simplified) is also in the languages-->
+                            
                             <!-- if lang, show translate(lang). if lang and name, show name + (translate(lang)). if name, show name. off option uses lang for translation. -->
                             <span class="dplayer-label">{{ $value.lang ? $value.name ?  $value.name+' ('+translate($value.lang)+')' : translate($value.lang) : $value.name }}</span>
                         </div>
