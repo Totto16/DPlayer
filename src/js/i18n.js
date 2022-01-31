@@ -29,6 +29,10 @@ function i18n(lang) {
         } else {
             result = standard[key];
         }
+        if (typeof model[key] === 'undefined') {
+            console.error(`Couldn't find key: ${key}`);
+            return 'ERROR';
+        }
         if (model[key].length > 0 && replacement) {
             result = result.replace(model[key][0].symbol, replacement);
         }
@@ -73,6 +77,8 @@ const model = {
     fullscreen: [],
     'web-fullscreen': [],
     send: [],
+    subtitle: [],
+    'subtitle-off': [],
     'saved-screenshot': [{ symbol: '%n', name: 'Screenshot name', example: 'Awesome_Video_24_04.png' }],
     'screenshot-raw': [],
     airplay: [],
@@ -105,6 +111,12 @@ const model = {
     skip: [],
     skip_chapter: [{ symbol: '%c', name: 'Chapter name', example: 'Opening' }],
     cancel: [],
+    // languages available!
+    en: [],
+    'zh-cn': [],
+    'zh-tw': [],
+    'ko-kr': [],
+    de: [],
 };
 
 // Standard english translations

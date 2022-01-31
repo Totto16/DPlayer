@@ -90,7 +90,19 @@ function initPlayers() {
             type: 'auto'
         },
         subtitle: {
-            url: 'https://s-sh-17-dplayercdn.oss.dogecdn.com/hikarunara.vtt',
+            url: [
+                {
+                    subtitle: 'https://s-sh-17-dplayercdn.oss.dogecdn.com/hikarunara.vtt',
+                    lang: 'zh-cn',
+                    name: '光',
+                },
+                {
+                    subtitle: 'https://gist.githubusercontent.com/samdutton/ca37f3adaf4e23679957b8083e061177/raw/e19399fbccbc069a2af4266e5120ae6bad62699a/sample.vtt',
+                    lang: 'en',
+                    name: 'github',
+                },
+            ],
+            defaultSubtitle: 7,
             type: 'webvtt',
             fontSize: '25px',
             bottom: '10%',

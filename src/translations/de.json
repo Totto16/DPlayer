@@ -64,5 +64,12 @@
     "skipped_chapter": "Kapitel %c übersprungen",
     "skip": "Überspringen",
     "cancel": "Abbrechen",
-    "skip_chapter": "Kapitel %c überspringen"
+    "skip_chapter": "Kapitel %c überspringen",
+    "subtitle": "Untertitel",
+    "subtitle-off": "Untertitel Ausschalten",
+    "en": "Englisch",
+    "zh-cn": "Chinesisch(Vereinfacht)",
+    "zh-tw": "Chinesisch(Traditionell)",
+    "ko-kr": "Koreanisch",
+    "de": "Deutsch"
 }

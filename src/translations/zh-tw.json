@@ -64,5 +64,12 @@
     "skipped_chapter": "Skipped chapter %c",
     "skip": "Skip",
     "cancel": "Cancel",
-    "skip_chapter": "Skip chapter %c"
+    "skip_chapter": "Skip chapter %c",
+    "subtitle": "字幕",
+    "subtitle-off": "Turn Off Subtitle",
+    "en": "英語",
+    "zh-cn": "簡體中文",
+    "zh-tw": "繁體中文",
+    "ko-kr": "Korean",
+    "de": "German"
 }

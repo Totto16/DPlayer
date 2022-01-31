@@ -16,6 +16,11 @@ class Subtitle {
                 this.container.style.bottom = this.options.bottom;
                 this.container.style.color = this.options.color;
 
+                if (typeof this.video === 'undefined') {
+                    console.error('[CRITICAL] BUG in Subtitle!');
+                    return;
+                }
+
                 if (this.video.textTracks && this.video.textTracks[0]) {
                     const track = this.video.textTracks[0];
 

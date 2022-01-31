@@ -23,7 +23,7 @@ const ass = async (options, player, onReady, callback) => {
         availableFonts: allFonts,
         onReady,
         onError: (err) => {
-            console.log(err);
+            console.error(err);
         },
         debug: true,
         lossyRender: true, // is in beta but doesn't freeze the player, may be skipping some subs!

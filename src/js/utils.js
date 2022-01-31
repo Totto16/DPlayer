@@ -165,7 +165,14 @@ const utils = {
         if (vtt_url === 'API' && options !== null) {
             const video_url = new URL(options.video.url);
             // TODO this has to be customizable, to match it between naming conventions and file names!!!
-            const parameter = options.video.type === 'hls' ?  video_url.pathname.substring(0, video_url.pathname.lastIndexOf('/')).split("/").filter((str) => str !== "").join("-") : video_url.pathname.substring(video_url.pathname.lastIndexOf('/') + 1);
+            const parameter =
+                options.video.type === 'hls'
+                    ? video_url.pathname
+                          .substring(0, video_url.pathname.lastIndexOf('/'))
+                          .split('/')
+                          .filter((str) => str !== '')
+                          .join('-')
+                    : video_url.pathname.substring(video_url.pathname.lastIndexOf('/') + 1);
             // TODO here are some specs!
             // TODO version, 1 at the moment, get either reference or nothing/everything else means raw data!, type, vtt, or chapter, or thumbnails or etc TODO
             api.backend({

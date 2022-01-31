@@ -25,7 +25,12 @@ class Controller {
         this.initFullButton();
         this.initQualityButton();
         this.initScreenshotButton();
-        this.initSubtitleButton();
+        // if subtitle url not array, not init old single subtitle button
+        if (this.player.options.subtitle) {
+            if (typeof this.player.options.subtitle.url === 'string') {
+                this.initSubtitleButton();
+            }
+        }
         this.initHighlights();
         this.initAirplayButton();
         this.initChromecastButton();
@@ -311,7 +316,6 @@ class Controller {
                 const UUIDs = this.player.once(
                     ['chapter', 'cancelskip'],
                     (_, { UUID }) => {
-                        console.log('fired with', _);
                         button.onclick = null;
                         prompt.style.display = 'none';
                         clearTimeout(timeoutID);
@@ -321,7 +325,6 @@ class Controller {
                     },
                     true
                 );
-                console.log(UUIDs);
             }
             progress.style.display = 'unset';
             progress.animate([{ width: '0%' }, { width: '100%' }], timeShown);
@@ -642,22 +645,20 @@ class Controller {
     }
 
     initSubtitleButton() {
-        if (this.player.options.subtitle) {
-            this.player.events.on('subtitle_show', () => {
-                this.player.template.subtitleButton.dataset.balloon = this.player.translate('hide-subs');
-                this.player.template.subtitleButtonInner.style.opacity = '';
-                this.player.user.set('subtitle', 1);
-            });
-            this.player.events.on('subtitle_hide', () => {
-                this.player.template.subtitleButton.dataset.balloon = this.player.translate('show-subs');
-                this.player.template.subtitleButtonInner.style.opacity = '0.4';
-                this.player.user.set('subtitle', 0);
-            });
+        this.player.events.on('subtitle_show', () => {
+            this.player.template.subtitleButton.dataset.balloon = this.player.translate('hide-subs');
+            this.player.template.subtitleButtonInner.style.opacity = '';
+            this.player.user.set('subtitle', 1);
+        });
+        this.player.events.on('subtitle_hide', () => {
+            this.player.template.subtitleButton.dataset.balloon = this.player.translate('show-subs');
+            this.player.template.subtitleButtonInner.style.opacity = '0.4';
+            this.player.user.set('subtitle', 0);
+        });
 
-            this.player.template.subtitleButton.addEventListener('click', () => {
-                this.player.subtitle.toggle();
-            });
-        }
+        this.player.template.subtitleButton.addEventListener('click', () => {
+            this.player.subtitle.toggle();
+        });
     }
 
     setAutoHide() {

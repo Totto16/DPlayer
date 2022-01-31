@@ -4,7 +4,6 @@ const { GitRevisionPlugin } = require('git-revision-webpack-plugin');
 const gitRevisionPlugin = new GitRevisionPlugin();
 const autoprefixer = require('autoprefixer');
 const cssnano = require('cssnano');
-
 module.exports = {
     mode: 'development',
 
@@ -34,7 +33,7 @@ module.exports = {
 
     resolve: {
         modules: ['node_modules'],
-        extensions: ['.js', '.scss'],
+        extensions: ['.js', '.scss', '.art', '.svg'],
         preferRelative: true,
     },
 
@@ -86,16 +85,17 @@ module.exports = {
                     'sass-loader',
                 ],
             },
+            // using https://webpack.js.org/guides/asset-modules TODO: test png and jpg
             {
-                test: /\.(png|jpg)$/,
-                loader: 'url-loader',
-                options: {
-                    limit: 40000,
-                },
+                test: /\.(jpe?g|png|gif)$/i,
+                type: 'asset/resource',
             },
             {
-                test: /\.svg$/,
-                loader: 'svg-inline-loader',
+                test: /\.svg$/i,
+                type: 'asset/inline',
+                generator: {
+                    dataUrl: (content) => content.toString(), // important!!!
+                },
             },
             {
                 test: /\.art$/,
