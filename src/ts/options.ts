@@ -1,7 +1,7 @@
+import { DPLAYER_VERSION } from './global.js';
 import { DPlayerSupportedLanguage } from './i18n.js';
-import { StringIndexableObject } from './index.js';
 import DPlayer from './player';
-import { DPlayerSubTitleOptions, DPlayerSubTitleOptionsWeak } from './subtitle.js';
+import { DPlayerSubTitleOptionsWeak } from './subtitle.js';
 import utils from './utils';
 
 const config = (options: DPlayerOptions, player: DPlayer): DplayerParsedOptions => {
@@ -30,7 +30,7 @@ const config = (options: DPlayerOptions, player: DPlayer): DplayerParsedOptions 
             },
         ],
         fullScreenPolicy: 'OnlyNormal', // available "OnlyNormal","OnlyWeb","Both" or 0,1,2
-        highlightSkipArray: [/^\s*Opening\s*\d*$/i, /^\s*Ending\s*\d*$/i, /^\s*OP\s*\d*$/i, /^\s*ED\s*\d*$/i, /^\s*Intro\s*$/i, /^\s*Outro\s*$/i, /^\s*Credits\s*$/i, /^\s*Pause\s*$/i],
+        highlightSkipArray: [/^\s*opening\s*\d*$/i, /^\s*ending\s*\d*$/i, /^\s*op\s*\d*$/i, /^\s*ed\s*\d*$/i, /^\s*intro\s*$/i, /^\s*outro\s*$/i, /^\s*credits\s*$/i, /^\s*pause\s*$/i],
         highlightSkipMode: 'smoothPrompt', // available "smoothPrompt", "immediately", "smoothCancelPrompt", "always" or 0,1,2,3
         highlightSkip: false,
         skipDelay: 5000,
@@ -274,7 +274,7 @@ export interface DPlayerOptions extends StringIndexableObject {
     logo?: string; // TODO(#41):  See where implemented
     volume?: number;
     playbackSpeed?: [number, number, number, number, number, number];
-    apiBackend?: DPlayerAPIBackendOption;
+    apiBackend?: string;
     video?: DplayerVideoOptions;
     subtitle?: DPlayerSubTitleOptionsWeak;
     danmaku?: DPlayerDanmakuOption;
@@ -283,12 +283,13 @@ export interface DPlayerOptions extends StringIndexableObject {
     highlightSkipArray?: (RegExp | string)[];
     highlightSkipMode?: DPlayerSkipModeOption;
     highlightSkip?: boolean;
-    highlight?: DPlayerHighLightItemOption[];
+    highlight?: DPlayerHighLightItem[];
     skipDelay?: number;
     hardSkipHighlights?: boolean;
     mutex?: boolean;
     pluginOptions?: DPlayerPluginOptions;
     balloon?: boolean;
+    API_URL?: string;
 }
 
 export interface DplayerParsedOptions extends DPlayerOptions {
@@ -353,7 +354,7 @@ export interface DPlayerPluginOptions {
 }
 
 export interface DPlayerAssOptions {
-    //TODO:
+    // TODO:
 }
 
 // TODO(#45):   use, or try to use instanceof!! use the isOfType isOfTYpeOrNull!!! to check DPlayerOptionsInput

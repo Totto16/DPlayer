@@ -1,4 +1,6 @@
 import DPlayer from '.';
+import { DPlayerTranslateKey } from './i18n';
+import utils from './utils.js';
 
 // all available options!
 const keys: DPlayerKeyMapping = {
@@ -26,7 +28,7 @@ const advancedKeys: DPlayerAdvancedKeyMapping = {
     ArrowRight: 'right',
     ArrowUp: 'up',
     ArrowDown: 'down',
-    Escape: 'cancelFullscreen',
+    Escape: 'cancelBothFullscreen',
     f: 'toggleFullscreen',
     w: 'toggleWebFullscreen',
     MediaPlayPause: 'togglePlayer',
@@ -48,18 +50,19 @@ class HotKey {
     player: DPlayer;
     doHotKeyHandler: DPlayerHotkeyHandler;
     destroyed?: boolean;
-    enabledKeys: DPlayerHotkeysStorage;
-    disabledKeys: DPlayerHotkeysStorage;
+    enabledKeys?: DPlayerHotkeysStorage;
+    disabledKeys?: DPlayerHotkeysStorage;
 
     constructor(player: DPlayer) {
         this.player = player;
         this.doHotKeyHandler = this.doHotKey.bind(this);
-        if (this.player.options.hotkey) {
+        if (this.player.options.hotkey ?? false) {
+            // WOW
             document.addEventListener('keydown', this.doHotKeyHandler);
-            this.enabledKeys = { keys, advancedKeys };
+            this.enabledKeys = { keys: utils.deepCopyObject<DPlayerKeyMapping>(keys), advancedKeys: utils.deepCopyObject<DPlayerAdvancedKeyMapping>(advancedKeys) };
             this.disabledKeys = { keys: {}, advancedKeys: {} };
             // fullscreen handling
-            switch (this.player.options.fullScreenPolicy.toString().toLowerCase()) {
+            switch (this.player.options.fullScreenPolicy?.toString().toLowerCase()) {
                 case 'onlynormal':
                     this.disabledKeys.keys = { ...this.disabledKeys.keys, 87: keys[87] };
                     delete this.enabledKeys.keys[87];
@@ -68,9 +71,7 @@ class HotKey {
                     break;
                 case 'onlyweb':
                     this.disabledKeys.keys = { ...this.disabledKeys.keys, 70: keys[70] };
-                    delete this.enabledKeys.keys[70];
-                    this.disabledKeys.advancedKeys = { ...this.disabledKeys.advancedKeys, f: advancedKeys.f };
-                    delete this.enabledKeys.advancedKeys.f;
+                    delete this.enabledKeys.keys[70]; // cancelBothFullscreen
                     break;
                 case 'both':
                     // nothing, we are already set up!
@@ -82,12 +83,15 @@ class HotKey {
         }
     }
 
-    doHotKey(e: Event): void {
-        if (this.player.focus) {
-            const tag = document.activeElement.tagName.toUpperCase();
-            const editable = document.activeElement.getAttribute('contenteditable');
+    doHotKey(e?: Event): void {
+        if (this.player.focus ?? false) {
+            const tag = document.activeElement?.tagName.toUpperCase();
+            const editable = document.activeElement?.getAttribute('contenteditable');
             if (tag !== 'INPUT' && tag !== 'TEXTAREA' && editable !== '' && editable !== 'true') {
                 const event = e || window.event;
+                if (!(event instanceof KeyboardEvent)) {
+                    return;
+                }
                 let percentage;
                 this.player.hotkeyPanel.parse(event.keyCode);
                 switch (this.key(event)) {
@@ -102,9 +106,9 @@ class HotKey {
                         this.player.pause();
                         break;
                     case 'left':
-                        // go back 5 seconds
+                        // go back 5 seconds, // TODO maybe allow left movement, and then also right one?
                         event.preventDefault();
-                        if (this.player.options.live) {
+                        if (this.player.options.live ?? false) {
                             break;
                         }
                         this.player.seek(this.player.video.currentTime - 5);
@@ -113,7 +117,7 @@ class HotKey {
                     case 'right':
                         // go forward 5 seconds
                         event.preventDefault();
-                        if (this.player.options.live) {
+                        if (this.player.options.live ?? false) {
                             break;
                         }
                         this.player.seek(this.player.video.currentTime + 5);
@@ -122,13 +126,13 @@ class HotKey {
                     case 'up':
                         // increase volume
                         event.preventDefault();
-                        percentage = this.player.volume() + 0.1;
+                        percentage = (this.player.volume() ?? 0) + 0.1;
                         this.player.volume(percentage);
                         break;
                     case 'down':
                         // lower volume
                         event.preventDefault();
-                        percentage = this.player.volume() - 0.1;
+                        percentage = (this.player.volume() ?? 0) - 0.1;
                         this.player.volume(percentage);
                         break;
                     case 'toggleFullscreen':
@@ -211,118 +215,23 @@ class HotKey {
             }
         }
     }
-    /* 
-    keyOLD(event) {
-        switch (event.keyCode) {
-            case 32:
-                return 'togglePlayer';
-            case 37:
-                return 'left';
-            case 39:
-                return 'right';
-            case 38:
-                return 'up';
-            case 40:
-                return 'down';
-            case 27:
-                return 'cancelFullscreen';
-            case 70:
-                return 'toggleFullscreen';
-            case 77:
-                return 'mute';
-            case 83:
-                return 'screenshot';
-            case 68:
-                return 'nextChapter';
-            case 65:
-                return 'previousChapter';
-            case 76:
-                return 'changeLoop';
-            case 86:
-                return 'speedUp';
-            case 67:
-                return 'speedDown';
-            case 78:
-                return 'speedNormal';
-        }
-        // String Names to be extra sure! (Useful for mediaPlay Buttons on PC!)
-        if (this.player.options.advancedHotkeys) {
-            switch (event.key) {
-                case ' ':
-                    return 'togglePlayer';
-                case 'ArrowLeft':
-                    return 'left';
-                case 'ArrowRight':
-                    return 'right';
-                case 'ArrowUp':
-                    return 'up';
-                case 'ArrowDown':
-                    return 'down';
-                case 'Escape':
-                    return 'cancelFullscreen';
-                case 'f':
-                    return 'toggleFullscreen';
-                case 'MediaPlayPause':
-                    return 'togglePlayer';
-                case 'MediaStop':
-                    return 'stopPlayer';
-                case 'AudioVolumeMute':
-                    return 'mute';
-                case 'm':
-                    return 'mute';
-                case 's':
-                    return 'screenshot';
-                case 'MediaTrackPrevious':
-                    return 'nextChapter';
-                case 'MediaTrackNext':
-                    return 'previousChapter';
-                case 'd':
-                    return 'nextChapter';
-                case 'a':
-                    return 'previousChapter';
-                case 'l':
-                    return 'changeLoop';
-                case 'v':
-                    return 'speedUp';
-                case 'c':
-                    return 'speedDown';
-                case 'n':
-                    return 'speedNormal';
-            }
-        }
-    }
 
-    keysOld() {
-        const enabled = [];
-        for (let i = 32; i <= 90; i++) {
-            const rep_key = this.key({ keyCode: i });
-            if (rep_key) {
-                const key = String.fromCharCode(i).toLowerCase().replace(' ', '{space}').replace('%', '{arrowleft}').replace('&', '{arrowup}').replace("'", '{arrowright}').replace('(', '{arrowdown}');
-                enabled.push({ key, tooltip: rep_key, keyCode: i });
-            }
-        }
-        return enabled;
-    } */
-
-    keys(): DPlayerHotkeysStorage {
-        const enabled = Object.entries(this.enabledKeys.keys).map((a) => {
-            const [index, name] = a;
-            const key = String.fromCharCode(index).toLowerCase().replace(' ', '{space}').replace('%', '{arrowleft}').replace('&', '{arrowup}').replace("'", '{arrowright}').replace('(', '{arrowdown}');
+    keys(): DPlayerHotkeysStorageExport {
+        const enabled: DPlayerNamedKeys[] = Object.entries(this.enabledKeys?.keys ?? []).map(([index, name]) => {
+            const key = String.fromCharCode(parseInt(index)).toLowerCase().replace(' ', '{space}').replace('%', '{arrowleft}').replace('&', '{arrowup}').replace("'", '{arrowright}').replace('(', '{arrowdown}');
             return { key, tooltip: name, keyCode: index };
         });
-        const disabled = Object.entries(this.disabledKeys.keys).map((a) => {
-            const [index, name] = a;
-            const key = String.fromCharCode(index).toLowerCase().replace(' ', '{space}').replace('%', '{arrowleft}').replace('&', '{arrowup}').replace("'", '{arrowright}').replace('(', '{arrowdown}');
+        const disabled: DPlayerNamedKeys[] = Object.entries(this.disabledKeys?.keys ?? []).map(([index, name]) => {
+            const key = String.fromCharCode(parseInt(index)).toLowerCase().replace(' ', '{space}').replace('%', '{arrowleft}').replace('&', '{arrowup}').replace("'", '{arrowright}').replace('(', '{arrowdown}');
             return { key, tooltip: name, keyCode: index };
         });
         return { enabled, disabled, all: enabled.concat(disabled) };
     }
 
     destroy(): void {
-        if (this.player.options.hotkey) {
+        if (this.player.options.hotkey ?? false) {
             document.removeEventListener('keydown', this.doHotKeyHandler);
         }
-        document.removeEventListener('keydown', this.cancelFullScreenHandler);
         this.destroyed = true;
     }
 }
@@ -337,9 +246,10 @@ export type DPlayerKeyMappingValues =
     | 'right'
     | 'up'
     | 'down'
-    | 'cancelBothFullscreen'
+    | 'stopPlayer'
     | 'toggleFullscreen'
     | 'toggleWebFullscreen'
+    | 'cancelBothFullscreen'
     | 'mute'
     | 'screenshot'
     | 'nextChapter'
@@ -375,14 +285,26 @@ export type DPlayerAdvancedKeyMappingKeys =
 export type DPlayerHotkeyHandler = (e: Event) => void;
 
 export type DPlayerAdvancedKeyMapping = {
-    [key in DPlayerAdvancedKeyMappingKeys]: keyof DPlayerKeyMappingValues;
+    [key in DPlayerAdvancedKeyMappingKeys]?: DPlayerKeyMappingValues;
 };
 
 export type DPlayerKeyMapping = {
-    [key in DPlayerKeyMappingKeys]: keyof DPlayerKeyMappingValues;
+    [key in DPlayerKeyMappingKeys]?: DPlayerKeyMappingValues;
 };
 
-export type DPlayerHotkeysStorage = {
-    keys: DPlayerAdvancedKeyMapping;
-    advancedKeys: DPlayerKeyMapping;
+export interface DPlayerHotkeysStorage {
+    keys: DPlayerKeyMapping;
+    advancedKeys: DPlayerAdvancedKeyMapping;
+}
+
+export interface DPlayerHotkeysStorageExport {
+    enabled: DPlayerNamedKeys[];
+    disabled: DPlayerNamedKeys[];
+    all: DPlayerNamedKeys[];
+}
+
+export type DPlayerNamedKeys = {
+    key: string;
+    tooltip: DPlayerTranslateKey;
+    keyCode: DPlayerKeyMappingKeys;
 };

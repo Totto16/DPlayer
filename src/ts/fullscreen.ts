@@ -1,7 +1,14 @@
+import DPlayer from '.';
 import utils from './utils';
 
 class FullScreen {
-    constructor(player) {
+    player: DPlayer;
+    lastScrollPosition: DPlayerPosition;
+    fullscreenchange: () => void;
+    docfullscreenchange: () => void;
+    destroyed?: boolean;
+
+    constructor(player: DPlayer) {
         this.player = player;
         this.lastScrollPosition = { left: 0, top: 0 };
         this.player.events.on('webfullscreen', () => {
@@ -12,7 +19,7 @@ class FullScreen {
             utils.setScrollPosition(this.lastScrollPosition);
         });
 
-        this.fullscreenchange = () => {
+        this.fullscreenchange = (): void => {
             this.player.resize();
             if (this.isFullScreen('browser')) {
                 this.player.events.trigger('fullscreen');
@@ -21,8 +28,8 @@ class FullScreen {
                 this.player.events.trigger('fullscreen_cancel');
             }
         };
-        this.docfullscreenchange = () => {
-            const fullEle = document.fullscreenElement || document.mozFullScreenElement || document.msFullscreenElement;
+        this.docfullscreenchange = (): void => {
+            const fullEle: HTMLElement = document.fullscreenElement || document.mozFullScreenElement || document.msFullscreenElement;
             if (fullEle && fullEle !== this.player.container) {
                 return;
             }
@@ -45,10 +52,10 @@ class FullScreen {
         }
     }
 
-    isFullScreen(type = 'browser') {
+    isFullScreen(type: DPlayerFullScreenTypes = 'browser'): boolean {
         switch (type) {
             case 'browser':
-                return document.fullscreenElement || document.mozFullScreenElement || document.webkitFullscreenElement || document.msFullscreenElement;
+                return !!(document.fullscreenElement || document.mozFullScreenElement || document.webkitFullscreenElement || document.msFullscreenElement);
             case 'web':
                 return this.player.container.classList.contains('dplayer-fulled');
             default:
@@ -56,7 +63,7 @@ class FullScreen {
         }
     }
 
-    request(type = 'browser') {
+    request(type: DPlayerFullScreenTypes = 'browser'): void {
         const anotherType = type === 'browser' ? 'web' : 'browser';
         const anotherTypeOn = this.isFullScreen(anotherType);
         if (!anotherTypeOn) {
@@ -92,7 +99,7 @@ class FullScreen {
         }
     }
 
-    cancel(type = 'browser') {
+    cancel(type: DPlayerFullScreenTypes = 'browser') {
         switch (type) {
             case 'browser':
                 if (document.cancelFullScreen) {
@@ -124,7 +131,7 @@ class FullScreen {
         }
     }
 
-    toggle(type = 'browser') {
+    toggle(type: DPlayerFullScreenTypes = 'browser'): void {
         if (this.isFullScreen(type)) {
             this.cancel(type);
         } else {
@@ -132,7 +139,7 @@ class FullScreen {
         }
     }
 
-    destroy() {
+    destroy(): void {
         if (/Firefox/.test(navigator.userAgent)) {
             document.removeEventListener('mozfullscreenchange', this.docfullscreenchange);
             document.removeEventListener('fullscreenchange', this.docfullscreenchange);
@@ -147,3 +154,10 @@ class FullScreen {
 }
 
 export default FullScreen;
+
+export interface DPlayerPosition {
+    left: number;
+    top: number;
+}
+
+export type DPlayerFullScreenTypes = 'browser' | 'web';

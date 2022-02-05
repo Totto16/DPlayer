@@ -1,6 +1,7 @@
 import Keyboard from 'simple-keyboard';
+import { KeyboardLayoutObject } from 'simple-keyboard/build/interfaces';
 import DPlayer from '.';
-import { DPlayerHotkeysStorage } from './hotkey';
+import { DPlayerHotkeysStorageExport, DPlayerNamedKeys } from './hotkey';
 import Template from './template';
 
 class HotkeyPanel {
@@ -8,16 +9,20 @@ class HotkeyPanel {
     container: HTMLDivElement;
     template: Template;
     video: HTMLVideoElement;
-    hotkeys: DPlayerHotkeysStorage;
+    hotkeys: DPlayerHotkeysStorageExport;
+    layout: KeyboardLayoutObject;
+    keyboard: Keyboard;
+    destroyed?: boolean;
+    visible?: boolean;
 
     constructor(player: DPlayer) {
-        this.container = player.template.hotkeyPanel!; // TODO(#26):  remove !
+        this.container = player.template.hotkeyPanel; // TODO(#26):  remove !
         this.template = player.template;
         this.video = player.video;
         this.player = player;
         this.layout = this.getLayout();
         this.hotkeys = this.player.hotkey.keys();
-        this.template.hotkeyPanelClose.addEventListener('click', () => {
+        this.template.hotkeyPanelClose?.addEventListener('click', () => {
             this.hide();
         });
 
@@ -68,9 +73,9 @@ class HotkeyPanel {
             theme: 'simple-keyboard hg-theme-default hg-layout-default',
             mergeDisplay: true,
             buttonAttributes: [
-                ...this.hotkeys.all.map((obj) => ({
+                ...this.hotkeys.all.map((obj: DPlayerNamedKeys) => ({
                     attribute: 'title',
-                    value: this.player.translate(obj.tooltip),
+                    value: this.player.translate(obj.tooltip) ?? 'Internal Translation ERROR',
                     buttons: obj.key,
                 })),
                 /*      ...this.hotkeys.map((obj) => ({
@@ -96,8 +101,8 @@ class HotkeyPanel {
         });
     }
 
-    getLayout() {
-        const layout = {
+    getLayout(): KeyboardLayoutObject {
+        const layout: KeyboardLayoutObject = {
             default: [
                 '` 1 2 3 4 5 6 7 8 9 0 - = {bksp} {border} {insert} {home} {pageup}',
                 '{tab} q w e r t y u i o p [ ] {enter} {border} {delete} {end} {pagedown}',
@@ -109,34 +114,35 @@ class HotkeyPanel {
         return layout;
     }
 
-    show() {
+    show(): void {
         this.visible = true;
         this.container.classList.remove('dplayer-hotkey-panel-hide');
     }
-    parse(keyCode) {
-        if (this.visible) {
+    parse(keyCode: number): void {
+        if (this.visible ?? false) {
+            // xD again
             const all = Array.from(this.container.getElementsByClassName('shortcuts-enabled'));
             all.forEach((div) => {
-                const child = parseInt(div.getAttribute('data-keyCode'));
+                const child = parseInt(div.getAttribute('data-keyCode') ?? '');
                 if (child === keyCode) {
                     div.animate([{ backgroundColor: 'var(--dplayer-simple-keyboard-keys-bk-available)' }, { backgroundColor: 'var(--dplayer-simple-keyboard-keys-bk-pressed)' }], 150);
                 }
             });
         }
     }
-    hide() {
+    hide(): void {
         this.visible = false;
         this.container.classList.add('dplayer-hotkey-panel-hide');
     }
 
-    triggle() {
+    triggle(): void {
         if (this.container.classList.contains('dplayer-hotkey-panel-hide')) {
             this.show();
         } else {
             this.hide();
         }
     }
-    destroy() {
+    destroy(): void {
         this.keyboard.destroy();
         this.destroyed = true;
     }

@@ -1,5 +1,5 @@
 import DPlayer from '.';
-import { DPLAYER_VERSION, BUILD_TIME } from './index.d'; // same problem as in index.ts
+import { BUILD_TIME, DPLAYER_VERSION } from './global';
 import Template from './template';
 
 class InfoPanel {
@@ -10,12 +10,12 @@ class InfoPanel {
     beginTime?: number;
 
     constructor(player: DPlayer) {
-        this.container = player.template.infoPanel!; // TODO(#38):  remove !
+        this.container = player.template.infoPanel; // TODO(#38):  remove !
         this.template = player.template;
         this.video = player.video;
         this.player = player;
 
-        this.template.infoPanelClose.addEventListener('click', () => {
+        this.template.infoPanelClose?.addEventListener('click', () => {
             this.hide();
         });
     }

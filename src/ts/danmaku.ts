@@ -79,7 +79,7 @@ class Danmaku {
                         callback(results);
                     }
                 },
-                error: (msg) => {
+                error: (msg: string) => {
                     this.options.error(msg || this.options.translate('danmaku-failed'));
                     results[i] = [];
 
@@ -375,4 +375,5 @@ export interface DPlayerDanmakuOptions {
     danIndex: number;
     unlimited: number;
     events: Events;
+    error?: (msg: string) => void;
 }

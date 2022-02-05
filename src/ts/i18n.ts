@@ -78,9 +78,9 @@ const GLOB_MODEL: DPlayerLanguageModel = {
 };
 
 // Standard english translations
-const GLOB_standard: DPlayerTranslationObject = require('../translations/en.json') as DPlayerTranslationObject; // TODO(#27):  read from json in tsscript
+const GlobalStandard: DPlayerTranslationObject = require('../translations/en.json') as DPlayerTranslationObject; // TODO(#27):  read from json in tsscript
 // add translation first to the folder and then here!
-const GLOB_tranTxt: DPlayerAvaiableTranslationObject = {
+const GlobalTranTxt: DPlayerAvaiableTranslationObject = {
     en: standard,
     'zh-cn': require('../translations/zh-cn.json'),
     'zh-tw': require('../translations/zh-tw.json'),

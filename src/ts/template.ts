@@ -119,12 +119,12 @@ class Template implements DPlayerDestroyable {
             mobile: utils.isMobile,
             video: {
                 current: true,
-                pic: this.options.video.pic,
+                pic: this.options.video?.pic,
                 screenshot: this.options.screenshot,
                 airplay: this.options.airplay,
                 chromecast: this.options.chromecast,
                 preload: this.options.preload,
-                url: this.options.video.url,
+                url: this.options.video?.url,
                 subtitle: this.options.subtitle,
             },
         }); // TODO(#56):  change
@@ -338,6 +338,7 @@ export type DplayerARTOptions = {
     [x: string]: unknown;
 };
 
-function isOfTypeAndNotNull<T>(arg0: this): boolean {
+/* function isOfTypeAndNotNull<T>(arg0: this): boolean {
     throw new Error('Function not implemented.');
 }
+ */

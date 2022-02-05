@@ -5,9 +5,7 @@ import { GitRevisionPlugin } from 'git-revision-webpack-plugin';
 import autoprefixer from 'autoprefixer';
 import cssnano from 'cssnano';
 import packageConfig from '../package.json';
-import ImageMinimizerPlugin from 'image-minimizer-webpack-plugin';
 const gitRevisionPlugin = new GitRevisionPlugin();
-
 const config: webpack.Configuration = {
     mode: 'development',
 
@@ -44,14 +42,22 @@ const config: webpack.Configuration = {
     module: {
         strictExportPresence: true,
         rules: [
-            {
+            /* { 
                 test: /\.d\.ts$/,
                 loader: 'ignore-loader',
-            },
+            }, */
             {
-                test: /(?<!\.d)\.ts$/,
+                test: /\.ts$/,
                 exclude: /node_module/,
-                use: 'ts-loader',
+                use: [
+                    {
+                        loader: 'ts-loader',
+                        options: {
+                            context: path.join(__dirname, '..'),
+                            configFile: path.join(__dirname, '../tsconfig.json'),
+                        },
+                    },
+                ],
             },
             {
                 test: /\.js$/,
@@ -98,9 +104,17 @@ const config: webpack.Configuration = {
                     'sass-loader',
                 ],
             },
+            // using https://webpack.js.org/guides/asset-modules TODO(#75): test png and jpg
             {
-                test: /\.(jpe?g|png|gif|svg)$/i,
-                type: 'asset',
+                test: /\.(jpe?g|png|gif)$/i,
+                type: 'asset/resource',
+            },
+            {
+                test: /\.svg$/i,
+                type: 'asset/inline',
+                generator: {
+                    dataUrl: (content) => content.toString(), // important!!!
+                },
             },
             {
                 test: /\.art$/,
@@ -153,31 +167,6 @@ const config: webpack.Configuration = {
     },
     optimization: {
         mangleWasmImports: false,
-        minimizer: [
-            '...',
-            new ImageMinimizerPlugin({
-                minimizer: {
-                    implementation: ImageMinimizerPlugin.imageminMinify,
-                    options: {
-                        // Lossless optimization with custom option
-                        // Feel free to experiment with options for better result for you
-                        plugins: [
-                            ['gifsicle', { interlaced: true }],
-                            ['jpegtran', { progressive: true }],
-                            ['optipng', { optimizationLevel: 5 }],
-                            // Svgo configuration here https://github.com/svg/svgo#configuration
-                            // TODO(#67):  look into that things, to have LOSSLESS optimization!
-                            [
-                                'svgo',
-                                {
-                                    plugins: 'preset-default',
-                                },
-                            ],
-                        ],
-                    },
-                },
-            }),
-        ],
     },
 };
 

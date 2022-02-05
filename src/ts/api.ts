@@ -32,16 +32,16 @@ const API: DPlayerAPI = {
     read: (options: DPlayerDanmakuReadOptions): void => {
         axios
             .get(options.url)
-            .then((response: AxiosResponse<StringIndexableObject, string>) => {
+            .then((response: AxiosResponse<StringIndexableObject | undefined, string>) => {
                 const data = response.data;
-                if (!data || data.code !== 0) {
+                if (typeof data !== 'undefined' && data.code !== 0) {
                     if (typeof options.error === 'function') {
                         options.error(new Error(typeof data.msg === 'string' ? data.msg : 'ERROR, no Error Message Present!!'));
                     }
                     return;
                 }
                 if (typeof options.success === 'function') {
-                    const responseData: DPlayerDanmakuData[] = (data.data as string[][]).map((item: string[]) => ({
+                    const responseData: DPlayerDanmakuData[] = (!data ? [[]] : (data.data as string[][])).map((item: string[]) => ({
                         time: item[0],
                         type: item[1],
                         color: item[2],

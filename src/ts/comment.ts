@@ -1,45 +1,47 @@
+import DPlayer from '.';
 import utils from './utils';
 
 class Comment {
-    constructor(player) {
+    player: DPlayer;
+    constructor(player: DPlayer) {
         this.player = player;
 
-        this.player.template.mask.addEventListener('click', () => {
+        this.player.template.mask?.addEventListener('click', () => {
             this.hide();
         });
-        this.player.template.commentButton.addEventListener('click', () => {
+        this.player.template.commentButton?.addEventListener('click', () => {
             this.show();
         });
-        this.player.template.commentSettingButton.addEventListener('click', () => {
+        this.player.template.commentSettingButton?.addEventListener('click', () => {
             this.toggleSetting();
         });
 
-        this.player.template.commentColorSettingBox.addEventListener('click', () => {
-            const sele = this.player.template.commentColorSettingBox.querySelector('input:checked+span');
-            if (sele) {
-                const color = this.player.template.commentColorSettingBox.querySelector('input:checked').value;
+        this.player.template.commentColorSettingBox?.addEventListener('click', () => {
+            const sele: HTMLElement | null | undefined = this.player.template.commentColorSettingBox?.querySelector('input:checked+span');
+            if (typeof sele !== 'undefined') {
+                const color: string = this.player.template.commentColorSettingBox.querySelector('input:checked').value;
                 this.player.template.commentSettingFill.style.fill = color;
                 this.player.template.commentInput.style.color = color;
                 this.player.template.commentSendFill.style.fill = color;
             }
         });
 
-        this.player.template.commentInput.addEventListener('click', () => {
+        this.player.template.commentInput?.addEventListener('click', () => {
             this.hideSetting();
         });
-        this.player.template.commentInput.addEventListener('keydown', (e) => {
+        this.player.template.commentInput?.addEventListener('keydown', (e) => {
             const event = e || window.event;
             if (event.keyCode === 13) {
                 this.send();
             }
         });
 
-        this.player.template.commentSendButton.addEventListener('click', () => {
+        this.player.template.commentSendButton?.addEventListener('click', () => {
             this.send();
         });
     }
 
-    show() {
+    show(): void {
         this.player.controller.disableAutoHide = true;
         this.player.template.controller.classList.add('dplayer-controller-comment');
         this.player.template.mask.classList.add('dplayer-mask-show');

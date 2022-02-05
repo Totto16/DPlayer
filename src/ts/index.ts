@@ -1,14 +1,14 @@
 import '../css/index.scss';
-import './index.d.ts';
+import { BUILD_TIME, DPLAYER_VERSION } from './global';
 import { DPlayerOptions } from './options';
 import DPlayer from './player';
-
 console.log(`${'\n'} %c DPlayer v${DPLAYER_VERSION} ${BUILD_TIME} %c http://dplayer.js.org ${'\n'}${'\n'}`, 'color: #a912ee; background: #aaa; padding:5px 0;', 'background: #a912ee; color:#fff; padding:5px 0;');
 
 /* New Format of starting Dplayer, it will start automatically, after its loaded, for available options see future ReadME //TODO(#33):  add readme !!!!*/
 
 // TODO(#34): OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO VERY IMPORTANT BEFORE RELEASING THIS
 // TODO(#35):  find an elegant way to handle unknown data, meaning down compiled js can have any types, the user can input any types!!!!
+// TODO : Changed some things in the main js released, that has to be adopted!!!
 
 if (window.DPLAYER_AUTO) {
     if (typeof window.DPLAYER_AUTO.name === 'undefined' || typeof window.DPLAYER_AUTO.name !== 'string') {
@@ -82,4 +82,4 @@ function isNullish<T = any>(argument: T): boolean {
 
 export { isNullish };
 
-// actual progress: 1174 remaining errors (-333 from last time)
+// actual progress: 947 remaining errors (-227 from last time)

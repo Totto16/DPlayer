@@ -99,16 +99,17 @@ const config: webpack.Configuration = {
                     'sass-loader',
                 ],
             },
+            // see dev.webpack.ts
             {
-                test: /\.(png|jpg)$/,
-                loader: 'url-loader',
-                options: {
-                    limit: 40000,
-                },
+                test: /\.(jpe?g|png|gif)$/i,
+                type: 'asset/resource',
             },
             {
-                test: /\.svg$/,
-                loader: 'svg-inline-loader',
+                test: /\.svg$/i,
+                type: 'asset/inline',
+                generator: {
+                    dataUrl: (content) => content.toString(), // important!!!
+                },
             },
             {
                 test: /\.art$/,

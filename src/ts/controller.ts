@@ -11,6 +11,8 @@ let isCasting = false;
 class Controller {
     player: DPlayer;
     autoHideTimer: number;
+    chapters?: DPlayerChapters;
+    disableAutoHide: boolean;
 
     constructor(player: DPlayer) {
         this.player = player;
@@ -39,26 +41,26 @@ class Controller {
     }
 
     initPlayButton(): void {
-        this.player.template.playButton.addEventListener('click', () => {
+        this.player.template.playButton?.addEventListener('click', () => {
             this.player.toggle();
         });
 
-        this.player.template.mobilePlayButton.addEventListener('click', () => {
+        this.player.template.mobilePlayButton?.addEventListener('click', () => {
             this.player.toggle();
         });
 
         if (!utils.isMobile) {
-            this.player.template.videoWrap.addEventListener('click', () => {
+            this.player.template.videoWrap?.addEventListener('click', () => {
                 this.player.toggle();
             });
-            this.player.template.controllerMask.addEventListener('click', () => {
+            this.player.template.controllerMask?.addEventListener('click', () => {
                 this.player.toggle();
             });
         } else {
-            this.player.template.videoWrap.addEventListener('click', () => {
+            this.player.template.videoWrap?.addEventListener('click', () => {
                 this.toggle();
             });
-            this.player.template.controllerMask.addEventListener('click', () => {
+            this.player.template.controllerMask?.addEventListener('click', () => {
                 this.toggle();
             });
         }
@@ -69,7 +71,7 @@ class Controller {
         this.player.on(['durationchange', 'highlight_change'], () => {
             if (this.player.video.duration && this.player.video.duration !== 1 && this.player.video.duration !== Infinity) {
                 if (this.player.options.highlights && this.player.options.highlights.marker && Array.isArray(this.player.options.highlights.marker) && this.player.options.highlights.marker.length > 0) {
-                    const marker = this.player.options.highlights.marker.map((mark) => {
+                    const marker: DPlayerHighlight[] = this.player.options.highlights.marker.map((mark) => {
                         const corrected = mark;
                         if (typeof mark.time !== 'number') {
                             corrected.time = parseFloat(mark.time);
@@ -186,7 +188,7 @@ class Controller {
             this.checkSkipState.call(this, info);
         });
     }
-    checkSkipState(info: ChapterChangeInfo) {
+    checkSkipState(info: ChapterChangeInfo): void {
         if (!this.player.options.highlightSkip) {
             this.player.events.trigger('cancelskip');
             return;
@@ -240,7 +242,7 @@ class Controller {
         }
     }
 
-    skipHighlight(chapter, name) {
+    skipHighlight(chapter: DPlayerChapterChangeInfo, name: string) {
         switch (this.player.options.highlightSkipMode.toString().toLowerCase()) {
             case 'smoothprompt':
                 this.showSkipPrompt.call(this, false, this.player.options.skipDelay, name, () => {
@@ -667,7 +669,7 @@ class Controller {
         }
     }
 
-    setAutoHide() {
+    setAutoHide(): void {
         this.show();
         clearTimeout(this.autoHideTimer);
         this.autoHideTimer = setTimeout(() => {
@@ -677,11 +679,11 @@ class Controller {
         }, 3000);
     }
 
-    show() {
+    show(): void {
         this.player.container.classList.remove('dplayer-hide-controller');
     }
 
-    hide() {
+    hide(): void {
         this.player.container.classList.add('dplayer-hide-controller');
         this.player.setting.hide();
         this.player.comment && this.player.comment.hide();
@@ -698,7 +700,7 @@ class Controller {
             this.show();
         }
     }
-    updateChapters(object = {}, player = this.player, start = false) {
+    updateChapters(object: DPlayerChapters = {}, player = this.player, start = false) {
         // percentage, or time + duration, or we can get that from the video   player.video.currentTime , player.video.duration
         let { percentage, time, duration } = object;
         if (percentage) {
@@ -750,7 +752,7 @@ class Controller {
         }
     }
 
-    goToChapter(number) {
+    goToChapter(number: number) {
         if (!this.chapters) {
             return;
         }
@@ -799,7 +801,7 @@ class Controller {
     }
 
     SaveScreenshot() {
-        this.player.template.cameraButton.classList.add('taking-screenshot');
+        this.player.template.cameraButton?.classList.add('taking-screenshot');
         const canvas = document.createElement('canvas');
         canvas.width = this.player.video.videoWidth;
         canvas.height = this.player.video.videoHeight;
@@ -848,28 +850,30 @@ class Controller {
 
 export default Controller;
 
-export type ChapterChangeInfo = SimpleChapterChange | NormalChapterChange;
+export type DPlayerChapterChangeInfo = DPlayerSimpleChapterChange | DPlayerNormalChapterChange;
 
-export type SimpleChapterChange = {
+export type DPlayerSimpleChapterChange = {
     type: 'simple';
     direction: 'previous' | 'next';
-    surpassed: Highlight;
+    surpassed: DPlayerHighlight;
 };
 
-export type NormalChapterChange = {
+export type DPlayerNormalChapterChange = {
     type: 'previous' | 'next';
-    previous: Highlight | null;
-    current: Highlight;
-    next: Highlight | null;
+    previous: DPlayerHighlight | null;
+    current: DPlayerHighlight;
+    next: DPlayerHighlight | null;
 };
 
-export interface Chapters {
-    marker: Highlight[];
-    mode: 'normal' | 'top' | 'side' | 'auto';
-    currentChapter: number;
+export type DPlayerChapterModes = 'normal' | 'top' | 'side' | 'auto';
+
+export interface DPlayerChapters {
+    marker?: DPlayerHighlight[];
+    mode?: DPlayerChapterModes;
+    currentChapter?: number;
 }
 
-export interface Highlight {
+export interface DPlayerHighlight {
     text: string;
     time: number;
 }

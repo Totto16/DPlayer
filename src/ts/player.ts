@@ -1,4 +1,3 @@
-import utils from './utils';
 import handleOption, { DPlayerOptions } from './options';
 import i18n, { DPlayerReplacementTypes, DPlayerTranslateKey, DPlayerTranslatedString } from './i18n';
 import Template from './template';
@@ -18,14 +17,16 @@ import HotKey from './hotkey';
 import ContextMenu from './contextmenu';
 import InfoPanel from './info-panel';
 import HotkeyPanel from './hotkey-panel';
+import utils from './utils';
 import tplVideo from '../template/video.art';
+import { DPLAYER_VERSION } from './global';
 
 let index = 0;
 window.DPLAYER_INSTANCES = [];
 
 class DPlayer {
     state: DPlayerState;
-    options: DPlayerOptions; //TODO(#46):  without critical :?, s enforce default value!
+    options!: DPlayerOptions; //TODO(#46):  without critical :?, s enforce default value!
     events!: Events;
     qualityIndex!: number;
     languageFeatures!: i18n;
@@ -37,6 +38,19 @@ class DPlayer {
     video!: HTMLVideoElement;
     user!: User;
     // TODO(#47):  remove !s
+
+    controller!: Controller;
+    comment?: Comment;
+    timer!: Timer;
+    danmaku?: Danmaku;
+    bezel!: Bezel;
+    paused?: boolean;
+    hotkey!: HotKey;
+    contexmenu!: ContextMenu;
+    setting!: Setting;
+    focus?: boolean;
+    hotkeyPanel!: HotkeyPanel;
+    fullScreen!: FullScreen;
 
     constructor(options?: DPlayerOptions) {
         try {
@@ -108,14 +122,14 @@ class DPlayer {
                             }
                         }, 0);
                     },
-                    error: (msg) => {
+                    error: (msg: string) => {
                         this.notice(msg);
                     },
                     apiBackend: this.options.apiBackend,
                     borderColor: 'var(--dplayer-theme-color)',
                     height: this.arrow ? 24 : 30,
                     time: () => this.video.currentTime,
-                    unlimited: this.user.get('unlimited'),
+                    unlimited: this.user.get('unlimited') as number, // unsafe af
                     api: {
                         id: this.options.danmaku.id,
                         address: this.options.danmaku.api,
@@ -126,7 +140,7 @@ class DPlayer {
                         speedRate: this.options.danmaku.speedRate,
                     },
                     events: this.events,
-                    translate: (msg) => this.translate(msg),
+                    translate: (msg: string) => this.translate(msg),
                 });
 
                 this.comment = new Comment(this);
@@ -254,7 +268,7 @@ class DPlayer {
     /**
      * Pause video
      */
-    pause(fromNative) {
+    pause(fromNative?: boolean) {
         this.paused = true;
         this.container.classList.remove('dplayer-loading');
 
@@ -275,43 +289,42 @@ class DPlayer {
         }
     }
 
-    switchVolumeIcon() {
+    switchVolumeIcon(): void {
         // 75 % is better, in my opinion
         if (this.volume() >= 0.75) {
-            this.template.volumeIcon.innerHTML = Icons.volumeUp;
+            this.template.volumeIcon?.innerHTML = Icons.volumeUp;
         } else if (this.volume() > 0) {
-            this.template.volumeIcon.innerHTML = Icons.volumeDown;
+            this.template.volumeIcon?.innerHTML = Icons.volumeDown;
         } else {
-            this.template.volumeIcon.innerHTML = Icons.volumeOff;
+            this.template.volumeIcon?.innerHTML = Icons.volumeOff;
         }
     }
 
     /**
      * Set volume
      */
-    volume(percentage, nostorage, nonotice) {
-        percentage = parseFloat(percentage);
-        if (!isNaN(percentage)) {
-            percentage = Math.max(percentage, 0);
-            percentage = Math.min(percentage, 1);
-            this.bar.set('volume', percentage);
-            const formatPercentage = `${(percentage * 100).toFixed(0)}%`;
-            this.template.volumeBarWrapWrap.dataset.balloon = formatPercentage;
-            if (!nostorage) {
-                this.user.set('volume', percentage);
-            }
-            if (!nonotice) {
-                this.notice(`${this.translate('volume')} ${(percentage * 100).toFixed(0)}%`, { type: 'volume' });
-            }
-
-            this.video.volume = percentage;
-            if (this.video.muted) {
-                this.video.muted = false;
-            }
-            this.switchVolumeIcon();
+    volume(percentage?: string | number, nostorage?: boolean, nonotice?: boolean): number | undefined {
+        if (typeof percentage === 'undefined') {
+            return this.video.volume;
+        }
+        percentage = typeof percentage === 'number' ? percentage : parseFloat(percentage);
+        percentage = Math.max(percentage, 0);
+        percentage = Math.min(percentage, 1);
+        this.bar.set('volume', percentage);
+        const formatPercentage = `${(percentage * 100).toFixed(0)}%`;
+        this.template.volumeBarWrapWrap?.dataset.balloon = formatPercentage;
+        if (!nostorage) {
+            this.user.set('volume', percentage.toString());
+        }
+        if (!nonotice) {
+            this.notice(`${this.translate('volume') ?? ' ERROR in translation'} ${(percentage * 100).toFixed(0)}%`, { type: 'volume' });
         }
 
-        return this.video.volume;
+        this.video.volume = percentage;
+        if (this.video.muted) {
+            this.video.muted = false;
+        }
+        this.switchVolumeIcon();
     }
 
     /**
@@ -661,7 +674,7 @@ class DPlayer {
         });
     }
 
-    notice(text, options) {
+    notice(text: string, options?: DPlayerNoticeOptions): void {
         options = options || {};
         options.time = options.time || 2000;
         options.opacity = options.opacity || 0.8;
@@ -677,10 +690,10 @@ class DPlayer {
         }
         let DontAnimate = false;
         if (options.duplicate === 'check') {
-            Array.from(this.template.noticeList.children).forEach((child) => {
+            Array.from(this.template.noticeList?.children ?? []).forEach((child: Element) => {
                 const childText = child.innerText;
                 if (childText === text) {
-                    this.template.noticeList.removeChild(child);
+                    this.template.noticeList?.removeChild(child);
                 }
             });
         }
@@ -770,7 +783,7 @@ class DPlayer {
         });
     }
 
-    static get version() {
+    static get version(): string {
         return DPLAYER_VERSION;
     }
 }
@@ -788,3 +801,12 @@ export interface DPlayerState {
 export type DPlayerBalloonHTML = string;
 
 export type DPlayerBalloonPosition = 'up' | 'down' | 'left' | 'right' | 'up-left' | 'up-right' | 'down-left' | 'down-right';
+
+export interface DPlayerNoticeOptions {
+    time?: number;
+    opacity?: number;
+    mode?: 'normal' | 'override'; // TODO Add
+    duplicate?: 'ignore' | 'check';
+    type?: 'normal';
+    warn?: boolean;
+}

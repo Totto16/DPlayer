@@ -60,3 +60,11 @@ export const isOfTypeAndNotNull = <T>(check: any): check is T => {
     }
     return true;
 }; */
+
+declare var require: {
+    <T>(path: string): T;
+    (paths: string[], callback: (...modules: any[]) => void): void;
+    ensure: (paths: string[], callback: (require: <T>(path: string) => T) => void) => void;
+};
+
+// from ts-loader doc, use like this: require("!style!css!...");

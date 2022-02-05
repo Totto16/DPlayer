@@ -1,7 +1,8 @@
-import axios from 'axios';
+import axios, { AxiosResponse } from 'axios';
+import { StringIndexableObject } from '.';
 import apiBackend, { DPlayerAPI, DPlayerBackendResponse } from './api';
-import { Highlight } from './controller';
-import { DPlayerOptions } from './options';
+import { DPlayerHighlight } from './controller';
+import { DPlayerAvailableVideoTypes, DPlayerOptions } from './options';
 
 const isMobile = /mobile/i.test(window.navigator.userAgent);
 const isChrome = /chrome/i.test(window.navigator.userAgent);
@@ -27,7 +28,8 @@ const utils: DPlayerUtils = {
         let actualLeft = element.offsetLeft;
         let current = element.offsetParent;
         const elementScrollLeft = document.body.scrollLeft + document.documentElement.scrollLeft;
-        if (!document.fullscreenElement && !document.mozFullScreenElement && !document.webkitFullscreenElement) {
+        // according to https://developer.mozilla.org/en-US/docs/Web/API/Document/fullscreenElement webkit vendor prefix exists!
+        if (!document.fullscreenElement && !document.webkitFullscreenElement) {
             while (current !== null) {
                 actualLeft += current.offsetLeft;
                 current = current.offsetParent;
@@ -96,7 +98,7 @@ const utils: DPlayerUtils = {
     isSafari,
 
     storage: {
-        set: (key: string, value: unknown): void => {
+        set: (key: string, value: StringIndexableObject | string | number): void => {
             if (typeof value === 'object') {
                 localStorage.setItem(key, JSON.stringify(value));
             } else if (typeof value === 'string') {
@@ -104,7 +106,7 @@ const utils: DPlayerUtils = {
             } else if (typeof value.toString === 'function') {
                 localStorage.setItem(key, value.toString());
             } else {
-                console.warn('In storage.set: unknwon Type provided.');
+                console.warn('In storage.set: unknown Type provided.');
                 return;
             }
         },
@@ -112,18 +114,18 @@ const utils: DPlayerUtils = {
         get: (key: string) => localStorage.getItem(key),
     },
 
-    encodeValueAsObject(val: any): DPlayerEncodedValue {
-        return { value: val.toString(), type: typeof val };
+    encodeValueAsObject(val: DPlayerEncodeValue): DPlayerEncodedValue {
+        return { value: typeof val.toString === 'function' ? val.toString() : JSON.stringify(val), type: typeof val };
     },
 
-    decodeValueFromObject(obj) {
+    decodeValueFromObject(obj: DPlayerEncodedValue): DPlayerEncodeValue | null {
         const { value, type } = obj;
         if (type === 'number') {
             return parseFloat(value);
         } else if (type === 'string') {
             return value;
         } else if (type === 'object') {
-            return JSON.parse(value);
+            return JSON.parse(value) as StringIndexableObject;
         } else {
             return null;
         }
@@ -163,34 +165,41 @@ const utils: DPlayerUtils = {
                 return 'right';
         }
     },
+
+    deepCopyObject<T = StringIndexableObject>(obj: T): T {
+        return JSON.parse(JSON.stringify(obj)) as T;
+    },
+
     // parsing according to web standards (https://developer.mozilla.org/en-US/docs/Web/API/WebVTT_API)
-    parseVtt(vtt_url: string, callback: DPlayerParseVttCallback, startOrEnd = 0, options: DPlayerOptions | null = null): string {
-        if (vtt_url === 'API' && API_URL !== null) {
-            const video_url = new URL(options.video.url);
+    parseVtt(vttUrl: string, callback: DPlayerParseVttCallback, startOrEnd = 0, options: DPlayerOptions | null = null): string | undefined {
+        if (vttUrl === 'API' && typeof options?.API_URL !== 'undefined') {
+            const videoUrl = new URL(options.video?.url ?? 'null');
             // TODO(#64):  this has to be customizable, to match it between naming conventions and file names!!!
-            const parameter =
-                options.video.type === 'hls'
-                    ? video_url.pathname
-                          .substring(0, video_url.pathname.lastIndexOf('/'))
+            const type: DPlayerAvailableVideoTypes | string = options.video?.type ?? 'normal';
+            const parameter: string =
+                type === 'hls'
+                    ? videoUrl.pathname
+                          .substring(0, videoUrl.pathname.lastIndexOf('/'))
                           .split('/')
                           .filter((str) => str !== '')
                           .join('-')
-                    : video_url.pathname.substring(video_url.pathname.lastIndexOf('/') + 1);
+                    : videoUrl.pathname.substring(videoUrl.pathname.lastIndexOf('/') + 1);
             // TODO(#65):  here are some specs!
             // TODO(#66):  version, 1 at the moment, get either reference or nothing/everything else means raw data!, type, vtt, or chapter, or thumbnails or etc TODO:
-            api.backend({
-                url: options.API_URL,
-                query: {
-                    version: '1',
-                    get: 'reference',
-                    type: 'vtt',
-                    parameter,
-                    mode: 'regex',
-                },
-            })
+            apiBackend
+                .backend({
+                    url: options.API_URL,
+                    query: {
+                        version: '1',
+                        get: 'reference',
+                        type: 'vtt',
+                        parameter,
+                        mode: 'regex',
+                    },
+                })
                 .then((data: DPlayerBackendResponse | null) => {
                     if (data !== null) {
-                        this.parseVtt(data, callback, startOrEnd);
+                        this.parseVtt(data, callback, startOrEnd, null);
                     } else {
                         // we don't need to print an error, the server reported, that there are no vtts available, nothing severe happened
                     }
@@ -200,31 +209,31 @@ const utils: DPlayerUtils = {
                     return null;
                 });
             return 'processing API request';
-        } else if (vtt_url === 'API' && API_URL === null) {
+        } else if (vttUrl === 'API' && typeof options?.API_URL === 'undefined') {
             console.warn(`Tried to pass 'API' as vtt_url, but didn't specify 'API_URL'!`);
             return;
         }
-        const marker: Highlight[] = [];
+        const marker: DPlayerHighlight[] = [];
         axios
-            .get(vtt_url)
-            .then((response) => {
-                const status_ok = [200, 301, 302];
-                if (!status_ok.includes(response.status)) {
+            .get(vttUrl)
+            .then((response: AxiosResponse<StringIndexableObject | undefined, string>) => {
+                const statusOk = [200, 301, 302];
+                if (!statusOk.includes(response.status)) {
                     throw new Error('Incorrect Status');
                 }
                 if (response.headers['content-type'] !== 'text/vtt') {
                     throw new Error('Incorrect content-type, should be text/vtt');
                 }
-                if (!response.data) {
+                if (typeof response.data === 'undefined') {
                     throw new Error('Empty Web-Vtt');
                 }
-                const data = response.data
+                const data: string[] = response.data
                     .replaceAll('\r', '')
                     .split('\n')
                     .filter((a) => a.length > 0);
                 data.forEach((text, i) => {
                     if (text.includes('-->')) {
-                        const mark = {};
+                        const mark: DPlayerHighlight = { text: 'ERROR', time: -1 };
                         mark.text = data.length > i + 1 ? data[i + 1] : 'Error';
                         const endTime = text.split('-->')[startOrEnd].trim();
                         const multiplier = [1, 60, 60 * 60, 60 * 60 * 24]; // second, minute, hour, day
@@ -272,9 +281,10 @@ export interface DPlayerUtils {
     number2Color: (number: number) => string;
     number2Type: (number: number) => DPlayerUtilsTypes;
     parseVtt: (vtt_url: string, callback: DPlayerParseVttCallback, startOrEnd: number, options: DPlayerOptions | null) => string;
+    deepCopyObject: <T = StringIndexableObject>(obj: T) => T;
 }
 
-export type DPlayerParseVttCallback = (marker: Highlight[]) => void;
+export type DPlayerParseVttCallback = (marker: DPlayerHighlight[]) => void;
 
 export type DPlayerUtilsTypes = 'right' | 'top' | 'bottom';
 
@@ -289,3 +299,5 @@ export type DPlayerEncodedValue = {
     value: string;
     type: TypesOfValues;
 };
+
+type DPlayerEncodeValue = StringIndexableObject | number | string;
