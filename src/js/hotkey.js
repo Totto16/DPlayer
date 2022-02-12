@@ -7,7 +7,7 @@ const keys = {
     39: 'right',
     38: 'up',
     40: 'down',
-    27: 'cancelBothFullscreen',
+    27: 'cancelFullscreen',
     70: 'toggleFullscreen',
     87: 'toggleWebFullscreen',
     77: 'mute',
@@ -134,7 +134,7 @@ class HotKey {
                         event.preventDefault();
                         this.player.fullScreen.toggle('browser');
                         break;
-                    case 'cancelBothFullscreen':
+                    case 'cancelFullscreen':
                         // cancel WEB fullscreen
                         event.preventDefault();
                         if (this.player.fullScreen.isFullScreen('web')) {
