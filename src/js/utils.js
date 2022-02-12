@@ -191,10 +191,11 @@ const utils = {
                 },
             })
                 .then((data) => {
-                    if (data !== undefined || data !== null) {
+                    if (data !== undefined && data !== null) {
                         this.parseVtt(data, callback, startOrEnd);
                     } else {
                         // we don't need to print an error, the server reported, that there are no vtts available, nothing severe happened
+
                     }
                 })
                 .catch((error) => {

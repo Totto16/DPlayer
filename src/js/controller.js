@@ -677,7 +677,9 @@ class Controller {
         this.player.container.classList.add('dplayer-hide-controller');
         this.player.setting.hide();
         this.player.comment && this.player.comment.hide();
-        this.player.subtitles.hideModal();
+        if (this.player.subtitles) { // only hide if present!
+            this.player.subtitles.hideModal();
+        }
     }
 
     isShow() {

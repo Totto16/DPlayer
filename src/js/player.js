@@ -659,7 +659,7 @@ class DPlayer {
 
     notice(text, options) {
         // for compatibility with older versions
-        options = typeof options === "number" ? {time:options} : options || {};
+        options = typeof options === 'number' ? { time: options } : options || {};
         options.time = options.time || 2000;
         options.opacity = options.opacity || 0.8;
         options.mode = options.mode || 'normal';
