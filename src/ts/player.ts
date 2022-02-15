@@ -89,11 +89,12 @@ class DPlayer {
                 this.container.classList.add('dplayer-arrow');
             }
 
+            // can throw, but we cattch it down below
             this.template = new Template({
                 container: this.container,
                 player: this,
                 options: this.options,
-                index: index,
+                index,
                 translate: this.translate,
             });
 
@@ -111,13 +112,13 @@ class DPlayer {
                 this.danmaku = new Danmaku({
                     player: this,
                     container: this.template.danmaku,
-                    opacity: this.user.get('opacity'),
+                    opacity: this.user.getWithDefault<number>('opacity', 1.0),
                     callback: () => {
                         setTimeout(() => {
                             this.template.danmakuLoading.style.display = 'none';
 
                             // autoplay
-                            if (this.options.autoplay) {
+                            if (this.options.autoplay === true) {
                                 this.play();
                             }
                         }, 0);
@@ -185,7 +186,7 @@ class DPlayer {
             {code : 3, message:'error', data:error};
             */
         } catch (error) {
-            this.state = { code: 3, message: 'error', data: error };
+            this.state = { code: 3, message: 'error', data: (error as Error).message };
             console.error('DPLAYER initialization failed with:', error);
         }
     }
@@ -214,8 +215,8 @@ class DPlayer {
         this.template.ptime.innerHTML = utils.secondToTime(time);
     }
 
-    // TODO(#49):  implement with in utils.secondToTime
-    formatTime(time) {
+    // TODO(#49):  implement with in utils.secondToTime, null return type of translate is sketchy, better default to en, and keys availability has to be checked at compile time!
+    formatTime(time: number): string | null {
         if (time < 60) {
             return this.translate('seconds', time.toFixed(0));
         } else if (time < 60 * 60) {
@@ -233,7 +234,7 @@ class DPlayer {
     /**
      * Play video
      */
-    play(fromNative) {
+    play(fromNative?: boolean): void {
         this.paused = false;
         if (this.video.paused && !utils.isMobile) {
             this.bezel.switch(Icons.play);
@@ -242,7 +243,7 @@ class DPlayer {
         this.template.playButton.innerHTML = Icons.pause;
         this.template.mobilePlayButton.innerHTML = Icons.pause;
 
-        if (!fromNative) {
+        if (typeof fromNative === 'undefined' || fromNative === false) {
             const playedPromise = Promise.resolve(this.video.play()); // TODO(#50):  see if promise is right here and works!
             playedPromise
                 .catch(() => {
@@ -268,7 +269,7 @@ class DPlayer {
     /**
      * Pause video
      */
-    pause(fromNative?: boolean) {
+    pause(fromNative?: boolean): void {
         this.paused = true;
         this.container.classList.remove('dplayer-loading');
 

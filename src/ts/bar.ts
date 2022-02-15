@@ -11,7 +11,7 @@ class Bar {
     previousRanges: DPlayerProgressRange[];
 
     constructor(template: Template, player: DPlayer, mode?: DPLayerBarMode) {
-        this.elements = { volume: template.volumeBar!, played: template.playedBar!, loaded: template.loadedBar!, danmaku: template.danmakuOpacityBar! }; // that ! should be safe, since we explicitly check for non null in the Template initialization, but // TODO(#11):  solve it in better
+        this.elements = { volume: template.volumeBar, played: template.playedBar, loaded: template.loadedBar, danmaku: template.danmakuOpacityBar }; // that ! should be safe, since we explicitly check for non null in the Template initialization, but // TODO(#11):  solve it in better
         this.mode = mode;
         this.player = player;
         this.previousRanges = [];

@@ -1,4 +1,4 @@
-import DPlayer from '.';
+import DPlayer, { StringIndexableObject } from '.';
 import Events from './events';
 import utils from './utils';
 
@@ -376,4 +376,5 @@ export interface DPlayerDanmakuOptions {
     unlimited: number;
     events: Events;
     error?: (msg: string) => void;
+    callback?: (results: StringIndexableObject[]) => void;
 }

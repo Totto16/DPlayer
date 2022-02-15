@@ -1,4 +1,4 @@
-import DPlayer from '.';
+import DPlayer, { StringIndexableObject } from '.';
 import utils from './utils';
 
 class User {
@@ -13,7 +13,7 @@ class User {
             unlimited: 'dplayer-danmaku-unlimited',
             danmaku: 'dplayer-danmaku-show',
             subtitle: 'dplayer-subtitle-show',
-            //TODO(#62):  add other useful like selected quality index, current time etc
+            // TODO(#62):  add other useful like selected quality index, current time etc
         };
         this.default = {
             opacity: 0.7,
@@ -27,7 +27,8 @@ class User {
         this.init();
     }
 
-    init() {
+    // TODO: differentiate between Object, string, number, boolean
+    init(): void {
         for (let i = 0; i < Object.keys(this.storageName).length; i++) {
             const item: DPlayerUserStorageInternalKeys = (Object.keys(this.storageName) as DPlayerUserStorageInternalKeys[])[i];
             const name = this.storageName[item];
@@ -35,8 +36,16 @@ class User {
         }
     }
 
-    get(key: DPlayerUserStorageInternalKeys) {
+    get<T extends Storable>(key: DPlayerUserStorageInternalKeys): T {
         return this.data[key];
+    }
+
+    getWithDefault<T extends Storable>(key: DPlayerUserStorageInternalKeys, defaultValue: T): T {
+        const value = this.get<T>(key);
+        if (value !== undefined) {
+            return value;
+        }
+        return defaultValue;
     }
 
     set(key: DPlayerUserStorageInternalKeys, value: string) {
@@ -62,3 +71,5 @@ export type DPlayerUserStorageValues = {
     danmaku?: number;
     subtitle?: number;
 };
+
+export type Storable = StringIndexableObject | string | number | boolean;

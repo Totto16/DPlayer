@@ -15,98 +15,100 @@ class Template implements DPlayerDestroyable {
     index: number;
     translate: DPLayerTranslateFunction;
 
-    volumeBar!: HTMLDivElement | null;
-    volumeBarWrap!: HTMLDivElement | null;
-    volumeBarWrapWrap!: HTMLDivElement | null;
-    volumeButton!: HTMLDivElement | null;
-    volumeButtonIcon!: HTMLDivElement | null;
-    volumeIcon!: HTMLButtonElement | null;
-    playedBar!: HTMLDivElement | null;
-    loadedBar!: HTMLDivElement | null;
-    playedBarWrap!: HTMLDivElement | null;
-    barHighlight!: NodeListOf<HTMLDivElement> | null;
-    barHighlightTop!: NodeListOf<HTMLDivElement> | null;
-    playedBarTime!: HTMLDivElement | null;
-    topChapterDiv!: HTMLDivElement | null;
-    barInfoDiv!: HTMLDivElement | null;
-    danmaku!: HTMLDivElement | null;
-    danmakuLoading!: HTMLSpanElement | null;
-    video!: HTMLVideoElement | null;
-    bezel!: HTMLSpanElement | null;
-    playButton!: HTMLButtonElement | null;
-    mobilePlayButton!: HTMLButtonElement | null;
-    videoWrap!: HTMLDivElement | null;
-    controllerMask!: HTMLDivElement | null;
-    ptime!: HTMLSpanElement | null;
-    settingButton!: HTMLButtonElement | null;
-    settingBox!: HTMLDivElement | null;
-    mask!: HTMLDivElement | null;
-    loop!: HTMLDivElement | null;
-    loopToggle!: HTMLDivElement | null;
-    showDanmaku!: HTMLDivElement | null;
-    showDanmakuToggle!: HTMLInputElement | null;
-    unlimitDanmaku!: HTMLDivElement | null;
-    unlimitDanmakuToggle!: HTMLInputElement | null;
-    speed!: HTMLDivElement | null;
-    speedItem!: NodeListOf<HTMLDivElement> | null;
-    danmakuOpacityBar!: HTMLDivElement | null;
-    danmakuOpacityBarWrap!: HTMLDivElement | null;
-    danmakuOpacityBarWrapWrap!: HTMLDivElement | null;
-    danmakuOpacityBox!: HTMLDivElement | null;
-    dtime!: HTMLSpanElement | null;
-    controller!: HTMLDivElement | null;
-    commentInput!: HTMLInputElement | null;
-    commentButton!: HTMLButtonElement | null;
-    commentSettingBox!: HTMLDivElement | null;
-    commentSettingButton!: HTMLButtonElement | null;
-    commentSettingFill!: SVGMPathElement | null;
-    commentSendButton!: HTMLButtonElement | null;
-    commentSendFill!: SVGMPathElement | null;
-    commentColorSettingBox!: HTMLDivElement | null;
-    browserFullButton!: HTMLButtonElement | null;
-    webFullButton!: HTMLButtonElement | null;
-    menu!: HTMLDivElement | null;
-    menuItem!: NodeListOf<HTMLDivElement> | null;
-    qualityList!: HTMLDivElement | null;
-    cameraButton!: HTMLDivElement | null;
-    airplayButton!: HTMLDivElement | null;
-    chromecastButton!: HTMLDivElement | null;
-    subtitleButton!: HTMLButtonElement | null;
-    subtitleButtonInner!: HTMLSpanElement | null;
-    subtitle!: HTMLDivElement | null;
-    qualityButton!: HTMLButtonElement | null;
-    barPreview!: HTMLDivElement | null;
-    barWrap!: HTMLDivElement | null;
-    noticeList!: HTMLDivElement | null;
-    skipWindow!: HTMLDivElement | null;
-    infoPanel!: HTMLDivElement | null;
-    infoPanelClose!: HTMLDivElement | null;
-    hotkeyPanel!: HTMLDivElement | null;
-    hotkeyPanelClose!: HTMLDivElement | null;
-    infoVersion!: HTMLSpanElement | null;
-    infoFPS!: HTMLSpanElement | null;
-    infoType!: HTMLSpanElement | null;
-    infoUrl!: HTMLSpanElement | null;
-    infoResolution!: HTMLSpanElement | null;
-    infoDuration!: HTMLSpanElement | null;
-    infoDanmakuId!: HTMLSpanElement | null;
-    infoDanmakuApi!: HTMLSpanElement | null;
-    infoDanmakuAmount!: HTMLSpanElement | null;
+    // its assured that those exist and are not null, empty, if not the constructor throws an Error!
+    volumeBar!: HTMLDivElement;
+    volumeBarWrap!: HTMLDivElement;
+    volumeBarWrapWrap!: HTMLDivElement;
+    volumeButton!: HTMLDivElement;
+    volumeButtonIcon!: HTMLDivElement;
+    volumeIcon!: HTMLButtonElement;
+    playedBar!: HTMLDivElement;
+    loadedBar!: HTMLDivElement;
+    playedBarWrap!: HTMLDivElement;
+    barHighlight!: NodeListOf<HTMLDivElement>;
+    barHighlightTop!: NodeListOf<HTMLDivElement>;
+    playedBarTime!: HTMLDivElement;
+    topChapterDiv!: HTMLDivElement;
+    barInfoDiv!: HTMLDivElement;
+    danmaku!: HTMLDivElement;
+    danmakuLoading!: HTMLSpanElement;
+    video!: HTMLVideoElement;
+    bezel!: HTMLSpanElement;
+    playButton!: HTMLButtonElement;
+    mobilePlayButton!: HTMLButtonElement;
+    videoWrap!: HTMLDivElement;
+    controllerMask!: HTMLDivElement;
+    ptime!: HTMLSpanElement;
+    settingButton!: HTMLButtonElement;
+    settingBox!: HTMLDivElement;
+    mask!: HTMLDivElement;
+    loop!: HTMLDivElement;
+    loopToggle!: HTMLDivElement;
+    showDanmaku!: HTMLDivElement;
+    showDanmakuToggle!: HTMLInputElement;
+    unlimitDanmaku!: HTMLDivElement;
+    unlimitDanmakuToggle!: HTMLInputElement;
+    speed!: HTMLDivElement;
+    speedItem!: NodeListOf<HTMLDivElement>;
+    danmakuOpacityBar!: HTMLDivElement;
+    danmakuOpacityBarWrap!: HTMLDivElement;
+    danmakuOpacityBarWrapWrap!: HTMLDivElement;
+    danmakuOpacityBox!: HTMLDivElement;
+    dtime!: HTMLSpanElement;
+    controller!: HTMLDivElement;
+    commentInput!: HTMLInputElement;
+    commentButton!: HTMLButtonElement;
+    commentSettingBox!: HTMLDivElement;
+    commentSettingButton!: HTMLButtonElement;
+    commentSettingFill!: SVGMPathElement;
+    commentSendButton!: HTMLButtonElement;
+    commentSendFill!: SVGMPathElement;
+    commentColorSettingBox!: HTMLDivElement;
+    browserFullButton!: HTMLButtonElement;
+    webFullButton!: HTMLButtonElement;
+    menu!: HTMLDivElement;
+    menuItem!: NodeListOf<HTMLDivElement>;
+    qualityList!: HTMLDivElement;
+    cameraButton!: HTMLDivElement;
+    airplayButton!: HTMLDivElement;
+    chromecastButton!: HTMLDivElement;
+    subtitleButton!: HTMLButtonElement;
+    subtitleButtonInner!: HTMLSpanElement;
+    subtitle!: HTMLDivElement;
+    qualityButton!: HTMLButtonElement;
+    barPreview!: HTMLDivElement;
+    barWrap!: HTMLDivElement;
+    noticeList!: HTMLDivElement;
+    skipWindow!: HTMLDivElement;
+    infoPanel!: HTMLDivElement;
+    infoPanelClose!: HTMLDivElement;
+    hotkeyPanel!: HTMLDivElement;
+    hotkeyPanelClose!: HTMLDivElement;
+    infoVersion!: HTMLSpanElement;
+    infoFPS!: HTMLSpanElement;
+    infoType!: HTMLSpanElement;
+    infoUrl!: HTMLSpanElement;
+    infoResolution!: HTMLSpanElement;
+    infoDuration!: HTMLSpanElement;
+    infoDanmakuId!: HTMLSpanElement;
+    infoDanmakuApi!: HTMLSpanElement;
+    infoDanmakuAmount!: HTMLSpanElement;
 
+    /**
+     * @throws {Error}
+     */
     constructor(options: DPlayerTemplateOptions) {
         this.container = options.container;
         this.options = options.options;
         this.player = options.player;
         this.index = options.index;
         this.translate = options.translate;
-        this.init();
-        if (!this.checkTemplate()) {
-            console.error('[FATAL] Error in retrieving Needed HTML Elements from Template, this is an internal BUG! Please report this!');
+        try {
+            this.init();
+        } catch (err) {
+            console.error('[FATAL] Error in retrieving Needed HTML Elements from Template, this is (probably) an internal BUG! Please report this!');
+            throw new Error("Couldn't initialize the Templates Needed!");
         }
-    }
-
-    checkTemplate(): boolean {
-        return isOfTypeAndNotNull<Template>(this);
     }
 
     init(): void {
@@ -129,85 +131,108 @@ class Template implements DPlayerDestroyable {
             },
         }); // TODO(#56):  change
 
-        this.volumeBar = this.container.querySelector('.dplayer-volume-bar-inner');
-        this.volumeBarWrap = this.container.querySelector('.dplayer-volume-bar');
-        this.volumeBarWrapWrap = this.container.querySelector('.dplayer-volume-bar-wrap');
-        this.volumeButton = this.container.querySelector('.dplayer-volume');
-        this.volumeButtonIcon = this.container.querySelector('.dplayer-volume-icon');
-        this.volumeIcon = this.container.querySelector('.dplayer-volume-icon .dplayer-icon-content');
-        this.playedBar = this.container.querySelectorAll('.dplayer-played');
-        this.loadedBar = this.container.querySelector('.dplayer-loaded');
-        this.playedBarWrap = this.container.querySelector('.dplayer-bar-wrap');
-        this.barHighlight = this.playedBarWrap?.querySelectorAll('.dplayer-highlight') ?? null;
-        this.barHighlightTop = this.playedBarWrap?.querySelectorAll('.dplayer-highlight-top') ?? null;
-        this.playedBarTime = this.container.querySelector('.dplayer-bar-time');
-        this.topChapterDiv = this.container.querySelector('.dplayer-thumb-text');
-        this.barInfoDiv = this.container.querySelector('.dplayer-info-div');
-        this.danmaku = this.container.querySelector('.dplayer-danmaku');
-        this.danmakuLoading = this.container.querySelector('.dplayer-danloading');
-        this.video = this.container.querySelector('.dplayer-video-current');
-        this.bezel = this.container.querySelector('.dplayer-bezel-icon');
-        this.playButton = this.container.querySelector('.dplayer-play-icon');
-        this.mobilePlayButton = this.container.querySelector('.dplayer-mobile-play');
-        this.videoWrap = this.container.querySelector('.dplayer-video-wrap');
-        this.controllerMask = this.container.querySelector('.dplayer-controller-mask');
-        this.ptime = this.container.querySelector('.dplayer-ptime');
-        this.settingButton = this.container.querySelector('.dplayer-setting-icon');
-        this.settingBox = this.container.querySelector('.dplayer-setting-box');
-        this.mask = this.container.querySelector('.dplayer-mask');
-        this.loop = this.container.querySelector('.dplayer-setting-loop');
-        this.loopToggle = this.container.querySelector('.dplayer-setting-loop .dplayer-toggle-setting-input');
-        this.showDanmaku = this.container.querySelector('.dplayer-setting-showdan');
-        this.showDanmakuToggle = this.container.querySelector('.dplayer-showdan-setting-input');
-        this.unlimitDanmaku = this.container.querySelector('.dplayer-setting-danunlimit');
-        this.unlimitDanmakuToggle = this.container.querySelector('.dplayer-danunlimit-setting-input');
-        this.speed = this.container.querySelector('.dplayer-setting-speed');
-        this.speedItem = this.container.querySelectorAll('.dplayer-setting-speed-item');
-        this.danmakuOpacityBar = this.container.querySelector('.dplayer-danmaku-bar-inner');
-        this.danmakuOpacityBarWrap = this.container.querySelector('.dplayer-danmaku-bar');
-        this.danmakuOpacityBarWrapWrap = this.container.querySelector('.dplayer-danmaku-bar-wrap');
-        this.danmakuOpacityBox = this.container.querySelector('.dplayer-setting-danmaku');
-        this.dtime = this.container.querySelector('.dplayer-dtime');
-        this.controller = this.container.querySelector('.dplayer-controller');
-        this.commentInput = this.container.querySelector('.dplayer-comment-input');
-        this.commentButton = this.container.querySelector('.dplayer-comment-icon');
-        this.commentSettingBox = this.container.querySelector('.dplayer-comment-setting-box');
-        this.commentSettingButton = this.container.querySelector('.dplayer-comment-setting-icon');
-        this.commentSettingFill = this.container.querySelector('.dplayer-comment-setting-icon path');
-        this.commentSendButton = this.container.querySelector('.dplayer-send-icon');
-        this.commentSendFill = this.container.querySelector('.dplayer-send-icon path');
-        this.commentColorSettingBox = this.container.querySelector('.dplayer-comment-setting-color');
-        this.browserFullButton = this.container.querySelector('.dplayer-full-icon');
-        this.webFullButton = this.container.querySelector('.dplayer-full-in-icon');
-        this.menu = this.container.querySelector('.dplayer-menu');
-        this.menuItem = this.container.querySelectorAll('.dplayer-menu-item');
-        this.qualityList = this.container.querySelector('.dplayer-quality-list');
-        this.cameraButton = this.container.querySelector('.dplayer-camera-icon');
-        this.airplayButton = this.container.querySelector('.dplayer-airplay-icon');
-        this.chromecastButton = this.container.querySelector('.dplayer-chromecast-icon');
-        this.subtitleButton = this.container.querySelector('.dplayer-subtitle-icon');
-        this.subtitleButtonInner = this.container.querySelector('.dplayer-subtitle-icon .dplayer-icon-content');
-        this.subtitle = this.container.querySelector('.dplayer-subtitle');
-        this.qualityButton = this.container.querySelector('.dplayer-quality-icon');
-        this.barPreview = this.container.querySelector('.dplayer-bar-preview');
-        this.barWrap = this.container.querySelector('.dplayer-bar-wrap');
-        this.noticeList = this.container.querySelector('.dplayer-notice-list');
-        this.skipWindow = this.container.querySelector('.dplayer-skip-window');
-        this.infoPanel = this.container.querySelector('.dplayer-info-panel');
-        this.infoPanelClose = this.container.querySelector('.dplayer-info-panel-close');
-        this.hotkeyPanel = this.container.querySelector('.dplayer-hotkey-panel');
-        this.hotkeyPanelClose = this.container.querySelector('.dplayer-hotkey-panel-close');
-        this.infoVersion = this.container.querySelector('.dplayer-info-panel-item-version .dplayer-info-panel-item-data');
-        this.infoFPS = this.container.querySelector('.dplayer-info-panel-item-fps .dplayer-info-panel-item-data');
-        this.infoType = this.container.querySelector('.dplayer-info-panel-item-type .dplayer-info-panel-item-data');
-        this.infoUrl = this.container.querySelector('.dplayer-info-panel-item-url .dplayer-info-panel-item-data');
-        this.infoResolution = this.container.querySelector('.dplayer-info-panel-item-resolution .dplayer-info-panel-item-data');
-        this.infoDuration = this.container.querySelector('.dplayer-info-panel-item-duration .dplayer-info-panel-item-data');
-        this.infoDanmakuId = this.container.querySelector('.dplayer-info-panel-item-danmaku-id .dplayer-info-panel-item-data');
-        this.infoDanmakuApi = this.container.querySelector('.dplayer-info-panel-item-danmaku-api .dplayer-info-panel-item-data');
-        this.infoDanmakuAmount = this.container.querySelector('.dplayer-info-panel-item-danmaku-amount .dplayer-info-panel-item-data');
+        this.volumeBar = this.#saveQuerySelector<HTMLDivElement>(this.container, '.dplayer-volume-bar-inner');
+        this.volumeBarWrap = this.#saveQuerySelector<HTMLDivElement>(this.container, '.dplayer-volume-bar');
+        this.volumeBarWrapWrap = this.#saveQuerySelector<HTMLDivElement>(this.container, '.dplayer-volume-bar-wrap');
+        this.volumeButton = this.#saveQuerySelector<HTMLDivElement>(this.container, '.dplayer-volume');
+        this.volumeButtonIcon = this.#saveQuerySelector<HTMLDivElement>(this.container, '.dplayer-volume-icon');
+        this.volumeIcon = this.#saveQuerySelector<HTMLButtonElement>(this.container, '.dplayer-volume-icon .dplayer-icon-content');
+        this.playedBar = this.#saveQuerySelector<HTMLDivElement>(this.container, '.dplayer-played');
+        this.loadedBar = this.#saveQuerySelector<HTMLDivElement>(this.container, '.dplayer-loaded');
+        this.playedBarWrap = this.#saveQuerySelector<HTMLDivElement>(this.container, '.dplayer-bar-wrap');
+        this.barHighlight = this.#saveQuerySelectorAll<HTMLDivElement>(this.playedBarWrap, '.dplayer-highlight');
+        this.barHighlightTop = this.#saveQuerySelectorAll<HTMLDivElement>(this.playedBarWrap, '.dplayer-highlight-top');
+        this.playedBarTime = this.#saveQuerySelector<HTMLDivElement>(this.container, '.dplayer-bar-time');
+        this.topChapterDiv = this.#saveQuerySelector<HTMLDivElement>(this.container, '.dplayer-thumb-text');
+        this.barInfoDiv = this.#saveQuerySelector<HTMLDivElement>(this.container, '.dplayer-info-div');
+        this.danmaku = this.#saveQuerySelector<HTMLDivElement>(this.container, '.dplayer-danmaku');
+        this.danmakuLoading = this.#saveQuerySelector<HTMLSpanElement>(this.container, '.dplayer-danloading');
+        this.video = this.#saveQuerySelector<HTMLVideoElement>(this.container, '.dplayer-video-current');
+        this.bezel = this.#saveQuerySelector<HTMLSpanElement>(this.container, '.dplayer-bezel-icon');
+        this.playButton = this.#saveQuerySelector<HTMLButtonElement>(this.container, '.dplayer-play-icon');
+        this.mobilePlayButton = this.#saveQuerySelector<HTMLButtonElement>(this.container, '.dplayer-mobile-play');
+        this.videoWrap = this.#saveQuerySelector<HTMLDivElement>(this.container, '.dplayer-video-wrap');
+        this.controllerMask = this.#saveQuerySelector<HTMLDivElement>(this.container, '.dplayer-controller-mask');
+        this.ptime = this.#saveQuerySelector<HTMLSpanElement>(this.container, '.dplayer-ptime');
+        this.settingButton = this.#saveQuerySelector<HTMLButtonElement>(this.container, '.dplayer-setting-icon');
+        this.settingBox = this.#saveQuerySelector<HTMLDivElement>(this.container, '.dplayer-setting-box');
+        this.mask = this.#saveQuerySelector<HTMLDivElement>(this.container, '.dplayer-mask');
+        this.loop = this.#saveQuerySelector<HTMLDivElement>(this.container, '.dplayer-setting-loop');
+        this.loopToggle = this.#saveQuerySelector<HTMLDivElement>(this.container, '.dplayer-setting-loop .dplayer-toggle-setting-input');
+        this.showDanmaku = this.#saveQuerySelector<HTMLDivElement>(this.container, '.dplayer-setting-showdan');
+        this.showDanmakuToggle = this.#saveQuerySelector<HTMLInputElement>(this.container, '.dplayer-showdan-setting-input');
+        this.unlimitDanmaku = this.#saveQuerySelector<HTMLDivElement>(this.container, '.dplayer-setting-danunlimit');
+        this.unlimitDanmakuToggle = this.#saveQuerySelector<HTMLInputElement>(this.container, '.dplayer-danunlimit-setting-input');
+        this.speed = this.#saveQuerySelector<HTMLDivElement>(this.container, '.dplayer-setting-speed');
+        this.speedItem = this.#saveQuerySelectorAll<HTMLDivElement>(this.container, '.dplayer-setting-speed-item');
+        this.danmakuOpacityBar = this.#saveQuerySelector<HTMLDivElement>(this.container, '.dplayer-danmaku-bar-inner');
+        this.danmakuOpacityBarWrap = this.#saveQuerySelector<HTMLDivElement>(this.container, '.dplayer-danmaku-bar');
+        this.danmakuOpacityBarWrapWrap = this.#saveQuerySelector<HTMLDivElement>(this.container, '.dplayer-danmaku-bar-wrap');
+        this.danmakuOpacityBox = this.#saveQuerySelector<HTMLDivElement>(this.container, '.dplayer-setting-danmaku');
+        this.dtime = this.#saveQuerySelector<HTMLDivElement>(this.container, '.dplayer-dtime');
+        this.controller = this.#saveQuerySelector<HTMLDivElement>(this.container, '.dplayer-controller');
+        this.commentInput = this.#saveQuerySelector<HTMLInputElement>(this.container, '.dplayer-comment-input');
+        this.commentButton = this.#saveQuerySelector<HTMLButtonElement>(this.container, '.dplayer-comment-icon');
+        this.commentSettingBox = this.#saveQuerySelector<HTMLDivElement>(this.container, '.dplayer-comment-setting-box');
+        this.commentSettingButton = this.#saveQuerySelector<HTMLButtonElement>(this.container, '.dplayer-comment-setting-icon');
+        this.commentSettingFill = this.#saveQuerySelector<SVGMPathElement>(this.container, '.dplayer-comment-setting-icon path');
+        this.commentSendButton = this.#saveQuerySelector<HTMLButtonElement>(this.container, '.dplayer-send-icon');
+        this.commentSendFill = this.#saveQuerySelector<SVGMPathElement>(this.container, '.dplayer-send-icon path');
+        this.commentColorSettingBox = this.#saveQuerySelector<HTMLDivElement>(this.container, '.dplayer-comment-setting-color');
+        this.browserFullButton = this.#saveQuerySelector<HTMLButtonElement>(this.container, '.dplayer-full-icon');
+        this.webFullButton = this.#saveQuerySelector<HTMLButtonElement>(this.container, '.dplayer-full-in-icon');
+        this.menu = this.#saveQuerySelector<HTMLDivElement>(this.container, '.dplayer-menu');
+        this.menuItem = this.#saveQuerySelectorAll<HTMLDivElement>(this.container, '.dplayer-menu-item');
+        this.qualityList = this.#saveQuerySelector<HTMLDivElement>(this.container, '.dplayer-quality-list');
+        this.cameraButton = this.#saveQuerySelector<HTMLDivElement>(this.container, '.dplayer-camera-icon');
+        this.airplayButton = this.#saveQuerySelector<HTMLDivElement>(this.container, '.dplayer-airplay-icon');
+        this.chromecastButton = this.#saveQuerySelector<HTMLDivElement>(this.container, '.dplayer-chromecast-icon');
+        this.subtitleButton = this.#saveQuerySelector<HTMLButtonElement>(this.container, '.dplayer-subtitle-icon');
+        this.subtitleButtonInner = this.#saveQuerySelector<HTMLSpanElement>(this.container, '.dplayer-subtitle-icon .dplayer-icon-content');
+        this.subtitle = this.#saveQuerySelector<HTMLDivElement>(this.container, '.dplayer-subtitle');
+        this.qualityButton = this.#saveQuerySelector<HTMLButtonElement>(this.container, '.dplayer-quality-icon');
+        this.barPreview = this.#saveQuerySelector<HTMLDivElement>(this.container, '.dplayer-bar-preview');
+        this.barWrap = this.#saveQuerySelector<HTMLDivElement>(this.container, '.dplayer-bar-wrap');
+        this.noticeList = this.#saveQuerySelector<HTMLDivElement>(this.container, '.dplayer-notice-list');
+        this.skipWindow = this.#saveQuerySelector<HTMLDivElement>(this.container, '.dplayer-skip-window');
+        this.infoPanel = this.#saveQuerySelector<HTMLDivElement>(this.container, '.dplayer-info-panel');
+        this.infoPanelClose = this.#saveQuerySelector<HTMLDivElement>(this.container, '.dplayer-info-panel-close');
+        this.hotkeyPanel = this.#saveQuerySelector<HTMLDivElement>(this.container, '.dplayer-hotkey-panel');
+        this.hotkeyPanelClose = this.#saveQuerySelector<HTMLDivElement>(this.container, '.dplayer-hotkey-panel-close');
+        this.infoVersion = this.#saveQuerySelector<HTMLSpanElement>(this.container, '.dplayer-info-panel-item-version .dplayer-info-panel-item-data');
+        this.infoFPS = this.#saveQuerySelector<HTMLSpanElement>(this.container, '.dplayer-info-panel-item-fps .dplayer-info-panel-item-data');
+        this.infoType = this.#saveQuerySelector<HTMLSpanElement>(this.container, '.dplayer-info-panel-item-type .dplayer-info-panel-item-data');
+        this.infoUrl = this.#saveQuerySelector<HTMLSpanElement>(this.container, '.dplayer-info-panel-item-url .dplayer-info-panel-item-data');
+        this.infoResolution = this.#saveQuerySelector<HTMLSpanElement>(this.container, '.dplayer-info-panel-item-resolution .dplayer-info-panel-item-data');
+        this.infoDuration = this.#saveQuerySelector<HTMLSpanElement>(this.container, '.dplayer-info-panel-item-duration .dplayer-info-panel-item-data');
+        this.infoDanmakuId = this.#saveQuerySelector<HTMLSpanElement>(this.container, '.dplayer-info-panel-item-danmaku-id .dplayer-info-panel-item-data');
+        this.infoDanmakuApi = this.#saveQuerySelector<HTMLSpanElement>(this.container, '.dplayer-info-panel-item-danmaku-api .dplayer-info-panel-item-data');
+        this.infoDanmakuAmount = this.#saveQuerySelector<HTMLSpanElement>(this.container, '.dplayer-info-panel-item-danmaku-amount .dplayer-info-panel-item-data');
         // TODO(#57):  add buttons for previous and next chapters!!!!! ( in inithighlight)
     }
+    /**
+     * @private
+     * @throws {Error}
+     */
+    #saveQuerySelector<T extends HTMLElement | Element>(parent: HTMLElement | Element | Document, selector: string): T {
+        const el: T | null = parent.querySelector(selector);
+        if (el === null) {
+            throw new Error(`Query Selector ${selector} didn't match any elements.`);
+        }
+        return el;
+    }
+    /**
+     * @private
+     * @throws {Error}
+     */
+    #saveQuerySelectorAll<T extends HTMLElement | Element>(parent: HTMLElement | Element | Document, selector: string): NodeListOf<T> {
+        const el: NodeListOf<T> | null = parent.querySelectorAll(selector);
+        if (el.length === 0) {
+            throw new Error(`Query Selector All ${selector} didn't match any elements.`);
+        }
+        return el;
+    }
+
     static NewNotice(options: DPlayerNoticeOptions): HTMLDivElement {
         const { text, opacity, mode, type, DontAnimate } = options;
         const notice = document.createElement('div');

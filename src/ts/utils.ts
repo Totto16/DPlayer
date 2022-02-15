@@ -111,7 +111,7 @@ const utils: DPlayerUtils = {
             }
         },
 
-        get: (key: string) => localStorage.getItem(key),
+        get: (key: string): string | null => localStorage.getItem(key),
     },
 
     encodeValueAsObject(val: DPlayerEncodeValue): DPlayerEncodedValue {

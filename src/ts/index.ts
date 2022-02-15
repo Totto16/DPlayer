@@ -83,3 +83,4 @@ function isNullish<T = any>(argument: T): boolean {
 export { isNullish };
 
 // actual progress: 947 remaining errors (-227 from last time)
+//                  821 remaining errors (-126 from last time)
