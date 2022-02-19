@@ -71,21 +71,23 @@ const GLOB_MODEL: DPlayerLanguageModel = {
     speeddown: [],
     speednormal: [],
     'hotkey-disabled': [],
-    skipped_chapter: [{ symbol: '%c', name: 'Chapter name', example: 'Opening' }],
+    'skipped-chapter': [{ symbol: '%c', name: 'Chapter name', example: 'Opening' }],
     skip: [],
-    skip_chapter: [{ symbol: '%c', name: 'Chapter name', example: 'Opening' }],
+    'skip-chapter': [{ symbol: '%c', name: 'Chapter name', example: 'Opening' }],
     cancel: [],
 };
 
 // Standard english translations
-const GlobalStandard: DPlayerTranslationObject = require('../translations/en.json') as DPlayerTranslationObject; // TODO(#27):  read from json in tsscript
+// TODO(#27):  read from json in tsscript
+const GlobalStandard: DPlayerTranslationObject = await import('../translations/en.json');
+
 // add translation first to the folder and then here!
 const GlobalTranTxt: DPlayerAvaiableTranslationObject = {
     en: standard,
-    'zh-cn': require('../translations/zh-cn.json'),
-    'zh-tw': require('../translations/zh-tw.json'),
-    'ko-kr': require('../translations/ko-kr.json'),
-    de: require('../translations/de.json'),
+    'zh-cn': await import('../translations/zh-cn.json'),
+    'zh-tw': await import('../translations/zh-tw.json'),
+    'ko-kr': await import('../translations/ko-kr.json'),
+    de: await import('../translations/de.json'),
 };
 
 class i18n {
@@ -101,14 +103,18 @@ class i18n {
         this.model = GLOB_MODEL;
     }
 
-    translate(key?: DPlayerTranslateKey, replacement?: DPlayerReplacementTypes): null | DPlayerTranslatedString {
+    /**
+     * @throws, when an internal error happened, normally only present keys get passed!
+     */
+
+    translate(key?: DPlayerTranslateKey, replacement?: DPlayerReplacementTypes): DPlayerTranslatedString {
         if (typeof key === 'undefined') {
             console.error('key for translation not set!');
-            return null;
+            return '';
         }
         if (typeof key !== 'string') {
             console.error(`key for translation is not a string, but a '${typeof key}'!`);
-            return null;
+            return '';
         }
         // TODO(#28):  check if DPlayerTranslateKey
         const finalKey: DPlayerTranslateKey = key.toLowerCase() as DPlayerTranslateKey;
@@ -126,7 +132,7 @@ class i18n {
         return result;
     }
 
-    checkPresentTranslations(singleLanguage?: DPlayerSupportedLanguage, debug: boolean) {
+    checkPresentTranslations(singleLanguage?: DPlayerSupportedLanguage, debug: boolean): void {
         if (typeof singleLanguage === 'undefined' || debug) {
             Object.keys(this.tranTxt).forEach((language) => {
                 checkSingleLanguage(language);
@@ -136,7 +142,7 @@ class i18n {
         }
     }
 
-    checkSingleLanguage(language) {
+    checkSingleLanguage(language?: DPlayerSupportedLanguage): void {
         const translation = tranTxt[language];
         Object.entries(model).forEach(([key, value]) => {
             if (!translation[key]) {
@@ -221,12 +227,12 @@ export type DPlayerTranslateKey =
     | 'speeddown'
     | 'speednormal'
     | 'hotkey-disabled'
-    | 'skipped_chapter'
+    | 'skipped-chapter'
     | 'skip'
-    | 'skip_chapter'
+    | 'skip-chapter'
     | 'cancel';
 
-export type DPlayerTranslatedString = string;
+export type DPlayerTranslatedString = string | '';
 
 export type DPlayerReplacementTypes = string | number; // TODO(#29):  check on key by looking it uup in the model!!!!
 

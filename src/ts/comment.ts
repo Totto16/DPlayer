@@ -6,32 +6,33 @@ class Comment {
     constructor(player: DPlayer) {
         this.player = player;
 
-        this.player.template.mask?.addEventListener('click', () => {
+        this.player.template.mask.addEventListener('click', () => {
             this.hide();
         });
-        this.player.template.commentButton?.addEventListener('click', () => {
+        this.player.template.commentButton.addEventListener('click', () => {
             this.show();
         });
-        this.player.template.commentSettingButton?.addEventListener('click', () => {
+        this.player.template.commentSettingButton.addEventListener('click', () => {
             this.toggleSetting();
         });
 
-        this.player.template.commentColorSettingBox?.addEventListener('click', () => {
-            const sele: HTMLElement | null | undefined = this.player.template.commentColorSettingBox?.querySelector('input:checked+span');
+        this.player.template.commentColorSettingBox.addEventListener('click', () => {
+            const sele: HTMLElement | null = this.player.template.commentColorSettingBox.querySelector<HTMLInputElement>('input:checked+span');
             if (typeof sele !== 'undefined') {
-                const color: string = this.player.template.commentColorSettingBox.querySelector('input:checked').value;
+                const colorElem: HTMLElement | null = this.player.template.commentColorSettingBox.querySelector<HTMLInputElement>('input:checked');
+                const color: string = colorElem ? colorElem.getAttribute('value') ?? '#fff' : '#fff'; // TODO: use the default (white) option instead of hardcoding it
                 this.player.template.commentSettingFill.style.fill = color;
                 this.player.template.commentInput.style.color = color;
                 this.player.template.commentSendFill.style.fill = color;
             }
         });
 
-        this.player.template.commentInput?.addEventListener('click', () => {
+        this.player.template.commentInput.addEventListener('click', () => {
             this.hideSetting();
         });
-        this.player.template.commentInput?.addEventListener('keydown', (e) => {
-            const event = e || window.event;
+        this.player.template.commentInput.addEventListener('keydown', (event: KeyboardEvent) => {
             if (event.keyCode === 13) {
+                // `Enter` Keycode
                 this.send();
             }
         });
@@ -49,7 +50,7 @@ class Comment {
         this.player.template.commentInput.focus();
     }
 
-    hide() {
+    hide(): void {
         this.player.template.controller.classList.remove('dplayer-controller-comment');
         this.player.template.mask.classList.remove('dplayer-mask-show');
         this.player.container.classList.remove('dplayer-show-controller');
@@ -57,15 +58,15 @@ class Comment {
         this.hideSetting();
     }
 
-    showSetting() {
+    showSetting(): void {
         this.player.template.commentSettingBox.classList.add('dplayer-comment-setting-open');
     }
 
-    hideSetting() {
+    hideSetting(): void {
         this.player.template.commentSettingBox.classList.remove('dplayer-comment-setting-open');
     }
 
-    toggleSetting() {
+    toggleSetting(): void {
         if (this.player.template.commentSettingBox.classList.contains('dplayer-comment-setting-open')) {
             this.hideSetting();
         } else {
@@ -73,7 +74,7 @@ class Comment {
         }
     }
 
-    send() {
+    send(): void {
         this.player.template.commentInput.blur();
 
         // text can't be empty

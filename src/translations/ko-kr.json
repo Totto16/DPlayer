@@ -63,8 +63,8 @@
     "speeddown": "Decrease the playback speed",
     "speednormal": "Set the playback speed to normal (100%)",
     "hotkey-disabled": "Hotkeys are disabled for this video!",
-    "skipped_chapter": "Skipped chapter %c",
+    "skipped-chapter": "Skipped chapter %c",
     "skip": "Skip",
     "cancel": "Cancel",
-    "skip_chapter": "Skip chapter %c"
+    "skip-chapter": "Skip chapter %c"
 }

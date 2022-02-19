@@ -30,7 +30,7 @@ class DPlayer {
     events!: Events;
     qualityIndex!: number;
     languageFeatures!: i18n;
-    translate!: (key?: DPlayerTranslateKey, replacement?: DPlayerReplacementTypes) => null | DPlayerTranslatedString;
+    translate!: (key?: DPlayerTranslateKey, replacement?: DPlayerReplacementTypes) => DPlayerTranslatedString;
     container!: HTMLElement;
     arrow!: boolean;
     template!: Template;
@@ -603,7 +603,8 @@ class DPlayer {
         }
     }
 
-    passVideoEvents(event) {
+    // TODO handle that in events!!!
+    passVideoEvents(event, data): void {
         this.events.trigger(event);
     }
 

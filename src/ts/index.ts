@@ -69,11 +69,11 @@ function isNullish<T = any>(argument: T): boolean {
         return true;
     } else if (argument === null) {
         return true;
-    } else if (argument === '') {
+    } else if (typeof argument === 'string' && argument === '') {
         return true;
     } else if (Array.isArray(argument) && argument.length === 0) {
         return true;
-    } else if (Object.key(argument).length === 0) {
+    } else if (Object.keys(argument).length === 0) {
         return true;
     } else {
         return false;
@@ -84,3 +84,4 @@ export { isNullish };
 
 // actual progress: 947 remaining errors (-227 from last time)
 //                  821 remaining errors (-126 from last time)
+//                  823 remaining errors (+2 from last time, but I fixed some important "Userland" JS things)

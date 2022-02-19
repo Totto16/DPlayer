@@ -215,7 +215,7 @@ class Template implements DPlayerDestroyable {
      * @throws {Error}
      */
     #saveQuerySelector<T extends HTMLElement | Element>(parent: HTMLElement | Element | Document, selector: string): T {
-        const el: T | null = parent.querySelector(selector);
+        const el: T | null = parent.querySelector<T>(selector);
         if (el === null) {
             throw new Error(`Query Selector ${selector} didn't match any elements.`);
         }
@@ -226,7 +226,7 @@ class Template implements DPlayerDestroyable {
      * @throws {Error}
      */
     #saveQuerySelectorAll<T extends HTMLElement | Element>(parent: HTMLElement | Element | Document, selector: string): NodeListOf<T> {
-        const el: NodeListOf<T> | null = parent.querySelectorAll(selector);
+        const el: NodeListOf<T> | null = parent.querySelectorAll<T>(selector);
         if (el.length === 0) {
             throw new Error(`Query Selector All ${selector} didn't match any elements.`);
         }

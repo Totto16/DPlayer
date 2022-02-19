@@ -61,8 +61,8 @@
     "speeddown": "Wiedergabegeschwindigkeit  senken",
     "speednormal": "Wiedergabegeschwindigkeit auf normal setzen (100%)",
     "hotkey-disabled": "Navigation mit der Tastatur ist für dieses Video Deaktiviert!",
-    "skipped_chapter": "Kapitel %c übersprungen",
+    "skipped-chapter": "Kapitel %c übersprungen",
     "skip": "Überspringen",
     "cancel": "Abbrechen",
-    "skip_chapter": "Kapitel %c überspringen"
+    "skip-chapter": "Kapitel %c überspringen"
 }

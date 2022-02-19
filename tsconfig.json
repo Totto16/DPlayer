@@ -8,7 +8,7 @@
         "lib": ["es2021", "dom"],
         "allowJs": true,
         "outDir": "src/build",
-        "rootDir": "src/ts",
+        "rootDir": "src",
         "strict": true,
         "noImplicitAny": true,
         "esModuleInterop": true,

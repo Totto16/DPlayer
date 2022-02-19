@@ -4,6 +4,7 @@ class ContextMenu {
     player: DPlayer;
     shown: boolean;
     destroyed?: boolean;
+    contextmenuHandler: (event: MouseEvent) => void;
 
     constructor(player: DPlayer) {
         this.player = player;
@@ -11,7 +12,7 @@ class ContextMenu {
 
         Array.prototype.slice.call(this.player.template.menuItem).forEach((item, index) => {
             if (this.player.options.contextmenu[index].click) {
-                item.addEventListener('click', () => {
+                item.addEventListener('click', (): void => {
                     this.player.options.contextmenu[index].click(this.player);
 
                     this.hide();
@@ -19,8 +20,7 @@ class ContextMenu {
             }
         });
 
-        this.contextmenuHandler = (e) => {
-            const event = e || window.event;
+        this.contextmenuHandler = (event: MouseEvent): void => {
             event.preventDefault();
 
             if (this.shown) {
@@ -39,22 +39,21 @@ class ContextMenu {
     }
 
     show(x: number, y: number): void {
-        //TODO(#14):  investigate
         this.player.template.menu.classList.add('dplayer-menu-show');
 
         const clientRect = this.player.container.getBoundingClientRect();
         if (x + this.player.template.menu.offsetWidth >= clientRect.width) {
-            this.player.template.menu.style.right = clientRect.width - x + 'px';
+            this.player.template.menu.style.right = `${clientRect.width - x}px`;
             this.player.template.menu.style.left = 'initial';
         } else {
-            this.player.template.menu.style.left = x + 'px';
+            this.player.template.menu.style.left = `${x}px`;
             this.player.template.menu.style.right = 'initial';
         }
         if (y + this.player.template.menu.offsetHeight >= clientRect.height) {
-            this.player.template.menu.style.bottom = clientRect.height - y + 'px';
+            this.player.template.menu.style.bottom = `${clientRect.height - y}px`;
             this.player.template.menu.style.top = 'initial';
         } else {
-            this.player.template.menu.style.top = y + 'px';
+            this.player.template.menu.style.top = `${y}px`;
             this.player.template.menu.style.bottom = 'initial';
         }
 
