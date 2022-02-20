@@ -44,7 +44,7 @@ const config: webpack.Configuration = {
     module: {
         strictExportPresence: true,
         rules: [
-                /* { 
+            /* { 
                     test: /\.d\.ts$/,
                     loader: 'ignore-loader',
                 }, */
