@@ -114,7 +114,7 @@
         "sort-imports": "off",
         "i18n-text/no-en": "off",
         "camelcase": "warn",
-        "github/array-foreach": "warn",
+        "github/array-foreach": "off",
         "no-console": "off",
         "no-undef":"warn",
         "github/no-then":"warn",

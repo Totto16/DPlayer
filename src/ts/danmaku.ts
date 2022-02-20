@@ -1,4 +1,5 @@
 import DPlayer, { StringIndexableObject } from '.';
+import { DPlayerDanmakuData } from './api';
 import Events from './events';
 import utils from './utils';
 
@@ -40,6 +41,7 @@ class Danmaku {
         }
         const endpoints = (this.options.api.addition || []).slice(0);
         endpoints.push(apiurl);
+        // TODO: set events type
         this.events && this.events.trigger('danmaku_load_start', endpoints);
 
         this._readAllEndpoints(endpoints, (results) => {
@@ -50,7 +52,7 @@ class Danmaku {
 
             this.options.callback();
 
-            this.events && this.events.trigger('danmaku_load_end');
+            this.events && this.events.trigger('danmaku_loaded');
         });
     }
 
@@ -93,7 +95,7 @@ class Danmaku {
     }
 
     send(dan: DPlayerDanmakuItem, callback: () => void): void {
-        const danmakuData = {
+        const danmakuData: DPlayerDanmakuData = {
             token: this.options.api.token,
             id: this.options.api.id,
             author: this.options.api.user,

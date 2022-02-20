@@ -20,10 +20,6 @@ function reportOptionsError(message: string, safe: boolean): void {
     }
 }
 
-function isNumberOrParsable(number: unknown): boolean {
-    return typeof number === 'number' || (typeof number === 'string' && !isNaN(parseFloat(number)));
-}
-
 // TODO: is there a better way to get this list of available typeof results?
 function is(type: 'string' | 'number' | 'bigint' | 'boolean' | 'symbol' | 'undefined' | 'object' | 'function'): (obj: unknown) => boolean {
     return (object: unknown): boolean => typeof object === type;
@@ -42,7 +38,7 @@ function hasTheseKeys<T extends NormalObject>(obj: T, keys: string[], hasToBeThe
 /**
  * @throws when an error in parsing occurs
  */
-function parseOptions(InputOptions: DPlayerOptions, defaultOptions: DPlayerDefaultOptions, safe = true): DplayerParsedOptions {
+function parseOptions(InputOptions: DPlayerOptions, defaultOptions: DPlayerDefaultOptions, safe = true): DPlayerParsedOptions {
     let container;
     if (InputOptions.container instanceof HTMLElement) {
         container = InputOptions.container;
@@ -185,17 +181,6 @@ function parseOptions(InputOptions: DPlayerOptions, defaultOptions: DPlayerDefau
     }
 
     // ----------------- NEXT OPTION -----------------------------------
-    let preload: DPlayerPreloadOption;
-    if (typeof InputOptions.preload === 'string' && (InputOptions.preload === 'none' || InputOptions.preload === 'metadata' || InputOptions.preload === 'auto')) {
-        preload = InputOptions.preload;
-    } else if (typeof InputOptions.preload === 'undefined') {
-        preload = defaultOptions.preload;
-    } else {
-        reportOptionsError(`'options.preload' is not one of the possible string values!`, safe);
-        preload = defaultOptions.preload;
-    }
-
-    // ----------------- NEXT OPTION -----------------------------------
     let logo; // can be undefined
     if (typeof InputOptions.logo === 'string') {
         logo = InputOptions.logo;
@@ -206,7 +191,7 @@ function parseOptions(InputOptions: DPlayerOptions, defaultOptions: DPlayerDefau
 
     // ----------------- NEXT OPTION -----------------------------------
     let volume;
-    if (isNumberOrParsable(InputOptions.volume)) {
+    if (utils.isNumberOrParsable(InputOptions.volume) === true) {
         volume = typeof InputOptions.volume === 'number' ? InputOptions.volume : parseFloat(InputOptions.volume as string);
     } else if (typeof InputOptions.volume === 'undefined') {
         volume = defaultOptions.volume;
@@ -217,7 +202,7 @@ function parseOptions(InputOptions: DPlayerOptions, defaultOptions: DPlayerDefau
 
     // ----------------- NEXT OPTION -----------------------------------
     let playbackSpeed: DPlayerPlaybackSpeedArray;
-    if (Array.isArray(InputOptions.playbackSpeed) && InputOptions.playbackSpeed.length === 6 && InputOptions.playbackSpeed.reduce((acc: boolean, elem: unknown) => isNumberOrParsable(elem) && acc, true)) {
+    if (Array.isArray(InputOptions.playbackSpeed) && InputOptions.playbackSpeed.length === 6 && InputOptions.playbackSpeed.reduce((acc: boolean, elem: unknown) => utils.isNumberOrParsable(elem) && acc, true)) {
         playbackSpeed = InputOptions.playbackSpeed.map((elem: string | number) => (typeof elem === 'number' ? elem : parseFloat(elem))) as DPlayerPlaybackSpeedArray;
     } else if (typeof InputOptions.playbackSpeed === 'undefined') {
         playbackSpeed = defaultOptions.playbackSpeed;
@@ -247,7 +232,7 @@ function parseOptions(InputOptions: DPlayerOptions, defaultOptions: DPlayerDefau
             throw OptionsError(`'options.video.thumbnails' is not a string or undefined!`);
         }
 
-        if (typeof video.defaultQuality !== 'undefined' && !isNumberOrParsable(video.defaultQuality)) {
+        if (typeof video.defaultQuality !== 'undefined' && !utils.isNumberOrParsable(video.defaultQuality)) {
             throw OptionsError(`'options.video.defaultQuality' is not a number or string that can be parsed as number!`);
         }
 
@@ -282,6 +267,17 @@ function parseOptions(InputOptions: DPlayerOptions, defaultOptions: DPlayerDefau
     } else {
         reportOptionsError(`'options.video' is not an Object with the right keys, see the documentation for more information on how to format this!`, safe);
         video = defaultOptions.video;
+    }
+
+    // ----------------- NEXT OPTION -----------------------------------
+    let preload: DPlayerPreloadOption;
+    if (typeof InputOptions.preload === 'string' && (InputOptions.preload === 'none' || InputOptions.preload === 'metadata' || InputOptions.preload === 'auto')) {
+        preload = InputOptions.preload;
+    } else if (typeof InputOptions.preload === 'undefined') {
+        preload = video.type === 'webtorrent' ? 'none' : defaultOptions.preload;
+    } else {
+        reportOptionsError(`'options.preload' is not one of the possible string values!`, safe);
+        preload = video.type === 'webtorrent' ? 'none' : defaultOptions.preload;
     }
 
     // ----------------- NEXT OPTION -----------------------------------
@@ -332,7 +328,7 @@ function parseOptions(InputOptions: DPlayerOptions, defaultOptions: DPlayerDefau
     let fullScreenPolicy: DPlayerFullScreenOption;
     if (typeof InputOptions.fullScreenPolicy === 'string' || typeof InputOptions.fullScreenPolicy === 'number') {
         let isCorrect = false;
-        if (isNumberOrParsable(InputOptions.fullScreenPolicy)) {
+        if (utils.isNumberOrParsable(InputOptions.fullScreenPolicy)) {
             const number = typeof InputOptions.fullScreenPolicy === 'number' ? InputOptions.fullScreenPolicy : parseInt(InputOptions.fullScreenPolicy);
             if (number >= 0 && number <= 2) {
                 isCorrect = true;
@@ -362,7 +358,7 @@ function parseOptions(InputOptions: DPlayerOptions, defaultOptions: DPlayerDefau
     let highlightSkipMode: DPlayerSkipModeOption;
     if (typeof InputOptions.highlightSkipMode === 'string' || typeof InputOptions.highlightSkipMode === 'number') {
         let isCorrect = false;
-        if (isNumberOrParsable(InputOptions.highlightSkipMode)) {
+        if (utils.isNumberOrParsable(InputOptions.highlightSkipMode)) {
             const number = typeof InputOptions.highlightSkipMode === 'number' ? InputOptions.highlightSkipMode : parseInt(InputOptions.highlightSkipMode);
             if (number >= 0 && number <= 3) {
                 isCorrect = true;
@@ -408,7 +404,7 @@ function parseOptions(InputOptions: DPlayerOptions, defaultOptions: DPlayerDefau
 
     // ----------------- NEXT OPTION -----------------------------------
     let skipDelay;
-    if (isNumberOrParsable(InputOptions.skipDelay)) {
+    if (utils.isNumberOrParsable(InputOptions.skipDelay)) {
         skipDelay = typeof InputOptions.skipDelay === 'number' ? InputOptions.skipDelay : parseFloat(InputOptions.skipDelay as string);
     } else if (typeof InputOptions.skipDelay === 'undefined') {
         skipDelay = defaultOptions.skipDelay;
@@ -489,7 +485,7 @@ function parseOptions(InputOptions: DPlayerOptions, defaultOptions: DPlayerDefau
     };
 }
 
-const OptionsHandler = (InputOptions: DPlayerOptions, player: DPlayer): DplayerParsedOptions => {
+const OptionsHandler = (InputOptions: DPlayerOptions, player: DPlayer): DPlayerParsedOptions => {
     // default options
     const defaultOptions: DPlayerDefaultOptions = {
         container: document.querySelector<HTMLElement>('.dplayer'),
@@ -527,7 +523,7 @@ const OptionsHandler = (InputOptions: DPlayerOptions, player: DPlayer): DplayerP
 
     // TODO(#39):  somewhere initialize apiBackend
     // can throw !!, if called with safe flag. otherwise it casts as much as possible (somethings can't be taken from nowhere, like the target container!
-    const options: DplayerParsedOptions = parseOptions(InputOptions, defaultOptions, false);
+    const options: DPlayerParsedOptions = parseOptions(InputOptions, defaultOptions, false);
 
     if (typeof options.video.type === 'undefined') {
         options.video.type = 'auto';
@@ -676,7 +672,7 @@ const OptionsHandler = (InputOptions: DPlayerOptions, player: DPlayer): DplayerP
             break;
         default:
             console.warn(`'${options.fullScreenPolicy}' fullScreenPolicy option not available, set to default!`);
-            options.fullScreenPolicy = defaultOption.fullScreenPolicy;
+            options.fullScreenPolicy = defaultOptions.fullScreenPolicy;
             break;
     }
 
@@ -684,19 +680,19 @@ const OptionsHandler = (InputOptions: DPlayerOptions, player: DPlayer): DplayerP
         [
             {
                 key: 'video-info',
-                click: (player: DPlayer) => {
-                    player.hotkeyPanel.hide();
-                    player.infoPanel.triggle();
+                click: (localPlayer: DPlayer) => {
+                    localPlayer.hotkeyPanel.hide();
+                    localPlayer.infoPanel.triggle();
                 },
             },
             {
                 key: 'hotkey-info',
-                click: (player: DPlayer) => {
-                    if (player.options.hotkey) {
-                        player.infoPanel.hide();
-                        player.hotkeyPanel.triggle();
+                click: (localPlayer: DPlayer) => {
+                    if (localPlayer.options.hotkey) {
+                        localPlayer.infoPanel.hide();
+                        localPlayer.hotkeyPanel.triggle();
                     } else {
-                        player.notice(player.translate('hotkey-disabled'));
+                        localPlayer.notice(localPlayer.translate('hotkey-disabled'));
                     }
                 },
             },
@@ -779,7 +775,7 @@ export interface DPlayerOptions extends StringIndexableObject {
     API_URL?: string | UserInput;
 }
 
-export interface DplayerParsedOptions {
+export interface DPlayerParsedOptions {
     // TODO(#42):  copy paste, for the lack of better solution!
     container: HTMLElement;
     live: boolean;
@@ -858,6 +854,7 @@ export interface DPlayerDanmakuOption {
     user?: string;
     bottom?: string;
     unlimited?: boolean;
+    speedRate?: number; // or array of numbers?
 }
 
 export interface DplayerContextMenuOption extends NormalObject {
@@ -865,9 +862,11 @@ export interface DplayerContextMenuOption extends NormalObject {
     text: string;
     link?: string;
     key?: string; // TODO(#44):  keyof translation available keys!
-    click?: (player: DPlayer) => void;
+    click?: DPlayerContextMenuClickCallback;
     // Missing?
 }
+
+export type DPlayerContextMenuClickCallback = (player: DPlayer) => void;
 
 // TODO: add types
 export interface DPlayerPluginOptions {
@@ -879,10 +878,10 @@ export interface DPlayerPluginOptions {
 }
 
 export interface DPlayerCustomTypeObject {
-    [typeName: string]: DPlayerCustomInitializzer;
+    [typeName: string]: DPlayerCustomInitializer;
 }
 
-export type DPlayerCustomInitializzer = (video: HTMLVideoElement, dplayer: DPlayer) => void;
+export type DPlayerCustomInitializer = (video: HTMLVideoElement, dplayer: DPlayer) => void;
 
 export interface DPlayerAssOptions {
     // TODO:

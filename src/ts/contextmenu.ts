@@ -1,4 +1,5 @@
 import DPlayer from '.';
+import { DPlayerContextMenuClickCallback } from './options';
 
 class ContextMenu {
     player: DPlayer;
@@ -10,10 +11,10 @@ class ContextMenu {
         this.player = player;
         this.shown = false;
 
-        Array.prototype.slice.call(this.player.template.menuItem).forEach((item, index) => {
-            if (this.player.options.contextmenu[index].click) {
+        Array.prototype.slice.call(this.player.template.menuItem).forEach((item: HTMLDivElement, index: number): void => {
+            if (typeof this.player.options.contextmenu[index].click !== 'undefined') {
                 item.addEventListener('click', (): void => {
-                    this.player.options.contextmenu[index].click(this.player);
+                    (this.player.options.contextmenu[index].click as DPlayerContextMenuClickCallback)(this.player);
 
                     this.hide();
                 });

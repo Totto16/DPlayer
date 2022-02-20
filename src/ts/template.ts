@@ -1,17 +1,18 @@
 import Icons from './icons';
-import tplPlayer from '../template/player.art';
-// import * as tplPlayer from '../template/player.art';
 import utils from './utils';
 import DPlayer, { DPlayerDestroyable } from '.';
-import { DPlayerOptions } from './options';
+import { DPlayerParsedOptions } from './options';
 import { DPLayerTranslateFunction, DPlayerTranslateKey } from './i18n';
 import { DPlayerBalloonHTML, DPlayerBalloonPosition } from './player';
+// @ts-ignore
+const tplPlayer = (await import('../template/player.art')) as DPlayerARTInitializeFunction;
+// import * as tplPlayer from '../template/player.art';
 
 class Template implements DPlayerDestroyable {
     // TODO(#55):  see if that DPlayerDestroyable is useful
     player: DPlayer;
     container: HTMLElement;
-    options: DPlayerOptions;
+    options: DPlayerParsedOptions;
     index: number;
     translate: DPLayerTranslateFunction;
 
@@ -112,7 +113,7 @@ class Template implements DPlayerDestroyable {
     }
 
     init(): void {
-        this.container.innerHTML = (tplPlayer as DPlayerARTInitializeFunction)({
+        this.container.innerHTML = tplPlayer({
             options: this.options,
             index: this.index,
             translate: this.translate,
@@ -121,12 +122,12 @@ class Template implements DPlayerDestroyable {
             mobile: utils.isMobile,
             video: {
                 current: true,
-                pic: this.options.video?.pic,
+                pic: this.options.video.pic,
                 screenshot: this.options.screenshot,
                 airplay: this.options.airplay,
                 chromecast: this.options.chromecast,
                 preload: this.options.preload,
-                url: this.options.video?.url,
+                url: this.options.video.url,
                 subtitle: this.options.subtitle,
             },
         }); // TODO(#56):  change
@@ -217,7 +218,7 @@ class Template implements DPlayerDestroyable {
     #saveQuerySelector<T extends HTMLElement | Element>(parent: HTMLElement | Element | Document, selector: string): T {
         const el: T | null = parent.querySelector<T>(selector);
         if (el === null) {
-            throw new Error(`Query Selector ${selector} didn't match any elements.`);
+            throw new Error(`[FATAL] Initializing: Query Selector '${selector}' didn't match any elements.`);
         }
         return el;
     }
@@ -228,7 +229,7 @@ class Template implements DPlayerDestroyable {
     #saveQuerySelectorAll<T extends HTMLElement | Element>(parent: HTMLElement | Element | Document, selector: string): NodeListOf<T> {
         const el: NodeListOf<T> | null = parent.querySelectorAll<T>(selector);
         if (el.length === 0) {
-            throw new Error(`Query Selector All ${selector} didn't match any elements.`);
+            throw new Error(`[FATAL] Initializing: Query Selector All '${selector}' didn't match any elements.`);
         }
         return el;
     }
@@ -352,7 +353,7 @@ export type DPlayerTemplateElementNames =
 export interface DPlayerTemplateOptions {
     player: DPlayer;
     container: HTMLElement;
-    options: DPlayerOptions;
+    options: DPlayerParsedOptions;
     index: number;
     translate: DPLayerTranslateFunction;
 }

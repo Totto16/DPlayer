@@ -166,6 +166,10 @@ const utils: DPlayerUtils = {
         }
     },
 
+    isNumberOrParsable(number: unknown): boolean {
+        return typeof number === 'number' || (typeof number === 'string' && !isNaN(parseFloat(number)));
+    },
+
     deepCopyObject<T = StringIndexableObject>(obj: T): T {
         return JSON.parse(JSON.stringify(obj)) as T;
     },
@@ -267,7 +271,7 @@ export default utils;
 
 export interface DPlayerUtils {
     apiBackend: DPlayerAPI;
-    secondToTime: (second: number, delimiter: string) => string;
+    secondToTime: (second: number, delimiter?: string) => string;
     getElementViewLeft: (element: HTMLElement) => number;
     getScrollPosition: () => DPlayerUtilsScrollPosition;
     setScrollPosition: (position: DPlayerUtilsScrollPosition) => void;
@@ -282,6 +286,7 @@ export interface DPlayerUtils {
     number2Type: (number: number) => DPlayerUtilsTypes;
     parseVtt: (vtt_url: string, callback: DPlayerParseVttCallback, startOrEnd: number, options: DPlayerOptions | null) => string;
     deepCopyObject: <T = StringIndexableObject>(obj: T) => T;
+    isNumberOrParsable: (number: unknown) => boolean;
 }
 
 export type DPlayerParseVttCallback = (marker: DPlayerHighlight[]) => void;

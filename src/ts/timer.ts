@@ -7,6 +7,14 @@ class Timer implements DPlayerTimerProperties2, DPlayerTimerProperties2, DPlayer
     fpsStart?: number; // could solve this with the above trick, but there are only these two
     fpsIndex?: number;
 
+    fpsChecker?: NodeJS.Timeout;
+    loadingChecker?: NodeJS.Timeout;
+    infoChecker?: NodeJS.Timeout;
+
+    enablefpsChecker?: boolean;
+    enableloadingChecker?: boolean;
+    enableinfoChecker?: boolean;
+
     constructor(player: DPlayer) {
         this.player = player;
 
@@ -40,7 +48,7 @@ class Timer implements DPlayerTimerProperties2, DPlayerTimerProperties2, DPlayer
         let currentPlayPos = 0;
         let bufferingDetected = false;
         this.loadingChecker = setInterval(() => {
-            if (this.enableloadingChecker) {
+            if (this.enableloadingChecker === true) {
                 // whether the video is buffering
                 currentPlayPos = this.player.video.currentTime;
                 if (!bufferingDetected && currentPlayPos === lastPlayPos && !this.player.video.paused) {
@@ -81,13 +89,13 @@ class Timer implements DPlayerTimerProperties2, DPlayerTimerProperties2, DPlayer
 
     initinfoChecker(): void {
         this.infoChecker = setInterval(() => {
-            if (this.enableinfoChecker) {
+            if (this.enableinfoChecker === true) {
                 this.player.infoPanel.update();
             }
         }, 1000);
     }
 
-    enable(type: DPlayerTimerType) {
+    enable(type: DPlayerTimerType): void {
         this[`enable${type}Checker`] = true;
 
         if (type === 'fps') {
@@ -95,14 +103,16 @@ class Timer implements DPlayerTimerProperties2, DPlayerTimerProperties2, DPlayer
         }
     }
 
-    disable(type: DPlayerTimerType) {
+    disable(type: DPlayerTimerType): void {
         this[`enable${type}Checker`] = false;
     }
 
     destroy(): void {
         this.types.map((item) => {
             this[`enable${item}Checker`] = false;
-            this[`${item}Checker`] && clearInterval(this[`${item}Checker`]);
+            if (typeof this[`${item}Checker`] !== 'undefined') {
+                clearInterval(this[`${item}Checker`] as NodeJS.Timeout);
+            }
             return item;
         });
     }
@@ -125,7 +135,7 @@ export type DPlayerTimerProperties1 = {
 };
 
 export type DPlayerTimerProperties2 = {
-    [timeout in DPlayerAvailableTimerTimeouts]?: NodeJS.Timer;
+    [timeout in DPlayerAvailableTimerTimeouts]?: NodeJS.Timeout;
 };
 
 export type DPlayerTimerProperties3 = {

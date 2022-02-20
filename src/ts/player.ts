@@ -1,9 +1,9 @@
-import handleOption, { DPlayerOptions } from './options';
+import handleOption, { DPlayerAvailableVideoTypes, DPlayerOptions, DPlayerParsedOptions, DPlayerVideoQuality } from './options';
 import i18n, { DPlayerReplacementTypes, DPlayerTranslateKey, DPlayerTranslatedString } from './i18n';
-import Template from './template';
+import Template, { DPlayerARTInitializeFunction } from './template';
 import Icons from './icons';
 import Danmaku from './danmaku';
-import Events from './events';
+import Events, { DPlayerEventCallback, DPlayerEventMap, UUID } from './events';
 import FullScreen from './fullscreen';
 import User from './user';
 import Subtitle from './subtitle';
@@ -18,19 +18,22 @@ import ContextMenu from './contextmenu';
 import InfoPanel from './info-panel';
 import HotkeyPanel from './hotkey-panel';
 import utils from './utils';
-import tplVideo from '../template/video.art';
 import { DPLAYER_VERSION } from './global';
+// @ts-ignore
+const tplVideo = (await import('../template/video.art')) as DPlayerARTInitializeFunction;
 
 let index = 0;
 window.DPLAYER_INSTANCES = [];
 
 class DPlayer {
     state: DPlayerState;
-    options!: DPlayerOptions; //TODO(#46):  without critical :?, s enforce default value!
+    options!: DPlayerParsedOptions; // TODO(#46):  without critical :?, s enforce default value!
     events!: Events;
-    qualityIndex!: number;
+    qualityIndex?: number;
+    prevIndex?: number;
+    quality?: DPlayerVideoQuality;
     languageFeatures!: i18n;
-    translate!: (key?: DPlayerTranslateKey, replacement?: DPlayerReplacementTypes) => DPlayerTranslatedString;
+    translate!: (key?: DPlayerTranslateKey | string, replacement?: DPlayerReplacementTypes | DPlayerReplacementTypes[]) => DPlayerTranslatedString;
     container!: HTMLElement;
     arrow!: boolean;
     template!: Template;
@@ -51,19 +54,35 @@ class DPlayer {
     focus?: boolean;
     hotkeyPanel!: HotkeyPanel;
     fullScreen!: FullScreen;
+    plugins?: DPlayerPluginData;
+    contextmenu!: ContextMenu;
+    infoPanel!: InfoPanel;
+    type?: DPlayerAvailableVideoTypes;
+    lastRecieveTime?: Date;
+
+    containerClickFun!: () => void;
+    docClickFun!: () => void;
+
+    switchingQuality?: boolean;
 
     constructor(options?: DPlayerOptions) {
         try {
             this.state = { code: 1, message: 'running', data: 'constructor' };
-            this.options = handleOption({ preload: options && options.video && options.video.type === 'webtorrent' ? 'none' : 'metadata', ...options }, this);
+            this.options = handleOption(options ?? {}, this);
 
             if (this.options.video.quality) {
                 this.qualityIndex = this.options.video.defaultQuality;
-                this.quality = this.options.video.quality[this.options.video.defaultQuality];
+                this.quality = this.options.video.quality[this.options.video.defaultQuality ?? 0];
             }
-            this.languageFeatures = new i18n(this.options.lang);
-            this.translate = this.languageFeatures.translate;
-            this.languageFeatures.checkPresentTranslations(this.options.lang, true);
+            this.languageFeatures = new i18n(this.options.lang, true);
+            this.translate = (key?: DPlayerTranslateKey | string, replacement?: DPlayerReplacementTypes | DPlayerReplacementTypes[]) => {
+                const result = this.languageFeatures.translate(key, replacement);
+                if (result === null) {
+                    console.error('[ERROR] Translation wrapper: Translation has failed!');
+                    return '';
+                }
+                return result;
+            };
             this.events = new Events();
             this.user = new User(this);
             this.container = this.options.container;
@@ -126,11 +145,11 @@ class DPlayer {
                     error: (msg: string) => {
                         this.notice(msg);
                     },
-                    apiBackend: this.options.apiBackend,
+                    apiBackend: this.options.apiBackend, // TODO: fix
                     borderColor: 'var(--dplayer-theme-color)',
                     height: this.arrow ? 24 : 30,
                     time: () => this.video.currentTime,
-                    unlimited: this.user.get('unlimited') as number, // unsafe af
+                    unlimited: this.user.get('unlimited'), // unsafe af
                     api: {
                         id: this.options.danmaku.id,
                         address: this.options.danmaku.api,
@@ -149,10 +168,10 @@ class DPlayer {
 
             this.setting = new Setting(this);
             this.plugins = {};
-            this.docClickFun = () => {
+            this.docClickFun = (): void => {
                 this.focus = false;
             };
-            this.containerClickFun = () => {
+            this.containerClickFun = (): void => {
                 this.focus = true;
             };
             document.addEventListener('click', this.docClickFun, true);
@@ -194,7 +213,7 @@ class DPlayer {
     /**
      * Seek video
      */
-    seek(time, silent = false) {
+    seek(time: number, silent = false): void {
         time = Math.max(isNaN(time) ? 0 : time, 0);
         if (this.video.duration) {
             time = Math.min(time, this.video.duration);
@@ -216,7 +235,7 @@ class DPlayer {
     }
 
     // TODO(#49):  implement with in utils.secondToTime, null return type of translate is sketchy, better default to en, and keys availability has to be checked at compile time!
-    formatTime(time: number): string | null {
+    formatTime(time: number): string {
         if (time < 60) {
             return this.translate('seconds', time.toFixed(0));
         } else if (time < 60 * 60) {
@@ -249,7 +268,10 @@ class DPlayer {
                 .catch(() => {
                     this.pause();
                 })
-                .then(() => {});
+                .then(
+                    () => {},
+                    () => {}
+                );
         }
         this.timer.enable('loading');
         this.container.classList.remove('dplayer-paused');
@@ -279,7 +301,7 @@ class DPlayer {
 
         this.template.playButton.innerHTML = Icons.play;
         this.template.mobilePlayButton.innerHTML = Icons.play;
-        if (!fromNative) {
+        if (fromNative !== true) {
             this.video.pause();
         }
         this.timer.disable('loading');
@@ -291,13 +313,14 @@ class DPlayer {
     }
 
     switchVolumeIcon(): void {
+        const vol = this.volume() ?? 0;
         // 75 % is better, in my opinion
-        if (this.volume() >= 0.75) {
-            this.template.volumeIcon?.innerHTML = Icons.volumeUp;
-        } else if (this.volume() > 0) {
-            this.template.volumeIcon?.innerHTML = Icons.volumeDown;
+        if (vol >= 0.75) {
+            this.template.volumeIcon.innerHTML = Icons.volumeUp;
+        } else if (vol > 0) {
+            this.template.volumeIcon.innerHTML = Icons.volumeDown;
         } else {
-            this.template.volumeIcon?.innerHTML = Icons.volumeOff;
+            this.template.volumeIcon.innerHTML = Icons.volumeOff;
         }
     }
 
@@ -313,12 +336,12 @@ class DPlayer {
         percentage = Math.min(percentage, 1);
         this.bar.set('volume', percentage);
         const formatPercentage = `${(percentage * 100).toFixed(0)}%`;
-        this.template.volumeBarWrapWrap?.dataset.balloon = formatPercentage;
-        if (!nostorage) {
+        this.template.volumeBarWrapWrap.dataset.balloon = formatPercentage;
+        if (nostorage !== true) {
             this.user.set('volume', percentage.toString());
         }
-        if (!nonotice) {
-            this.notice(`${this.translate('volume') ?? ' ERROR in translation'} ${(percentage * 100).toFixed(0)}%`, { type: 'volume' });
+        if (nonotice !== true) {
+            this.notice(`${this.translate('volume')} ${(percentage * 100).toFixed(0)}%`, { type: 'volume' });
         }
 
         this.video.volume = percentage;
@@ -331,7 +354,7 @@ class DPlayer {
     /**
      * Toggle between play and pause
      */
-    toggle() {
+    toggle(): void {
         if (this.video.paused) {
             this.play();
         } else {
@@ -342,15 +365,15 @@ class DPlayer {
     /**
      * attach event
      */
-    on(name, callback, once = false, delayed = false) {
-        return this.events.on(name, callback, once, delayed);
+    on<K extends keyof DPlayerEventMap>(name: (K | '*' | 'all') | (keyof DPlayerEventMap | '*' | 'all')[], callback: DPlayerEventCallback<K> | DPlayerEventCallback<keyof DPlayerEventMap>, once = false, delayed = false): UUID | UUID[] {
+        return this.events.on<K>(name, callback, once, delayed);
     }
 
     /**
      * attach single-event
      */
-    once(name, callback, delayed = false) {
-        return this.events.once(name, callback, delayed);
+    once<K extends keyof DPlayerEventMap>(name: (K | '*' | 'all') | (K | '*' | 'all')[], callback: DPlayerEventCallback<K>, delayed = false): UUID | UUID[] | null {
+        return this.events.once<K>(name, callback, delayed);
     }
 
     /**
@@ -359,7 +382,7 @@ class DPlayer {
      * @param {Object} video - new video info
      * @param {Object} danmaku - new danmaku info
      */
-    switchVideo(video, danmakuAPI) {
+    switchVideo(video: HTMLVideoElement, danmakuAPI: DPlayerDanmakuData): void {
         this.pause();
         this.video.poster = video.pic ? video.pic : '';
         this.video.src = video.url;
@@ -383,7 +406,7 @@ class DPlayer {
         }
     }
 
-    initMSE(video, type) {
+    initMSE(video: HTMLVideoElement, type: DPlayerAvailableVideoTypes): void {
         this.type = type;
         if (this.options.video.customType && this.options.video.customType[type]) {
             if (Object.prototype.toString.call(this.options.video.customType[type]) === '[object Function]') {
@@ -507,7 +530,7 @@ class DPlayer {
         }
     }
 
-    initVideo(video, type) {
+    initVideo(video: HTMLVideoElement, type: DPlayerAvailableVideoTypes): void {
         this.initMSE(video, type);
 
         /**
@@ -529,7 +552,7 @@ class DPlayer {
         });
 
         // show video loaded bar: to inform interested parties of progress downloading the media
-        this.lastRecieveTime;
+        this.lastRecieveTime = new Date();
         this.on('progress', () => {
             if (!video.duration || video.buffered.length <= 0) {
                 return;
@@ -551,13 +574,13 @@ class DPlayer {
                 return;
             }
             // duplicate check because this error gets fired twice for some reason
-            this.translate && this.notice && this.type !== 'webtorrent' && this.notice(this.translate('video-failed'), { time: 3000, duplicate: 'check' });
+            this.type !== 'webtorrent' && this.notice(this.translate('video-failed'), { time: 3000, duplicate: 'check' });
         });
 
         // video end
         this.on('ended', () => {
             this.bar.set('played', 1);
-            if (!this.setting.loop) {
+            if (this.setting.loop !== true) {
                 this.pause();
             } else {
                 this.seek(0);
@@ -569,7 +592,7 @@ class DPlayer {
         });
 
         this.on('play', () => {
-            if (this.paused) {
+            if (this.paused === true) {
                 this.play(true);
             }
         });
@@ -608,15 +631,21 @@ class DPlayer {
         this.events.trigger(event);
     }
 
-    switchQuality(index) {
-        index = typeof index === 'string' ? parseInt(index) : index;
-        if (this.qualityIndex === index || this.switchingQuality) {
+    switchQuality(QualityIndex: number | string): void {
+        if (utils.isNumberOrParsable(QualityIndex)) {
+            QualityIndex = parseInt(QualityIndex.toString()); // if its a number, it gets floored, so its always a whole number :)
+        } else if (typeof QualityIndex === 'string') {
+            console.warn('[WARN] QualityIndex is not a number or parseable as one!');
+            return;
+        }
+        if (this.qualityIndex === QualityIndex || this.switchingQuality === true) {
             return;
         } else {
             this.prevIndex = this.qualityIndex;
             this.qualityIndex = index;
         }
         this.switchingQuality = true;
+        // TODO: fix without video we would never be here xD
         this.quality = this.options.video.quality[index];
         this.template.qualityButton.innerHTML = this.quality.name;
 
@@ -692,10 +721,10 @@ class DPlayer {
         }
         let DontAnimate = false;
         if (options.duplicate === 'check') {
-            Array.from(this.template.noticeList?.children ?? []).forEach((child: Element) => {
+            Array.from(this.template.noticeList.children ?? []).forEach((child: Element) => {
                 const childText = child.innerText;
                 if (childText === text) {
-                    this.template.noticeList?.removeChild(child);
+                    this.template.noticeList.removeChild(child);
                 }
             });
         }
@@ -809,6 +838,10 @@ export interface DPlayerNoticeOptions {
     opacity?: number;
     mode?: 'normal' | 'override'; // TODO Add
     duplicate?: 'ignore' | 'check';
-    type?: 'normal';
+    type?: 'normal' | 'volume';
     warn?: boolean;
+}
+
+export interface DPlayerPluginData {
+    // TODO add
 }

@@ -38,7 +38,7 @@ export interface DPlayerDestroyable {
     destroy(): void;
 }
 
-export const isOfType = <T>(check: any): check is T => {
+export const isOfType = <T>(check: unknown): check is T => {
     const keys = Object.keys(check as T);
     for (let i = 0; i < keys.length; i++) {
         if ((check as T)[keys[i]] === undefined) {
@@ -85,3 +85,4 @@ export { isNullish };
 // actual progress: 947 remaining errors (-227 from last time)
 //                  821 remaining errors (-126 from last time)
 //                  823 remaining errors (+2 from last time, but I fixed some important "Userland" JS things)
+//                  548 remaining errors (-275 from last time)

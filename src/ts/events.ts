@@ -1,3 +1,7 @@
+import { DPlayerProgressRange } from './bar';
+import { DPlayerChapterChangeInfo } from './controller';
+import { DPlayerVideoQuality } from './options';
+
 class Events {
     events: DPlayerEventStorage;
     currentUUID: number;
@@ -39,6 +43,7 @@ class Events {
             'danmaku_show',
             'danmaku_hide',
             'danmaku_clear',
+            'danmaku_load_start',
             'danmaku_loaded',
             'danmaku_send',
             'danmaku_opacity',
@@ -93,7 +98,7 @@ class Events {
     }
 
     once<K extends keyof DPlayerEventMap>(name: (K | '*' | 'all') | (K | '*' | 'all')[], callback: DPlayerEventCallback<K>, delayed = false): UUID | UUID[] | null {
-        return this.on(name, callback, true, delayed);
+        return this.on<K>(name, callback, true, delayed);
     }
 
     off<K extends keyof DPlayerEventMap>(name: K): boolean {
@@ -133,6 +138,8 @@ class Events {
         return false;
     }
 
+    // TODO: search a way to tell the method, that sometimes both are required!!
+
     trigger<K extends keyof DPlayerEventMap>(name: K, info?: DPlayerEventInfo<K>): boolean {
         if (typeof this.events[name] !== 'undefined' && (this.events[name] as DPlayerEventStorageItem<K>[]).length > 0) {
             for (let i = 0; i < (this.events[name] as DPlayerEventStorageItem<K>[]).length; i++) {
@@ -152,7 +159,7 @@ class Events {
         return false;
     }
     // TODO(#22): OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO VERY IMPORTANT BEFORE RELEASING THIS
-    // TODO(#23):  find an elegant way to handle unkwon data, meaning down compiled js can have any types, the user can input any types!!!!
+    // TODO(#23):  find an elegant way to handle unknown data, meaning down compiled js can have any types, the user can input any types!!!!
     type<K extends keyof DPlayerEventMap>(name: K): DPlayerEventType | null {
         if (this.playerEvents.indexOf(name as keyof DPlayerPlayerEventMap) !== -1) {
             return 'player';
@@ -207,34 +214,35 @@ export interface DPlayerVideoEventMap {
 
 // TODO fill all return types!!
 export interface DPlayerPlayerEventMap {
-    screenshot: Event;
-    thumbnails_show: Event;
-    thumbnails_hide: Event;
-    danmaku_show: Event;
-    danmaku_hide: Event;
-    danmaku_clear: Event;
-    danmaku_loaded: Event;
-    danmaku_send: Event;
-    danmaku_opacity: Event;
-    contextmenu_show: Event;
-    contextmenu_hide: Event;
-    notice_show: Event;
-    notice_hide: Event;
-    quality_start: Event;
-    quality_end: Event;
-    destroy: Event;
-    resize: Event;
-    fullscreen: Event;
-    fullscreen_cancel: Event;
-    webfullscreen: Event;
-    webfullscreen_cancel: Event;
-    subtitle_show: Event;
-    subtitle_hide: Event;
-    subtitle_change: Event;
-    chapter: Event;
-    highlight_change: Event;
-    cancelskip: Event;
-    ranges_change: Event;
+    screenshot: DPlayerScreenshotDataURL;
+    thumbnails_show: NoInformation;
+    thumbnails_hide: NoInformation;
+    danmaku_show: NoInformation;
+    danmaku_hide: NoInformation;
+    danmaku_clear: NoInformation;
+    danmaku_load_start: Event; // smth
+    danmaku_loaded: NoInformation;
+    danmaku_send: Event; // something
+    danmaku_opacity: number;
+    contextmenu_show: NoInformation;
+    contextmenu_hide: NoInformation;
+    notice_show: HTMLDivElement;
+    notice_hide: NoInformation;
+    quality_start: DPlayerVideoQuality;
+    quality_end: NoInformation;
+    destroy: NoInformation;
+    resize: NoInformation;
+    fullscreen: NoInformation;
+    fullscreen_cancel: NoInformation;
+    webfullscreen: NoInformation;
+    webfullscreen_cancel: NoInformation;
+    subtitle_show: NoInformation;
+    subtitle_hide: NoInformation;
+    subtitle_change: NoInformation;
+    chapter: DPlayerChapterChangeInfo;
+    highlight_change: NoInformation;
+    cancelskip: NoInformation;
+    ranges_change: DPlayerProgressRange[];
 }
 
 export interface DPlayerEventStorageItem<K extends keyof DPlayerEventMap> {
@@ -253,8 +261,12 @@ export type UUID = number | null; // For the moment, also doesn't need to be cha
 export type DPlayerEventProperties = { UUID: UUID; event: keyof DPlayerEventMap };
 
 // TODO make it optional, so that some [ĸ] may return or others not!! (set them to undefined instead of Event, or undefined | whateverEvent)
-export type DPlayerEventInfo<K extends keyof DPlayerEventMap> = DPlayerEventMap[K] | undefined;
+export type DPlayerEventInfo<K extends keyof DPlayerEventMap> = DPlayerEventMap[K] | undefined; // TODO remove the undefined
 
 //  for the moment // TODO(#24):  add better info handling tied to the event name!
 
 export type DPlayerEventCallback<K extends keyof DPlayerEventMap> = (info: DPlayerEventInfo<K>, properties: DPlayerEventProperties) => void;
+
+export type DPlayerScreenshotDataURL = string;
+
+export type NoInformation = undefined;

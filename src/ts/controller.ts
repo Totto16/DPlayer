@@ -3,6 +3,7 @@ import Thumbnails from './thumbnails';
 import Icons from './icons';
 import { Subject } from 'rxjs';
 import DPlayer from '.';
+import { DPlayerScreenshotDataURL } from './events';
 
 let cast; // TODO(#15):  chromecast
 let runOnce = true;
@@ -13,6 +14,7 @@ class Controller {
     autoHideTimer: number;
     chapters?: DPlayerChapters;
     disableAutoHide: boolean;
+    destroyed?: boolean;
 
     constructor(player: DPlayer) {
         this.player = player;
@@ -41,26 +43,26 @@ class Controller {
     }
 
     initPlayButton(): void {
-        this.player.template.playButton?.addEventListener('click', () => {
+        this.player.template.playButton.addEventListener('click', () => {
             this.player.toggle();
         });
 
-        this.player.template.mobilePlayButton?.addEventListener('click', () => {
+        this.player.template.mobilePlayButton.addEventListener('click', () => {
             this.player.toggle();
         });
 
         if (!utils.isMobile) {
-            this.player.template.videoWrap?.addEventListener('click', () => {
+            this.player.template.videoWrap.addEventListener('click', () => {
                 this.player.toggle();
             });
-            this.player.template.controllerMask?.addEventListener('click', () => {
+            this.player.template.controllerMask.addEventListener('click', () => {
                 this.player.toggle();
             });
         } else {
-            this.player.template.videoWrap?.addEventListener('click', () => {
+            this.player.template.videoWrap.addEventListener('click', () => {
                 this.toggle();
             });
-            this.player.template.controllerMask?.addEventListener('click', () => {
+            this.player.template.controllerMask.addEventListener('click', () => {
                 this.toggle();
             });
         }
@@ -184,11 +186,11 @@ class Controller {
             }
             this.player.events.trigger('progress'); // update loaded!
         });
-        this.player.on('chapter', (info) => {
+        this.player.on('chapter', (info: DPlayerChapterChangeInfo) => {
             this.checkSkipState.call(this, info);
         });
     }
-    checkSkipState(info: ChapterChangeInfo): void {
+    checkSkipState(info: DPlayerChapterChangeInfo): void {
         if (!this.player.options.highlightSkip) {
             this.player.events.trigger('cancelskip');
             return;
@@ -700,66 +702,66 @@ class Controller {
             this.show();
         }
     }
-    updateChapters(object: DPlayerChapters = {}, player = this.player, start = false) {
+    updateChapters(object: DPlayerTimeUpdate = {}, player: DPlayer = this.player, start = false): void {
         // percentage, or time + duration, or we can get that from the video   player.video.currentTime , player.video.duration
         let { percentage, time, duration } = object;
-        if (percentage) {
-            duration = duration || player.video.duration;
-            time = time || percentage * duration;
-        } else if (time) {
-            duration = duration || player.video.duration;
-            percentage = percentage || time / duration;
-        } else if (duration) {
-            time = time || player.video.currentTime;
-            percentage = percentage || time / duration;
+        if (typeof percentage !== 'undefined') {
+            duration = duration ?? player.video.duration;
+            time = time ?? percentage * duration;
+        } else if (typeof time !== 'undefined') {
+            duration = duration ?? player.video.duration;
+            percentage = time / duration;
+        } else if (typeof duration !== 'undefined') {
+            time = player.video.currentTime;
+            percentage = time / duration;
         } else {
-            duration = duration || player.video.duration;
-            time = time || player.video.currentTime;
-            percentage = percentage || time / duration;
+            duration = player.video.duration;
+            time = player.video.currentTime;
+            percentage = time / duration;
         }
 
-        if (this.chapters) {
+        if (typeof this.chapters !== 'undefined') {
             const { marker, mode, currentChapter } = this.chapters;
-            const previous = currentChapter >= 1 ? marker[currentChapter - 1] : null;
-            const next = currentChapter < marker.length - 1 ? marker[currentChapter + 1] : null;
-            const current = currentChapter >= 0 && currentChapter < marker.length ? marker[currentChapter] : null;
-            const previous_condition = current && current.time > time;
-            const next_condition = next && next.time <= time;
+            const previous: DPlayerHighlight | null = currentChapter >= 1 ? marker[currentChapter - 1] : null;
+            const next: DPlayerHighlight | null = currentChapter < marker.length - 1 ? marker[currentChapter + 1] : null;
+            const current: DPlayerHighlight | null = currentChapter >= 0 && currentChapter < marker.length ? marker[currentChapter] : null;
+            const previousCondition = current !== null && current.time > time;
+            const nextCondition = next !== null && next.time <= time;
             switch (mode) {
                 case 'normal':
-                    if (previous_condition) {
+                    if (previousCondition === true) {
                         this.chapters.currentChapter--;
-                        this.player.events.trigger('chapter', { type: 'simple', direction: 'previous', surpassed: current });
-                    } else if (next_condition) {
+                        this.player.events.trigger('chapter', { type: 'simple', direction: 'previous', surpassed: current as DPlayerHighlight });
+                    } else if (nextCondition === true) {
                         this.chapters.currentChapter++;
-                        this.player.events.trigger('chapter', { type: 'simple', direction: 'next', surpassed: next });
+                        this.player.events.trigger('chapter', { type: 'simple', direction: 'next', surpassed: next as DPlayerHighlight });
                     }
                     break;
                 case 'side':
                     break;
                 case 'top':
-                    if (previous_condition) {
+                    if (previousCondition === true) {
                         this.chapters.currentChapter--;
                         this.player.events.trigger('chapter', { type: 'previous', previous: currentChapter >= 2 ? marker[currentChapter - 2] : null, current: previous, next: current });
-                    } else if (next_condition) {
+                    } else if (nextCondition === true) {
                         this.chapters.currentChapter++;
-                        this.player.events.trigger('chapter', { type: 'next', previous: current, current: next, next: currentChapter < marker.length - 2 ? marker[currentChapter + 2] : null });
+                        this.player.events.trigger('chapter', { type: 'next', previous: current, current: next as DPlayerHighlight, next: currentChapter < marker.length - 2 ? marker[currentChapter + 2] : null });
                     } else if (start === true) {
-                        this.player.events.trigger('chapter', { type: 'next', previous, current, next });
+                        this.player.events.trigger('chapter', { type: 'next', previous, current: current as DPlayerHighlight, next });
                     }
                     break;
             }
         }
     }
 
-    goToChapter(number: number) {
-        if (!this.chapters) {
+    goToChapter(number: number): void {
+        if (typeof this.chapters === 'undefined') {
             return;
         }
         const { marker, mode, currentChapter } = this.chapters;
         const actualTime = this.player.video.currentTime;
         let goToChapter = currentChapter + number;
-        let togo;
+        let togo: DPlayerChapters | null;
         // Threshold is made for backtracing, that means, if you press Previous Chapter and you are only Threshold seconds in, you don't go back Threshold seconds, but to the previous chapter!
         const Threshold = 1.5;
         switch (mode) {
@@ -788,7 +790,7 @@ class Controller {
         }
     }
 
-    muteChanger() {
+    muteChanger(): void {
         if (this.player.video.muted) {
             this.player.video.muted = false;
             this.player.switchVolumeIcon();
@@ -800,14 +802,20 @@ class Controller {
         }
     }
 
-    SaveScreenshot() {
-        this.player.template.cameraButton?.classList.add('taking-screenshot');
-        const canvas = document.createElement('canvas');
+    SaveScreenshot(): void {
+        this.player.template.cameraButton.classList.add('taking-screenshot');
+        const canvas: HTMLCanvasElement = document.createElement('canvas');
         canvas.width = this.player.video.videoWidth;
         canvas.height = this.player.video.videoHeight;
-        canvas.getContext('2d').drawImage(this.player.video, 0, 0, canvas.width, canvas.height);
+        const ctx: CanvasRenderingContext2D | null = canvas.getContext('2d');
+        if (ctx !== null) {
+            ctx.drawImage(this.player.video, 0, 0, canvas.width, canvas.height);
+        } else {
+            console.error('[FATAL] Canvas: On saving Screenshot a fatal Error occurred, this is caused by the browser!');
+            return;
+        }
 
-        let dataURL;
+        let dataURL: DPlayerScreenshotDataURL;
         canvas.toBlob((blob) => {
             // if video hasn't loaded yet, we get an error
             if (blob) {
@@ -834,11 +842,12 @@ class Controller {
         });
     }
 
-    clamp(min, number, max) {
+    clamp(min: number, number: number, max: number): number {
         const z = Math.max(Math.min(number, max), min);
         return z;
     }
-    destroy() {
+
+    destroy(): void {
         if (!utils.isMobile) {
             this.player.container.removeEventListener('mousemove', this.setAutoHideHandler);
             this.player.container.removeEventListener('click', this.setAutoHideHandler);
@@ -868,9 +877,14 @@ export type DPlayerNormalChapterChange = {
 export type DPlayerChapterModes = 'normal' | 'top' | 'side' | 'auto';
 
 export interface DPlayerChapters {
-    marker?: DPlayerHighlight[];
-    mode?: DPlayerChapterModes;
-    currentChapter?: number;
+    marker: DPlayerHighlight[];
+    mode: DPlayerChapterModes;
+    currentChapter: number;
+}
+export interface DPlayerTimeUpdate {
+    time?: number;
+    percentage?: number;
+    duration?: number;
 }
 
 export interface DPlayerHighlight {

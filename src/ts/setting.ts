@@ -1,7 +1,11 @@
+import DPlayer from '.';
 import utils from './utils';
 
 class Setting {
-    constructor(player) {
+    player: DPlayer;
+    loop: boolean;
+    showDanmaku: boolean; // or number?
+    constructor(player: DPlayer) {
         this.player = player;
 
         this.player.template.mask.addEventListener('click', () => {
@@ -102,7 +106,7 @@ class Setting {
         }
     }
 
-    toggleLoop() {
+    toggleLoop(): void {
         this.player.template.loopToggle.checked = !this.player.template.loopToggle.checked;
         if (this.player.template.loopToggle.checked) {
             this.loop = true;
@@ -113,7 +117,7 @@ class Setting {
         this.player.notice(`${this.player.translate('loop')} ${this.player.translate(this.loop ? 'on' : 'off')}`);
     }
 
-    EditSpeed(direction) {
+    EditSpeed(direction: number): void {
         const actualSpeed = this.player.video.playbackRate;
         const ArrayOfSpeeds = Array.from(this.player.template.speedItem)
             .map((item) => item.attributes['data-speed'].nodeValue)
@@ -129,7 +133,7 @@ class Setting {
         }
     }
 
-    hide() {
+    hide(): void {
         this.player.template.settingButton.classList.remove('dplayer-setting-button-open');
         this.player.template.settingBox.classList.remove('dplayer-setting-box-open');
         this.player.template.mask.classList.remove('dplayer-mask-show');
@@ -141,7 +145,7 @@ class Setting {
         this.player.controller.disableAutoHide = false;
     }
 
-    show() {
+    show(): void {
         this.player.template.settingButton.classList.add('dplayer-setting-button-open');
         this.player.template.settingBox.classList.add('dplayer-setting-box-open');
         this.player.template.mask.classList.add('dplayer-mask-show');

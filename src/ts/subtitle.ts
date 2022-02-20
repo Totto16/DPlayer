@@ -19,7 +19,7 @@ class Subtitle {
         this.init();
     }
 
-    init() {
+    init(): void {
         switch (this.options.type) {
             case 'webvtt':
                 this.container.style.fontSize = this.options.fontSize;

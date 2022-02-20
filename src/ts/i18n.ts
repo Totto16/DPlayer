@@ -7,6 +7,9 @@ W3C def language codes is :
 NOTE: use lower
 Use this as shown below..... */
 
+// remove later on
+const DEBUG = true;
+
 // abstract model for recognizing if valid translations are present
 const GLOB_MODEL: DPlayerLanguageModel = {
     'danmaku-loading': [],
@@ -78,12 +81,12 @@ const GLOB_MODEL: DPlayerLanguageModel = {
 };
 
 // Standard english translations
-// TODO(#27):  read from json in tsscript
+// the good here is, that TS checks the json if all the right keys are set :)
 const GlobalStandard: DPlayerTranslationObject = await import('../translations/en.json');
 
 // add translation first to the folder and then here!
-const GlobalTranTxt: DPlayerAvaiableTranslationObject = {
-    en: standard,
+const GlobalTranTxt: DPlayerAvailableTranslationObject = {
+    en: GlobalStandard,
     'zh-cn': await import('../translations/zh-cn.json'),
     'zh-tw': await import('../translations/zh-tw.json'),
     'ko-kr': await import('../translations/ko-kr.json'),
@@ -91,60 +94,82 @@ const GlobalTranTxt: DPlayerAvaiableTranslationObject = {
 };
 
 class i18n {
-    lang: DPlayerSupportedLanguage;
-    fallbackLang: DPlayerLanguage;
+    lang: DPlayerSupportedLanguage | null;
+    fallbackLang: DPlayerSupportedLanguage | null;
     model: DPlayerLanguageModel;
+    translations: DPlayerAvailableTranslationObject;
+    standard: DPlayerTranslationObject;
 
-    constructor(lang: DPlayerSupportedLanguage) {
-        this.lang = lang;
+    constructor(lang: DPlayerSupportedLanguage | string, checkResultingLanguage = false) {
+        if (Object.keys(GlobalTranTxt).includes(lang)) {
+            this.lang = lang as DPlayerSupportedLanguage;
+        } else {
+            this.lang = null;
+        }
         // in case someone says en-us, and en is present!
-        this.fallbackLang = this.lang.includes('-') ? this.lang.split('-')[0] : this.lang;
+        const fallBack: string = lang.includes('-') ? lang.split('-')[0] : lang;
+        if (Object.keys(GlobalTranTxt).includes(fallBack)) {
+            this.fallbackLang = fallBack as DPlayerSupportedLanguage;
+        } else {
+            this.fallbackLang = null;
+        }
+
+        if (this.lang !== null && checkResultingLanguage === true) {
+            this.checkPresentTranslations(this.lang, DEBUG);
+        } else if (this.fallbackLang !== null && checkResultingLanguage === true) {
+            this.checkPresentTranslations(this.fallbackLang, DEBUG);
+        }
 
         this.model = GLOB_MODEL;
+        this.translations = GlobalTranTxt;
+        this.standard = GlobalStandard;
     }
 
-    /**
-     * @throws, when an internal error happened, normally only present keys get passed!
-     */
-
-    translate(key?: DPlayerTranslateKey, replacement?: DPlayerReplacementTypes): DPlayerTranslatedString {
+    translate(key?: DPlayerTranslateKey | string, replacement?: DPlayerReplacementTypes | DPlayerReplacementTypes[]): DPlayerTranslatedString | null {
         if (typeof key === 'undefined') {
             console.error('key for translation not set!');
-            return '';
+            return null;
         }
         if (typeof key !== 'string') {
             console.error(`key for translation is not a string, but a '${typeof key}'!`);
-            return '';
+            return null;
         }
-        // TODO(#28):  check if DPlayerTranslateKey
+        // TODOOOOOOOOOOOo(#28):  check if DPlayerTranslateKey !!!!!!!
         const finalKey: DPlayerTranslateKey = key.toLowerCase() as DPlayerTranslateKey;
-        let result = null;
-        if (this.tranTxt[this.lang] && this.tranTxt[this.lang][finalKey]) {
-            result = this.tranTxt[this.lang][finalKey];
-        } else if (this.tranTxt[this.fallbackLang] && this.tranTxt[this.fallbackLang][finalKey]) {
-            result = this.tranTxt[this.fallbackLang][finalKey];
+        let result: DPlayerTranslatedString;
+        if (this.lang !== null) {
+            result = this.translations[this.lang][finalKey];
+        } else if (this.fallbackLang !== null) {
+            result = this.translations[this.fallbackLang][finalKey];
         } else {
             result = this.standard[finalKey];
         }
-        if (this.model[key].length > 0 && replacement) {
-            result = result.replace(this.model[finalKey][0].symbol, replacement);
+        if (this.model[finalKey].length > 0 && typeof replacement !== 'undefined') {
+            if (!Array.isArray(replacement)) {
+                replacement = [replacement];
+            }
+            for (let i = 0; i < this.model[finalKey].length; i++) {
+                result = result.replace(this.model[finalKey][i].symbol, replacement[i].toString());
+            }
+        } else if (this.model[key as DPlayerTranslateKey].length > 0 && typeof replacement === 'undefined') {
+            console.error('[ERROR] Translate: A Replacement value is missing, you have to provide one!');
         }
         return result;
     }
 
-    checkPresentTranslations(singleLanguage?: DPlayerSupportedLanguage, debug: boolean): void {
-        if (typeof singleLanguage === 'undefined' || debug) {
-            Object.keys(this.tranTxt).forEach((language) => {
-                checkSingleLanguage(language);
+    checkPresentTranslations(singleLanguage?: DPlayerSupportedLanguage, debug?: boolean): void {
+        if (typeof singleLanguage === 'undefined' || debug === true) {
+            (Object.keys(this.translations) as DPlayerSupportedLanguage[]).forEach((language: DPlayerSupportedLanguage) => {
+                this.checkSingleLanguage(language);
             });
         } else {
-            checkSingleLanguage(singleLanguage);
+            this.checkSingleLanguage(singleLanguage);
         }
     }
 
-    checkSingleLanguage(language?: DPlayerSupportedLanguage): void {
-        const translation = tranTxt[language];
-        Object.entries(model).forEach(([key, value]) => {
+    checkSingleLanguage(language: DPlayerSupportedLanguage): void {
+        const translation = this.translations[language];
+        (Object.entries(this.model) as [DPlayerTranslateKey, DPlayerLanguageModelDescription[]][]).forEach(([key, value]) => {
             if (!translation[key]) {
                 console.info(`Translation for ${language} has no key ${key}!`);
             } else if (value.length > 0) {
@@ -232,12 +257,12 @@ export type DPlayerTranslateKey =
     | 'skip-chapter'
     | 'cancel';
 
-export type DPlayerTranslatedString = string | '';
+export type DPlayerTranslatedString = string;
 
 export type DPlayerReplacementTypes = string | number; // TODO(#29):  check on key by looking it uup in the model!!!!
 
 export type DPlayerLanguageModel = {
-    [index in DPlayerTranslateKey]?: DPlayerLanguageModelDescription[];
+    [index in DPlayerTranslateKey]: DPlayerLanguageModelDescription[];
 };
 
 export interface DPlayerLanguageModelDescription {
@@ -247,20 +272,11 @@ export interface DPlayerLanguageModelDescription {
 }
 
 export type DPlayerTranslationObject = {
-    [index in DPlayerTranslateKey]?: string[];
+    [index in DPlayerTranslateKey]: string;
 };
 
-export type DPlayerAvaiableTranslationObject = {
-    [language in DPlayerSupportedLanguage]?: DPlayerTranslationObject;
+export type DPlayerAvailableTranslationObject = {
+    [language in DPlayerSupportedLanguage]: DPlayerTranslationObject;
 };
 
 export type DPLayerTranslateFunction = (key?: DPlayerTranslateKey, replacement?: DPlayerReplacementTypes) => null | DPlayerTranslatedString;
-
-// Quick and dirty export function
-
-/* let fs = require("fs");
-(()=>{
-    Object.keys(tranTxt).forEach(a=>{
-        fs.writeFileSync(`..\\translations\\${a}.json`, JSON.stringify(tranTxt[a]));
-    })
-})() */
