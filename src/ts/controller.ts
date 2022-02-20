@@ -568,6 +568,7 @@ class Controller {
         }
     }
 
+    // see https://developers.google.com/cast/docs/web_sender/integrate
     initChromecast() {
         const script = window.document.createElement('script');
         script.setAttribute('type', 'text/javascript');
