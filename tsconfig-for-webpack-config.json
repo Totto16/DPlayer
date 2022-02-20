@@ -3,7 +3,8 @@
         "module": "commonjs",
         "target": "es2021",
         "esModuleInterop": true,
-        "resolveJsonModule": true
+        "resolveJsonModule": true,
+        "rootDir": ".",
     },
     "typeRoots": ["src/ts/global.d.ts", "node_modules/@types", "src/ts/*.d.ts"]
 }

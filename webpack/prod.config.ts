@@ -44,14 +44,22 @@ const config: webpack.Configuration = {
     module: {
         strictExportPresence: true,
         rules: [
+                /* { 
+                    test: /\.d\.ts$/,
+                    loader: 'ignore-loader',
+                }, */
             {
-                test: /\.d\.ts$/,
-                loader: 'ignore-loader',
-            },
-            {
-                test: /(?<!\.d)\.ts$/,
+                test: /\.ts$/,
                 exclude: /node_module/,
-                use: 'ts-loader',
+                use: [
+                    {
+                        loader: 'ts-loader',
+                        options: {
+                            context: path.join(__dirname, '..'),
+                            configFile: path.join(__dirname, '../tsconfig.json'),
+                        },
+                    },
+                ],
             },
             {
                 test: /\.js$/,
