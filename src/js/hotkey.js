@@ -7,7 +7,7 @@ const keys = {
     39: 'right',
     38: 'up',
     40: 'down',
-    27: 'cancelFullscreen',
+    27: 'cancelbothfullscreen',
     70: 'toggleFullscreen',
     87: 'toggleWebFullscreen',
     77: 'mute',
@@ -134,7 +134,7 @@ class HotKey {
                         event.preventDefault();
                         this.player.fullScreen.toggle('browser');
                         break;
-                    case 'cancelFullscreen':
+                    case 'cancelbothfullscreen':
                         // cancel WEB fullscreen
                         event.preventDefault();
                         if (this.player.fullScreen.isFullScreen('web')) {
@@ -211,7 +211,7 @@ class HotKey {
             case 40:
                 return 'down';
             case 27:
-                return 'cancelFullscreen';
+                return 'cancelbothfullscreen';
             case 70:
                 return 'toggleFullscreen';
             case 77:
@@ -245,7 +245,7 @@ class HotKey {
                 case 'ArrowDown':
                     return 'down';
                 case 'Escape':
-                    return 'cancelFullscreen';
+                    return 'cancelbothfullscreen';
                 case 'f':
                     return 'toggleFullscreen';
                 case 'MediaPlayPause':
