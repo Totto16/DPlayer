@@ -186,7 +186,7 @@ function initPlayers() {
     if(typeof DPlayer !== "undefined"){
         window.dp = new DPlayer(dpOptions);
     }else{
-        window.DPLAYER_AUTO = {name:"dp",options:dpOptions3}
+        window.DPLAYER_AUTO = {name:"dp",options:dpOptions}
     }
 
 }
