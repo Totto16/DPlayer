@@ -69,7 +69,7 @@ class Events {
         ];
     }
 
-    on<K extends keyof DPlayerEventMap>(name: (K | '*' | 'all') | (keyof DPlayerEventMap | '*' | 'all')[], callback: DPlayerEventCallback<K> | DPlayerEventCallback<keyof DPlayerEventMap>, once = false, delayed = false): UUID | UUID[] {
+    on<K extends keyof DPlayerEventMap, R extends (keyof DPlayerEventMap)[]>(name: (K | '*' | 'all') | (keyof DPlayerEventMap | '*' | 'all')[], callback: DPlayerEventCallback<K> | DPlayerEventCallback<R>, once = false, delayed = false): UUID | UUID[] {
         if (name === 'all' || name === '*') {
             name = [...this.playerEvents, ...this.videoEvents];
         }
@@ -77,7 +77,7 @@ class Events {
         if (Array.isArray(name)) {
             return (name as (keyof DPlayerEventMap)[])
                 .map((event: keyof DPlayerEventMap): UUID[] => {
-                    const result = this.on<keyof DPlayerEventMap>(event, callback as DPlayerEventCallback<keyof DPlayerEventMap>, once, delayed);
+                    const result = this.on<keyof DPlayerEventMap, (keyof DPlayerEventMap)[]>(event, callback as DPlayerEventCallback<keyof DPlayerEventMap>, once, delayed);
                     if (!Array.isArray(result)) {
                         return [result];
                     }

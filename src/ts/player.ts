@@ -1,4 +1,4 @@
-import handleOption, { DPlayerAvailableVideoTypes, DPlayerOptions, DPlayerParsedOptions, DPlayerVideoQuality } from './options';
+import handleOption, { DPlayerAvailableVideoTypes, DPlayerOptions, DPlayerParsedOptions, DplayerVideoOptions, DPlayerVideoQuality } from './options';
 import i18n, { DPlayerReplacementTypes, DPlayerTranslateKey, DPlayerTranslatedString } from './i18n';
 import Template, { DPlayerARTInitializeFunction } from './template';
 import Icons from './icons';
@@ -19,6 +19,7 @@ import InfoPanel from './info-panel';
 import HotkeyPanel from './hotkey-panel';
 import utils from './utils';
 import { DPLAYER_VERSION } from './global';
+import { DPlayerDanmakuData } from './api';
 // @ts-ignore
 const tplVideo = (await import('../template/video.art')) as DPlayerARTInitializeFunction;
 
@@ -382,11 +383,20 @@ class DPlayer {
      * @param {Object} video - new video info
      * @param {Object} danmaku - new danmaku info
      */
-    switchVideo(video: HTMLVideoElement, danmakuAPI: DPlayerDanmakuData): void {
+    switchVideo(video: DplayerVideoOptions, danmakuAPI: DPlayerDanmakuData): void {
         this.pause();
-        this.video.poster = video.pic ? video.pic : '';
-        this.video.src = video.url;
-        this.initMSE(this.video, video.type || 'auto');
+        this.video.poster = typeof video.pic !== 'undefined' ? video.pic : '';
+
+        if (typeof video.url !== 'undefined') {
+            this.video.src = video.url;
+        } else {
+            throw new Error(`[ERROR] Video: No url specified in the given video object!`);
+        }
+        // TODO also allow custom types!!!
+        const isPredefinedType = ['auto', 'hls', 'flv', 'dash', 'webtorrent', 'normal'];
+        const type: DPlayerAvailableVideoTypes = typeof video.type !== 'undefined' && isPredefinedType.includes(video.type) ? (video.type as DPlayerAvailableVideoTypes) : 'auto';
+
+        this.initMSE(this.video, type);
         if (danmakuAPI) {
             this.template.danmakuLoading.style.display = 'block';
             this.bar.set('played', 0);
@@ -406,7 +416,7 @@ class DPlayer {
         }
     }
 
-    initMSE(video: HTMLVideoElement, type: DPlayerAvailableVideoTypes): void {
+    initMSE(video: HTMLVideoElement, type: DPlayerAvailableVideoTypes | DPlayerCustomVideoType): void {
         this.type = type;
         if (this.options.video.customType && this.options.video.customType[type]) {
             if (Object.prototype.toString.call(this.options.video.customType[type]) === '[object Function]') {
@@ -845,3 +855,5 @@ export interface DPlayerNoticeOptions {
 export interface DPlayerPluginData {
     // TODO add
 }
+
+export type DPlayerCustomVideoType = 'TODO'; // TODO: string, to make it possible to

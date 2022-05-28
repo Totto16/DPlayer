@@ -256,7 +256,7 @@ function parseOptions(InputOptions: DPlayerOptions, defaultOptions: DPlayerDefau
             if (!isPredefinedType) {
                 const isCustomType = availableCustomTypes.includes(video.type);
                 if (!isCustomType) {
-                    throw OptionsError(`'options.video.type' is not an avaiable video type, also no custom One!`);
+                    throw OptionsError(`'options.video.type' is not an available video type, also no custom One!`);
                 }
             }
         } else if (typeof video.type !== 'undefined') {

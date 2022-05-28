@@ -168,6 +168,9 @@ const config: webpack.Configuration = {
     optimization: {
         mangleWasmImports: false,
     },
+    experiments: {
+        topLevelAwait: true,
+    },
 };
 
 export default config;
